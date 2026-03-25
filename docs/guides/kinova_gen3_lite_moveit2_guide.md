@@ -1,0 +1,1 @@
+--8<-- "guides/kinova_gen3_lite_moveit2_guide.md"

@@ -1,0 +1,130 @@
+:root {
+  --md-primary-fg-color: #012169;
+  --md-primary-fg-color--light: #1a5fb4;
+  --md-primary-fg-color--dark: #001240;
+  --md-accent-fg-color: #0f766e;
+  --md-typeset-a-color: #00539b;
+  --toolkit-surface: linear-gradient(135deg, rgba(1, 33, 105, 0.96), rgba(0, 83, 155, 0.92));
+  --toolkit-panel: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(244, 247, 252, 0.98));
+  --toolkit-shadow: 0 1rem 2.5rem rgba(1, 18, 64, 0.16);
+  --toolkit-radius: 1.25rem;
+  --md-text-font: "Segoe UI", "Aptos", "Helvetica Neue", Arial, sans-serif;
+  --md-code-font: "Cascadia Code", "Consolas", "SFMono-Regular", monospace;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4 {
+  letter-spacing: -0.02em;
+}
+
+.toolkit-hero {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.75rem;
+  margin: 0 0 2rem;
+  color: #ffffff;
+  background: var(--toolkit-surface);
+  border-radius: var(--toolkit-radius);
+  box-shadow: var(--toolkit-shadow);
+}
+
+.toolkit-kicker {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.toolkit-hero h1 {
+  margin: 0;
+  font-size: clamp(2.3rem, 5vw, 3.6rem);
+  line-height: 1.05;
+  color: #ffffff;
+}
+
+.toolkit-lede {
+  max-width: 42rem;
+  margin: 1rem 0 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.toolkit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.25rem;
+}
+
+.toolkit-hero .md-button {
+  margin: 0;
+}
+
+.toolkit-hero .md-button:not(.md-button--primary) {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.toolkit-hero__panel {
+  align-self: start;
+  padding: 1rem 1.1rem;
+  color: #10213f;
+  background: var(--toolkit-panel);
+  border-radius: calc(var(--toolkit-radius) - 0.2rem);
+}
+
+.toolkit-panel__title {
+  margin: 0 0 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #36537d;
+}
+
+.toolkit-hero__panel ul {
+  margin: 0;
+}
+
+.toolkit-hero__panel li + li {
+  margin-top: 0.45rem;
+}
+
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li {
+  border-radius: 1rem;
+  border: 1px solid rgba(1, 33, 105, 0.1);
+  box-shadow: 0 0.6rem 1.5rem rgba(1, 18, 64, 0.07);
+}
+
+.md-typeset .grid.cards strong {
+  color: #012169;
+}
+
+@media screen and (min-width: 76.25em) {
+  .toolkit-hero {
+    grid-template-columns: minmax(0, 2.2fr) minmax(18rem, 1fr);
+    align-items: start;
+    padding: 2.2rem;
+  }
+}
+
+@media screen and (max-width: 44.9375em) {
+  .toolkit-hero {
+    padding: 1.2rem;
+    border-radius: 1rem;
+  }
+
+  .toolkit-hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .toolkit-lede {
+    font-size: 1rem;
+  }
+}

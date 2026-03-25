@@ -1,0 +1,1 @@
+--8<-- "guides/setup_scripts.md"
