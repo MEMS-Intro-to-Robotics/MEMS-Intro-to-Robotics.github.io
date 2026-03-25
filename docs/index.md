@@ -41,7 +41,7 @@ hide:
 
 - **Run structured labs**
 
-  The [Lab 06 guide](lab06_files/README.md) and [Lab 07 guide](lab07_files/README.md) give students a clean starting point for hands-on work.
+  Browse all 10 [lab manuals](labs/lab_01.md) — from VM setup and ROS 2 basics through MoveIt 2 manipulation, PID control, and autonomous SLAM exploration.
 
 - **Dig into robot-specific details**
 
@@ -61,6 +61,7 @@ hide:
 
 - Shared setup guidance for student VMs, developer VMs, and lab desktops
 - Course-facing quick references for Linux, Git, Docker, and ROS 2
+- Ten complete lab manuals covering VM setup, ROS 2 CLI, shell scripting, Python nodes, MoveIt 2, pick-and-place, PID control, hardware validation, SLAM, and autonomous exploration
 - Lab-specific starter assets for Kinova manipulation and 3D goal control
 - Reference material suitable for handouts, troubleshooting, and external instructor reuse
 

@@ -114,6 +114,73 @@
   }
 }
 
+/* Lab content styling */
+.lab-content {
+  line-height: 1.7;
+}
+
+.lab-content section {
+  margin-bottom: 2rem;
+}
+
+.lab-content nav#toc {
+  background: #f4f7fc;
+  border: 1px solid rgba(1, 33, 105, 0.1);
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.lab-content nav#toc h2 {
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.lab-content .alert,
+.lab-content .alert-warning,
+.lab-content .alert-info {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+
+.lab-content blockquote {
+  border-radius: 0.5rem !important;
+  margin: 1rem 0;
+}
+
+.lab-content pre {
+  border-radius: 0.5rem;
+}
+
+.lab-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.lab-content table th,
+.lab-content table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.lab-content table th {
+  background: #f4f7fc;
+}
+
+.image-placeholder {
+  font-size: 0.9rem;
+}
+
+code.equation-placeholder {
+  background: #f0f0f0;
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
+
 @media screen and (max-width: 44.9375em) {
   .toolkit-hero {
     padding: 1.2rem;

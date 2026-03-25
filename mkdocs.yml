@@ -34,8 +34,19 @@ nav:
       - Quick Start: guides/quick_start.md
       - Quick Reference: guides/quick_reference.md
   - Labs:
-      - Lab 06: lab06_files/README.md
-      - Lab 07: lab07_files/README.md
+      - Lab 01 — VM and Git Setup: labs/lab_01.md
+      - Lab 02 — ROS 2 CLI Fundamentals: labs/lab_02.md
+      - Lab 03 — Shell Scripting: labs/lab_03.md
+      - Lab 04 — ROS 2 Python Nodes: labs/lab_04.md
+      - Lab 05 — Motion Planning (MoveIt 2): labs/lab_05.md
+      - Lab 06 — Pick-and-Place: labs/lab_06.md
+      - Lab 07 — Crazyflie PID Tuning: labs/lab_07.md
+      - Lab 08 — Real Drone Control: labs/lab_08.md
+      - Lab 09 — SLAM Exploration: labs/lab_09.md
+      - Lab 10 — Real TurtleBot 4: labs/lab_10.md
+  - Starter Code:
+      - Lab 06 Files: lab06_files/README.md
+      - Lab 07 Files: lab07_files/README.md
   - References:
       - Kinova Gen3 Lite + MoveIt 2: guides/kinova_gen3_lite_moveit2_guide.md
       - pymoveit2 API Guide: guides/pymoveit2_api_guide.md
@@ -61,8 +72,14 @@ markdown_extensions:
         - .
       check_paths: true
   - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
   - pymdownx.tabbed:
       alternate_style: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 extra_css:
   - stylesheets/extra.css
