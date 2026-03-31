@@ -16,6 +16,7 @@ theme:
     - navigation.tabs
     - navigation.sections
     - navigation.top
+    - toc.integrate
     - search.highlight
     - search.suggest
     - content.code.copy
