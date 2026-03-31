@@ -1,74 +1,88 @@
-# Setup scripts guide
+# Setup Scripts
 
-This repo contains several machine-setup scripts. They target different environments, so this page explains which one should own which job.
+Bootstrap scripts for provisioning student VMs, developer workstations, shared lab desktops, and GPU-enabled Docker hosts. All scripts are bundled in the [`scripts/`](https://github.com/MEMS-Intro-to-Robotics/MEMS-Intro-to-Robotics.github.io/tree/main/scripts) directory of this repository.
 
-## Script matrix
+## Overview
 
-| Script | Intended environment | What it does |
-|---|---|---|
-| `vm_setup.sh` | Student-facing Duke VCM or FastX VM | Installs the standard student desktop stack, Docker, FastX, VS Code, and optional NVIDIA container tooling |
-| `vm_setup_dev.sh` | Personal VMware or Ubuntu developer VM | Installs a richer developer workstation stack with Docker, Git extras, pipx tools, Node via `nvm`, and shell customization |
-| `ubuntu_desktop_setup.sh` | Shared lab desktop or managed Ubuntu workstation | Boots a machine-level desktop with Docker, VS Code, optional NVIDIA tooling, and Duke CrowdStrike setup |
-| `ubuntu_desktop_setup.env.example` | Companion config for `ubuntu_desktop_setup.sh` | Shows required environment variables for lab desktop setup |
-| `gpu_install.sh` | Standalone GPU Docker repair/helper | Configures NVIDIA Container Toolkit on Ubuntu when you only need GPU container support |
-| `utilities.sh` | Older utility installer | Installs common packages and Firefox from the Mozilla PPA; overlaps with the newer setup scripts |
+| Script | Target Environment | Lines |
+|--------|-------------------|-------|
+| [`vm_setup.sh`](#vm_setupsh) | Student VM (FastX remote desktop) | ~220 |
+| [`vm_setup_dev.sh`](#vm_setup_devsh) | Developer/TA VM (VMware) | ~330 |
+| [`ubuntu_desktop_setup.sh`](#ubuntu_desktop_setupsh) | Shared lab desktop | ~390 |
+| [`ubuntu_desktop_setup.env.example`](#ubuntu_desktop_setupenvexample) | Config template for lab desktop setup | ~15 |
+| [`gpu_install.sh`](#gpu_installsh) | NVIDIA Container Toolkit install | ~85 |
+| [`utilities.sh`](#utilitiessh) | Legacy helper (Firefox, misc packages) | ~70 |
 
-## Recommended ownership
+## Environment Ownership Model
 
-### `vm_setup.sh`
+Each script targets one environment. Pick the one that matches your setup:
 
-Use this for the default student VM story. It is the script that matches the existing course workflow of FastX plus Docker on a remote VM.
+- **Student environment** (`vm_setup.sh`): The default path for students. Installs ROS 2 Jazzy, Docker, course container images, and shell configuration on a clean Ubuntu VM with FastX remote desktop access.
+- **Developer environment** (`vm_setup_dev.sh`): A richer path for TAs and maintainers. Assumes VMware instead of FastX, installs additional dev tooling.
+- **Shared lab desktops** (`ubuntu_desktop_setup.sh`): Machine-level bootstrap for persistent lab computers. Handles Docker, optional NVIDIA runtime, and system services — avoids per-user customization.
+- **GPU repair path** (`gpu_install.sh`): Narrowly scoped — only installs NVIDIA Container Toolkit for machines that need GPU-accelerated containers.
 
-Highlights from the script:
+---
 
-- Sets locale
-- Installs developer utilities
-- Installs Docker and adds the current user to the `docker` group
-- Installs Firefox, VS Code, and recommended extensions
-- Installs XFCE plus FastX server
-- Attempts NVIDIA Container Toolkit setup when possible
+## `vm_setup.sh`
 
-### `vm_setup_dev.sh`
+Student-facing VM setup. Installs locale, ROS 2 Jazzy, Docker, pulls course container images, and configures the shell environment.
 
-Use this when the machine is a personal development VM rather than a shared course VM.
+??? note "Full script"
+    ```bash
+    --8<-- "scripts/vm_setup.sh"
+    ```
 
-Highlights from the script:
+---
 
-- Installs VMware guest tools
-- Installs a broader workstation package set
-- Adds Git extras like `git-lfs`, `delta`, and `lazygit`
-- Installs `black`, `ruff`, and `httpie` through `pipx`
-- Installs Node.js with `nvm`
-- Adds optional shell tooling like zsh, Oh My Zsh, and Starship
+## `vm_setup_dev.sh`
 
-### `ubuntu_desktop_setup.sh`
+Developer/TA VM setup. Similar to the student script but assumes VMware (installs `open-vm-tools`), allows snap Firefox, and includes a richer development environment.
 
-Use this for shared lab desktops where the machine itself needs to be prepared, not an individual user shell.
+??? note "Full script"
+    ```bash
+    --8<-- "scripts/vm_setup_dev.sh"
+    ```
 
-Highlights from the script:
+---
 
-- Reads configuration from `ubuntu_desktop_setup.env`
-- Handles root or sudo execution
-- Installs machine-level dependencies and services
-- Configures VS Code and Docker
-- Optionally configures NVIDIA container runtime
-- Can install Duke CrowdStrike Falcon Sensor when the required installer path and CCID are provided
+## `ubuntu_desktop_setup.sh`
 
-### `gpu_install.sh`
+Shared lab desktop bootstrap. Machine-level only: installs packages and services, configures Docker and optional NVIDIA container runtime, avoids per-user shell/editor customization.
 
-Use this when Docker is already installed and you only need to set up or repair NVIDIA GPU support. It is much narrower than the full setup scripts.
+Accepts optional environment variables via a `.env` file — see the example below.
 
-### `utilities.sh`
+??? note "Full script"
+    ```bash
+    --8<-- "scripts/ubuntu_desktop_setup.sh"
+    ```
 
-Treat this as a legacy helper unless there is a specific reason to keep using it directly. Its package-install role overlaps with `vm_setup.sh`, so it should not become the main documented path unless you intentionally simplify the course setup workflow around it.
+---
 
-## Suggested documentation split
+## `ubuntu_desktop_setup.env.example`
 
-- Student-facing docs should point primarily to `vm_setup.sh`.
-- Maintainer docs should explain when to use `vm_setup_dev.sh` versus `ubuntu_desktop_setup.sh`.
-- GPU setup should stay in its own troubleshooting page or appendix because only a subset of machines need it.
+Configuration template for the lab desktop setup script.
 
-## What still needs follow-up
+```bash
+--8<-- "scripts/ubuntu_desktop_setup.env.example"
+```
 
-- None of these scripts are documented as the single official default yet, so students could still guess wrong.
-- `utilities.sh` overlaps with newer scripts and would benefit from either deprecation language or a clearer purpose statement.
+---
+
+## `gpu_install.sh`
+
+Installs the NVIDIA Container Toolkit on Ubuntu (24.04-friendly). Safe to re-run.
+
+```bash
+--8<-- "scripts/gpu_install.sh"
+```
+
+---
+
+## `utilities.sh`
+
+Legacy helper script for removing snap Firefox and installing miscellaneous packages. Largely superseded by the environment-specific scripts above.
+
+```bash
+--8<-- "scripts/utilities.sh"
+```
