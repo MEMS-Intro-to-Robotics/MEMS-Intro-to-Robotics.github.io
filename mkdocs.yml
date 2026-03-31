@@ -32,7 +32,9 @@ nav:
   - Home: index.md
   - Start Here:
       - Quick Start: guides/quick_start.md
+      - Robot Platform Workflow: guides/robot_platform_lab_workflow.md
       - Quick Reference: guides/quick_reference.md
+      - Troubleshooting: troubleshooting.md
   - Labs:
       - Lab 01 — VM and Git Setup: labs/lab_01.md
       - Lab 02 — ROS 2 CLI Fundamentals: labs/lab_02.md
@@ -48,9 +50,14 @@ nav:
       - Lab 06 Files: lab06_files/README.md
       - Lab 07 Files: lab07_files/README.md
   - References:
+      - ROS 2 Python Nodes: guides/ros2_python_nodes_reference.md
       - Kinova Gen3 Lite + MoveIt 2: guides/kinova_gen3_lite_moveit2_guide.md
+      - Kinova Lab Operating Guide: guides/kinova_lab_operating_guide.md
       - pymoveit2 API Guide: guides/pymoveit2_api_guide.md
-  - For Educators: for-educators.md
+  - For Educators:
+      - Overview: for-educators.md
+      - Adoption Guide: educator-adoption.md
+      - Lab Catalog: lab-catalog.md
   - Course Infrastructure:
       - Setup Scripts: guides/setup_scripts.md
 

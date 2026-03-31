@@ -6,9 +6,9 @@ Starter code for programming a robotic arm to pick up and place objects using Mo
 
 | File | Description |
 |------|-------------|
-| `pick_and_place.py` | Student-facing starter script for one-block and stack-three tasks |
-| `gripper_runtime.py` | Instructor/runtime helper for robust gripper command execution |
-| `spawn_blocks.sh` | Gazebo helper script to spawn table and colored blocks |
+| [`pick_and_place.py`](#pick_and_placepy) | Student-facing starter script for one-block and stack-three tasks |
+| [`gripper_runtime.py`](#gripper_runtimepy) | Runtime helper for robust gripper command execution |
+| [`spawn_blocks.sh`](#spawn_blockssh) | Gazebo helper script to spawn table and colored blocks |
 
 ## Quick Start
 
@@ -52,6 +52,7 @@ Pass these via `--ros-args -p task:=<name>`:
 - [pymoveit2 API Guide](../guides/pymoveit2_api_guide.md) - Core MoveIt2 Python reference
 - [Kinova Gen3 Lite Guide](../guides/kinova_gen3_lite_moveit2_guide.md) - Robot-specific setup and configuration
 - [Quick Reference](../guides/quick_reference.md) - Linux, Docker, ROS 2 basics
+- [Lab 06 Manual](../labs/lab_06.md) - Full workflow and current starter-file fetch path
 
 ## Suggested 2.5 Hour Lab Flow
 
@@ -59,3 +60,25 @@ Pass these via `--ros-args -p task:=<name>`:
 - 45-105 min: Run `stack_three` and tune stack x/y for stability.
 - 105-135 min: Tune approach/grasp heights and improve repeatability.
 - 135-150 min: TA sign-off and short demo.
+
+---
+
+## Source Code
+
+### `pick_and_place.py`
+
+```python
+--8<-- "lab06_files/pick_and_place.py"
+```
+
+### `gripper_runtime.py`
+
+```python
+--8<-- "lab06_files/gripper_runtime.py"
+```
+
+### `spawn_blocks.sh`
+
+```bash
+--8<-- "lab06_files/spawn_blocks.sh"
+```

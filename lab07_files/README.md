@@ -6,9 +6,9 @@ Starter code for a simple 3D position controller, waypoint publisher, and trajec
 
 | File | Description |
 |---|---|
-| `3d_goal_control.py` | Student-facing 3D PID controller that tracks a `PoseStamped` goal |
-| `trajectory_publisher.py` | Publishes a sequence of waypoint goals and advances after arrival |
-| `plotting.py` | Records actual versus commanded motion and saves a CSV plus plots |
+| [`3d_goal_control.py`](#3d_goal_controlpy) | Student-facing 3D PID controller that tracks a `PoseStamped` goal |
+| [`trajectory_publisher.py`](#trajectory_publisherpy) | Publishes a sequence of waypoint goals and advances after arrival |
+| [`plotting.py`](#plottingpy) | Records actual versus commanded motion and saves a CSV plus plots |
 
 ## Typical workflow
 
@@ -61,3 +61,26 @@ When you stop the plotter, it writes:
 
 - [Quick reference](../guides/quick_reference.md)
 - [For educators](../for-educators.md)
+- [Lab 07 Manual](../labs/lab_07.md)
+
+---
+
+## Source Code
+
+### `3d_goal_control.py`
+
+```python
+--8<-- "lab07_files/3d_goal_control.py"
+```
+
+### `trajectory_publisher.py`
+
+```python
+--8<-- "lab07_files/trajectory_publisher.py"
+```
+
+### `plotting.py`
+
+```python
+--8<-- "lab07_files/plotting.py"
+```
