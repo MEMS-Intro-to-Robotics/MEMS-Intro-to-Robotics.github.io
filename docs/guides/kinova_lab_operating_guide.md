@@ -1,6 +1,6 @@
 # Kinova Gen3 Lite — Lab Operating Guide
 
-This guide walks lab staff through the complete procedure for allowing students to run code on the Kinova Gen3 Lite robotic arm. The process involves simulation verification, hardware setup, Docker container launch, and supervised code execution.
+This guide covers the complete procedure for running code on the Kinova Gen3 Lite robotic arm — from simulation verification through hardware setup and code execution. It is intended for both lab staff supervising hardware sessions and students who have been cleared for independent use.
 
 !!! danger "Safety First"
     The robot arm can cause injury if operated incorrectly. Always ensure the E-stop is accessible and within arm's reach. Never place hands or body parts in the robot's workspace during operation. Stop immediately if anything appears wrong.
@@ -15,17 +15,17 @@ This guide walks lab staff through the complete procedure for allowing students 
 
 ---
 
-## Step 1: Verify Student Simulation
+## Step 1: Verify Simulation
 
 !!! info "Important"
-    Students **must** show a live simulation on their computer. Do **not** accept video recordings — robotic programs are non-deterministic, so only a live run demonstrates the code currently works.
+    All code **must** be demonstrated in a live simulation before running on hardware. Video recordings are not accepted — robotic programs are non-deterministic, so only a live run demonstrates the code currently works.
 
-Before touching any hardware, have the student demonstrate their code in simulation:
+Before touching any hardware, verify the code works in simulation:
 
-1. Ask the student to run their simulation on their own computer
+1. Run the simulation on your own computer (or have lab staff watch you run it)
 2. Watch the entire execution from start to finish
 3. Verify the motion paths look reasonable and stay within workspace bounds
-4. If anything looks concerning, ask the student to explain or modify before proceeding
+4. If anything looks concerning, debug and fix before proceeding to hardware
 
 ---
 
@@ -80,7 +80,7 @@ docker run -it --rm \
 |------|---------|
 | `--privileged` | Required for USB device access |
 | `--network host` | Allows container to reach robot at `192.168.1.10` |
-| `-v ~/workspaces:...` | Mount student code into the container |
+| `-v ~/workspaces:...` | Mount your code into the container |
 
 ---
 
@@ -120,18 +120,18 @@ RViz should open showing the robot model. Verify the displayed robot pose matche
 
 ---
 
-## Step 5: Run Student Code
+## Step 5: Run Your Code
 
 !!! warning "Dry Run First"
-    If the student's code interacts with objects (grasping, placing, etc.), **always** perform a dry run first without those objects present. This verifies the motion paths are correct before introducing potential collision hazards.
+    If your code interacts with objects (grasping, placing, etc.), **always** perform a dry run first without those objects present. This verifies the motion paths are correct before introducing potential collision hazards.
 
 ### Running the Code
 
 1. Open a third terminal in the container (split pane or new tab)
-2. Navigate to the student's code: `cd /root/workspaces/student_code`
+2. Navigate to your code: `cd /root/workspaces/student_code`
 3. If the code needs building: `colcon build --symlink-install`
 4. Source the workspace: `source install/setup.bash`
-5. Run the student's launch file or node
+5. Run your launch file or node
 
 ### During Execution
 
