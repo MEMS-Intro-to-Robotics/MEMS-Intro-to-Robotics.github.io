@@ -72,19 +72,10 @@ title: "Lab 09: Autonomous SLAM-Based Exploration"
 </section>
 <section id="setup">
     <h2>5. Environment Setup: Docker &amp; Simulation</h2>
-    <p>For this lab, we use a <strong>Docker container</strong> to ensure a consistent and reliable development environment. Think of it as a perfectly preserved laboratory bench, with every specialized tool (ROS 2 Humble, Gazebo, libraries) pre-installed and configured exactly as needed. This practice eliminates "it works on my machine" issues and is standard in modern software and robotics development.</p>
-    <h3>5.1 The Professional Workflow: Managing File Permissions</h3>
-    <p>A critical concept when using Docker for development is managing file permissions. Files you create *inside* the container (which runs as `root`) are owned by `root`. This prevents you from saving edits to those files in VS Code on your host machine.</p>
-    <p>The solution is a professional two-terminal workflow:</p>
-    <ol>
-        <li><strong>Terminal 1 (Inside Container):</strong> You will run the Docker container. This terminal becomes your workspace for building and running ROS 2 nodes.</li>
-        <li><strong>Terminal 2 (On Host VM):</strong> You will open a <em>second, separate</em> terminal on your main VM. You will use this terminal to run a command that reclaims ownership of the files, allowing you to edit them freely in VS Code.</li>
-    </ol>
-    <p>You can run the ownership command from Terminal 2 at any time, even while the container is running in Terminal 1. This allows you to create files in the container and immediately make them editable in VS Code.</p>
-    <h3>5.2 Start the Container (GPU Acceleration)</h3>
-    <p>In your first terminal, start the container. First, on your <strong>host VM</strong>, grant Docker permission to draw graphical windows on your desktop.</p>
+    <p>From Lab 05 onward, the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a> covers the repeated container, pane, build, and debugging habits. This section keeps the Lab 09-specific pieces: the TurtleBot image, the permissions fix, and the bringup commands that follow.</p>
+    <h3>5.1 Start the Container (GPU Acceleration)</h3>
+    <p>On your <strong>host VM</strong>, allow GUI forwarding and start the single container for this lab.</p>
     <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>xhost +local:docker</code></pre>
-    <p>Now, run the container. This command will take over your current terminal.</p>
     <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>docker run --rm -it \
 --name lab09_tb4 \
 --net=host \
@@ -94,17 +85,19 @@ title: "Lab 09: Autonomous SLAM-Based Exploration"
 gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:tb4-humble-latest</code></pre>
     <p>Note: if the command above does not successfully install all required packages, free up storage by running this command:</p>
     <p><strong></strong><code>docker system prune -a --volumes -f</code></p>
-    <h3>5.3 Fix File Permissions (In a Second Terminal)</h3>
-    <p><strong>Open a new terminal tab or window on your host VM.</strong> Use this terminal to run the `chown` (change owner) command. You can run this command whenever you create new files inside the container that you want to edit with VS Code.</p>
+    <h3>5.2 Fix File Permissions When Needed</h3>
+    <p>If files created inside the container become read-only on the host, run this from a second host terminal:</p>
     <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>sudo chown -R $USER:$USER ~/workspaces/[netid]_robotics_fall2025/lab09</code></pre>
+    <h3>5.3 Recommended Pane Layout</h3>
+    <p>If you prefer panes inside the container, open Terminator after launch and use a layout like this:</p>
     <ul>
-        <li><strong><code>sudo chown</code></strong>: The "change owner" command, run with administrator privileges.</li>
-        <li><strong><code>-R</code></strong>: Makes the command "recursive" to apply to the directory and everything inside it.</li>
-        <li><strong><code>$USER:$USER</code></strong>: A system variable that automatically uses your current username and group.</li>
-        <li><strong><code>.../lab09</code></strong>: The specific path to your lab work.</li>
+        <li><strong>Pane A</strong>: Gazebo world</li>
+        <li><strong>Pane B</strong>: TurtleBot stack with SLAM, Nav2, and RViz</li>
+        <li><strong>Pane C</strong>: Laser bridge</li>
+        <li><strong>Pane D</strong>: Development and debugging</li>
     </ul>
     <h3>5.4 Fallback: CPU Rendering</h3>
-    <p>If you encounter graphics errors, use the Docker command from Step 5.2 but <strong>omit the <code>--gpus all</code> line</strong>. You can still use the same `chown` command from Step 5.3 in a second terminal to manage file permissions.</p>
+    <p>If you encounter graphics errors, use the Docker command from Step 5.1 but <strong>omit the <code>--gpus all</code> line</strong>. You can still use the same <code>chown</code> command from Step 5.2 in a second terminal to manage file permissions.</p>
 </section>
 <section id="bringup">
     <h2>6. Part 1: System Bringup</h2>
@@ -164,9 +157,7 @@ gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:tb4-humble-la
     <p>Now we move from being system operators to system creators. In this section, you will write, build, and run your own Python nodes to serve as the "mission commander" for the TurtleBot 4. All commands should be run in your designated <strong>Development Terminal</strong> (Pane D).</p>
     <hr style="margin: 2em 0;" />
     <h3>7.1 Project Setup: Laying the Foundation</h3>
-    <p>***Don't forget to change the owner of the directories if you didn't already do it above!***</p>
-    <p>***Don't forget to source your ROS environment***</p>
-    <p>Before writing a single line of Python, we must create a structured environment for our code. In ROS 2, this is called a <strong>workspace</strong>, and our code will live inside a <strong>package</strong> within it. This standard structure is what allows the `colcon` build system to find, build, and register our code so that ROS 2 tools like `ros2 run` can execute it.</p>
+    <p>Create the package in your development pane. If you need the shared explanation of workspaces, <code>colcon build --symlink-install</code>, or when to rebuild versus simply rerun, see the <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>.</p>
     <blockquote style="border-left: 4px solid #2e7d32; padding-left: 15px; margin-left: 0; color: #555;">
         <h4 style="margin-top: 0; color: #2e7d32;">🎯 Goal</h4>
         <p>Create a standard ROS 2 Python package that `colcon` can discover, build, and install.</p>
@@ -178,12 +169,6 @@ ros2 pkg create turtlebot4_nav --build-type ament_python --dependencies rclpy ge
 cd ..
 colcon build --symlink-install
 source install/setup.bash</code></pre>
-    <ul>
-        <li><strong><code>mkdir -p .../src</code></strong>: Creates the standard directory structure for a ROS 2 workspace. All of your source code will live in the <code>src</code> directory.</li>
-        <li><strong><code>ros2 pkg create ...</code></strong>: This command generates the boilerplate for a Python ROS 2 package, including the crucial <code>setup.py</code> and <code>package.xml</code> files. We declare its dependencies on the message types we plan to use.</li>
-        <li><strong><code>colcon build --symlink-install</code></strong>: This builds your workspace. The <code>--symlink-install</code> flag is a vital productivity tool: it creates symbolic links to your Python files instead of copying them. This means you can edit your Python scripts and run them immediately without needing to rebuild every time.</li>
-        <li><strong><code>source install/setup.bash</code></strong>: This command updates your current terminal session's environment, making it aware of your new workspace and the packages within it. You must run this in any new terminal where you want to use your code.</li>
-    </ul>
     <hr style="margin: 2em 0;" />
     <h3>7.2 Part A: Command and Control - Navigating to a Point</h3>
     <p>Our first task is to establish a basic command link with the Nav2 stack. We will write a simple "fire-and-forget" node that issues a single navigation goal and waits for the result.</p>

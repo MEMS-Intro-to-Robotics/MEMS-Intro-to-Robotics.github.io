@@ -35,6 +35,10 @@ hide:
 
   Use the [Quick Start](guides/quick_start.md) page to get from login to a running course container with the least friction.
 
+- **Reuse the post-Lab-4 workflow**
+
+  The [Robot Platform Workflow](guides/robot_platform_lab_workflow.md) page centralizes the repeated Docker, pane, build, and debugging habits used across the robot-platform labs.
+
 - **Keep a practical cheat sheet open**
 
   The [Quick Reference](guides/quick_reference.md) page is designed to stay open during lab for Linux, Git, Docker, and ROS 2 commands.
@@ -49,11 +53,19 @@ hide:
 
 - **Adopt this material for your own course**
 
-  The [For Educators](for-educators.md) page highlights what transfers cleanly and what is still course-specific.
+  The [For Educators](for-educators.md) and [Educator Adoption Guide](educator-adoption.md) pages highlight what transfers cleanly and what you should replace first.
 
 - **Maintain the underlying environments**
 
   The [Setup Scripts](guides/setup_scripts.md) page explains which machine bootstrap script should own which environment.
+
+- **Jump to recurring fixes**
+
+  The [Troubleshooting](troubleshooting.md) page collects the issues that appear across multiple labs and setup paths.
+
+- **See the whole course at a glance**
+
+  The [Lab Catalog](lab-catalog.md) page summarizes the purpose, stack, and portability of each lab.
 
 </div>
 
@@ -64,17 +76,20 @@ hide:
 - Ten complete lab manuals covering VM setup, ROS 2 CLI, shell scripting, Python nodes, MoveIt 2, pick-and-place, PID control, hardware validation, SLAM, and autonomous exploration
 - Lab-specific starter assets for Kinova manipulation and 3D goal control
 - Reference material suitable for handouts, troubleshooting, and external instructor reuse
+- Adoption-oriented pages for instructors evaluating how portable each lab is
 
 ## Suggested reading paths
 
 ### Students
 
 1. Start with [Quick Start](guides/quick_start.md).
-2. Keep [Quick Reference](guides/quick_reference.md) open during lab.
-3. Open the lab page you are actively working from.
+2. If you are in Lab 05 or later, keep [Robot Platform Workflow](guides/robot_platform_lab_workflow.md) open while you work.
+3. Keep [Quick Reference](guides/quick_reference.md) open during lab.
+4. Open the lab page you are actively working from.
 
 ### Educators and maintainers
 
 1. Read [For Educators](for-educators.md) for reuse and adaptation guidance.
-2. Review [Setup Scripts](guides/setup_scripts.md) to understand the machine assumptions.
-3. Use the technical reference pages as the stable public material you can point to from handouts or papers.
+2. Review the [Educator Adoption Guide](educator-adoption.md) and [Lab Catalog](lab-catalog.md) to scope what you want to reuse.
+3. Review [Setup Scripts](guides/setup_scripts.md) to understand the machine assumptions and current public gaps.
+4. Use the technical reference pages as the stable public material you can point to from handouts or papers.

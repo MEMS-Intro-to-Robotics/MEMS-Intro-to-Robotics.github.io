@@ -23,6 +23,9 @@ Then open `http://127.0.0.1:8000/`.
 - `guides/`: source markdown for reusable guides
 - `lab06_files/`: Lab 06 writeup
 - `lab07_files/`: Lab 07 writeup
+- `docs/educator-adoption.md`: instructor-facing adoption guidance
+- `docs/lab-catalog.md`: lab-by-lab scope and portability map
+- `docs/troubleshooting.md`: centralized recurring fixes across labs
 - `mkdocs.yml`: site navigation and theme config
 - `.github/workflows/docs.yml`: GitHub Pages deployment workflow
 

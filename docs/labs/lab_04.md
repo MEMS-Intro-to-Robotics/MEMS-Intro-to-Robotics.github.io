@@ -21,7 +21,7 @@ title: "Lab 04: ROS 2 Python Nodes"
             </ol>
         </li>
         <li><a href="#analysis">Analysis and Discussion</a></li>
-        <li><a href="#appendix">Appendix: ROS 2 Python API Reference</a></li>
+        <li><a href="#appendix">Appendix: Shared References</a></li>
     </ol>
 </nav>
 <section id="introduction">
@@ -267,7 +267,7 @@ class PubNodeA(Node):
             <li>Timer: the method is <code>self.create_timer(...)</code></li>
             <li>Publish: the method is <code>.publish(msg)</code></li>
             <li>Main function: look back at the <a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Writing-A-Simple-Py-Publisher-And-Subscriber.html" target="_blank" rel="noopener">ROS 2 &ldquo;Writing a Simple Publisher and Subscriber (Python)&rdquo; tutorial</a></li>
-            <li>Utilize the <strong>Appendix section</strong> at the bottom of this document for more information about the ROS 2 functions you will use</li>
+            <li><strong><a href="../guides/ros2_python_nodes_reference/">Use the ROS 2 Python Nodes Reference</a></strong> for more information about the ROS 2 functions you will use</li>
         </ul>
         <h4>Step 2.4: Add the entry point to <code>setup.py</code></h4>
         <p>So far, you wrote a Python script (<code>node_a.py</code>) that defines a ROS 2 node. But ROS 2 doesn&rsquo;t automatically know how to run your script. We need a way to tell ROS 2 how to run your Python script, and that&rsquo;s the job of the <code>setup.py</code> file.</p>
@@ -579,127 +579,14 @@ ros2 run lab04_pub_sub node_c</code></pre>
     <p><a href="#toc">&uarr; Back to top</a></p>
 </section>
 <section id="appendix">
-    <h2>Appendix: ROS 2 Python API Reference</h2>
-    <p>This reference contains everything you need for Lab 4. You&rsquo;re welcome to use outside resources if necessary, but the reference below is comprehensive.</p>
-    <h3>Node Creation &amp; Main Function</h3>
-    <p>Every node file must include a <code>main()</code> function. This handles <strong>initialization, spinning, and cleanup</strong>.</p>
-    <pre><code class="language-python">def main(args=None):
-    rclpy.init(args=args)
-    my_node = PubNodeA()   # Replace with your class name
-    rclpy.spin(my_node)    # Keeps the node alive
-    my_node.destroy_node()
-    rclpy.shutdown()
-
-if __name__ == '__main__':
-    main()</code></pre>
-    <h3>Publisher</h3>
-    <p><strong>Method:</strong></p>
-    <pre><code class="language-python">self.create_publisher(msg_type, topic_name, queue_size)</code></pre>
+    <h2>Appendix: Shared References</h2>
+    <p>This lab now points to shared reference pages instead of maintaining a lab-specific embedded copy.</p>
     <ul>
-        <li><code>msg_type</code> &rarr; the message type (e.g., <code>String</code>)</li>
-        <li><code>topic_name</code> &rarr; the topic to publish on (string, e.g., <code>'/topic_a_to_b'</code>)</li>
-        <li><code>queue_size</code> &rarr; how many messages to buffer if the subscriber is slow (use <code>10</code>)</li>
+        <li><strong><a href="../guides/ros2_python_nodes_reference/">Use the ROS 2 Python Nodes Reference</a></strong> for the <code>main()</code> pattern, publishers, subscribers, timers, messages, logging, and common Lab 4 mistakes.</li>
+        <li><strong><a href="../guides/quick_reference/">Use the Quick Reference page</a></strong> for package creation, build/source reminders, ROS 2 CLI checks, Git commands, and Docker commands.</li>
+        <li><strong><a href="../troubleshooting/">Use the Troubleshooting page</a></strong> when package discovery, workspace sourcing, container GUI, or cross-terminal environment issues break the workflow.</li>
     </ul>
-    <p><strong>Example:</strong></p>
-    <pre><code class="language-python">self.pub = self.create_publisher(String, '/topic_a_to_b', 10)
-self.pub.publish(msg)</code></pre>
-    <h3>Subscriber</h3>
-    <p><strong>Method:</strong></p>
-    <pre><code class="language-python">self.create_subscription(msg_type, topic_name, callback, queue_size)</code></pre>
-    <ul>
-        <li>The <strong>callback</strong> runs whenever a message arrives.</li>
-        <li>The callback must accept <strong>exactly one argument</strong> (the incoming message).</li>
-    </ul>
-    <p><strong>Example:</strong></p>
-    <pre><code class="language-python">self.sub = self.create_subscription(String, '/topic_a_to_b', self._on_msg, 10)
-
-def _on_msg(self, msg):
-    self.get_logger().info(f'Received: "{msg.data}"')</code></pre>
-    <h3>Timer</h3>
-    <p><strong>Method:</strong></p>
-    <pre><code class="language-python">self.create_timer(period_seconds, callback)</code></pre>
-    <ul>
-        <li>Calls the given method periodically.</li>
-        <li>The callback takes <strong>no arguments</strong>.</li>
-    </ul>
-    <p><strong>Example:</strong></p>
-    <pre><code class="language-python">self.timer = self.create_timer(2.0, self._tick)
-
-def _tick(self):
-    self.get_logger().info("Timer fired!")</code></pre>
-    <h3>Messages</h3>
-    <p>We&rsquo;ll use the <strong>String</strong> message type in this lab.</p>
-    <pre><code class="language-python">from std_msgs.msg import String
-
-msg = String()
-msg.data = "your content here"</code></pre>
-    <h3>Logging</h3>
-    <p>Inside a node, use the built-in logger:</p>
-    <pre><code class="language-python">self.get_logger().info("Plain message")
-self.get_logger().info(f'Value is: {my_var}')</code></pre>
-    <h3>Troubleshooting</h3>
-    <ul>
-        <li><strong><code>ros2 run</code> says &ldquo;command not found&rdquo;</strong>
-            <ul>
-                <li>Did you add an entry point in <code>setup.py</code>?</li>
-                <li>Did you rebuild with <code>colcon build</code>?</li>
-                <li>Did you <code>source install/setup.bash</code> in this terminal?</li>
-            </ul>
-        </li>
-        <li><strong>Code changes not showing up</strong>
-            <ul>
-                <li>If you didn&rsquo;t use <code>--symlink-install</code>, you must rebuild after every change.</li>
-                <li>If you add a <strong>new file</strong> (e.g., <code>node_b.py</code>), you must always rebuild.</li>
-            </ul>
-        </li>
-        <li><strong>No messages on a topic</strong>
-            <ul>
-                <li>Double-check topic names&mdash;they must match exactly.</li>
-                <li>Use <code>ros2 topic list</code> to confirm active topics.</li>
-                <li>Use <code>ros2 topic echo &lt;topic&gt;</code> to see if anything is publishing.</li>
-            </ul>
-        </li>
-        <li><strong><code>ImportError</code> when running a node (e.g., &ldquo;No module named lab04_pub_sub&rdquo;)</strong>
-            <ul>
-                <li>You probably ran <code>ros2 run</code> without sourcing the workspace (<code>source install/setup.bash</code>).</li>
-                <li>Or, you created the <code>.py</code> file but didn&rsquo;t rebuild (<code>colcon build</code>).</li>
-            </ul>
-        </li>
-        <li><strong>Changes to <code>setup.py</code> not taking effect</strong>
-            <ul>
-                <li>Any time you change <code>setup.py</code>, <code>package.xml</code>, or add a <strong>new node file</strong>, you must rebuild with <code>colcon build</code>.</li>
-                <li>After rebuilding, open a new terminal (or re-<code>source</code>) before running again.</li>
-            </ul>
-        </li>
-        <li><strong>Accidentally committing giant build files to GitHub</strong>
-            <ul>
-                <li>Only commit files inside <code>src/</code> and <code>docs/</code> (and your README).</li>
-                <li>If you already committed <code>build/</code> or <code>install/</code>, run:
-                    <pre><code class="language-bash">git rm -r --cached build/ install/ log/
-git commit -m "Remove build artifacts"
-git push</code></pre>
-                </li>
-            </ul>
-        </li>
-        <li><strong><code>ros2 topic echo</code> shows nothing</strong>
-            <ul>
-                <li>Make sure the publisher node is running.</li>
-                <li>Check the topic spelling (case matters).</li>
-                <li>Use <code>ros2 node list</code> and <code>ros2 topic list</code> to confirm active nodes/topics.</li>
-            </ul>
-        </li>
-        <li><strong>Node runs but prints nothing</strong>
-            <ul>
-                <li>Check your logger calls (<code>self.get_logger().info</code>) are actually inside the method.</li>
-                <li>If your subscriber callback has the wrong signature (e.g., missing the <code>msg</code> argument), it will silently fail.</li>
-            </ul>
-        </li>
-        <li><strong>Multiple nodes with same name</strong>
-            <ul>
-                <li>Each node must have a unique name (the string you pass to <code>super().__init__()</code>). If two nodes share a name, only one will appear in the graph.</li>
-            </ul>
-        </li>
-    </ul>
+    <p>Keep the ROS 2 Python nodes reference open while implementing Tasks 2-4. It is now the maintained source of truth for the core <code>rclpy</code> patterns used in this lab.</p>
     <p><a href="#toc">&uarr; Back to top</a></p>
 </section>
 

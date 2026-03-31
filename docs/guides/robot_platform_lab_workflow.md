@@ -1,0 +1,1 @@
+--8<-- "guides/robot_platform_lab_workflow.md"

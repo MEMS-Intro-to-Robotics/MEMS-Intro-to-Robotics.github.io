@@ -88,9 +88,9 @@ title: "Lab 10: Real TurtleBot 4 Deployment"
     </ul>
     <p>Your goal in Part 1 is to establish the "Nervous System" (Wi-Fi Network) that connects them.</p>
     <h3>Step 1.1: Prepare Your Terminal Workspace</h3>
-    <p>Create a folder on the Lab PC to store your work safely. Open a terminal and run:</p>
+    <p>Create a folder on the Lab PC to store your work safely. The shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a> still applies here for pane discipline, build/source habits, and fast debugging; the main difference is that Lab 10 also requires network exports in every pane.</p>
     <pre><code class="language-bash">mkdir -p ~/lab10_work/src</code></pre>
-    <p>Now, open a terminal manager (like <code>terminator</code>). A multi-pane layout is standard operational procedure for monitoring distributed systems.</p>
+    <p>Open a terminal manager such as <code>terminator</code> and reserve the panes below for the rest of the lab.</p>
     <ul>
         <li><strong>Pane A (Mapping):</strong> Runs <code>slam_toolbox</code> to build the world model.</li>
         <li><strong>Pane B (Navigation):</strong> Runs <code>nav2</code> to plan paths through that model.</li>
@@ -721,8 +721,8 @@ ros2 run turtlebot4_nav auto_explore
     </ul>
     <h3>4.2 Pre-Flight Checklist</h3>
     <ul>
-        <li>[ ] <strong>Build:</strong> <code>colcon build --symlink-install</code> (Do this after <em>every</em> change to the Python file).</li>
-        <li>[ ] <strong>Source:</strong> <code>source install/setup.bash</code>.</li>
+        <li>[ ] <strong>Build:</strong> <code>colcon build --symlink-install</code> after package metadata, dependency, or entry-point changes. For ordinary edits to an existing Python file, save and rerun.</li>
+        <li>[ ] <strong>Source:</strong> <code>source install/setup.bash</code> in any pane where you want to run the node.</li>
         <li>[ ] <strong>Reset:</strong> If the map gets messy, restart SLAM. A bad map makes A* fail because it hallucinates walls that don't exist.</li>
     </ul>
     <p><a href="#toc">&uarr; Back to top</a></p>

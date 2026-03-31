@@ -90,29 +90,26 @@ title: "Lab 07: Crazyflie PID Tuning"
 </div>
 <h1 id="sec-3">3. Pre-Lab Preparation</h1>
 <p>You will work entirely in <strong>simulation</strong> inside the provided Docker container. This pre-lab ensures your environment is correctly configured. The main steps are to (1) update your local course repository, (2) pull the latest Docker image, (3) launch the simulator, and (4) verify that all tools and ROS 2 topics are functioning correctly before you begin the lab procedure.</p>
+<p>The repeated post-Lab-4 workflow now lives in the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>. Use that page for the one-environment rule, pane roles, build/source habits, and fast debugging checks. This pre-lab keeps only the Crazyflie-specific commands.</p>
 <h2>Step 1: Setup the Host Environment</h2>
-<p>These commands should be run in a terminal on your host virtual machine.</p>
+<p>Run these commands on your host VM.</p>
 <h3>3.1 Update Your Course Repository</h3>
-<p>📍 <strong>Location:</strong> Host VM Terminal</p>
 <p>Ensure you have the latest lab files by pulling the latest changes from the course repository.</p>
 <pre><code class="language-bash">cd ~/workspaces/[netid]_robotics_fall2025
 git pull
 </code></pre>
 <h3>3.2 Pull the Docker Image</h3>
-<p>📍 <strong>Location:</strong> Host VM Terminal</p>
-<p>Download the specific Docker image for this lab, which contains ROS 2, the Crazyflie simulator, and all necessary Python libraries.</p>
+<p>Pull the Crazyflie image for this lab.</p>
 <pre><code class="language-bash">docker pull gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:crazyflie-jazzy-latest
 </code></pre>
 <h3>3.3 Configure GUI (X11) Forwarding</h3>
-<p>📍 <strong>Location:</strong> Host VM Terminal</p>
-<p>To view the Gazebo simulator GUI running inside the container, you must grant Docker permission to connect to your host's display server.</p>
+<p>Allow Docker to open Gazebo windows on your host display.</p>
 <pre><code class="language-bash"># This command allows local clients (like Docker containers) to open windows on your host.
 xhost +local:
 </code></pre>
 <h2>Step 2: Launch and Verify the Container</h2>
 <h3>3.4 Start the Lab Container</h3>
-<p>📍 <strong>Location:</strong> Host VM Terminal</p>
-<p>This command will start a persistent container named <code>lab07</code>. Choose the option that matches your system's hardware configuration. Be sure to replace <code>[netid]</code> with your own NetID.</p>
+<p>Start one persistent container named <code>lab07</code>. Use the GPU option if available. If you need another shell later, reuse this same container with <code>docker start -ai lab07</code> or <code>docker exec -it lab07 bash</code>.</p>
 <h4>Option A: With NVIDIA GPU Acceleration (Recommended)</h4>
 <pre><code class="language-bash"># --name lab07:       Assigns a reusable name to the container.
 # --gpus all:         Grants the container access to the host's NVIDIA GPUs.
@@ -135,8 +132,7 @@ docker run -it --name lab07 --gpus all \
 </code></pre>
 <p><strong>To re-enter your container later:</strong> If you exit the container, you can resume your session without losing any data using <code>docker start -ai lab07</code>.</p>
 <h3>3.5 Perform Initial Environment Checks</h3>
-<p>📍 <strong>Location:</strong> Docker Container Terminal</p>
-<p>Once inside the container, your terminal prompt will change. Run these quick checks to confirm the environment is set up.</p>
+<p>Once inside the container, run these quick checks to confirm the environment is set up.</p>
 <pre><code class="language-bash"># Check that the ROS 2 distribution is set correctly
 echo "ROS_DISTRO=$ROS_DISTRO"
 # Expected output: jazzy
@@ -145,7 +141,7 @@ echo "ROS_DISTRO=$ROS_DISTRO"
 python3 -c "import matplotlib, numpy; print('Matplotlib/Numpy OK')"
 </code></pre>
 <h2>Step 3: Launch and Verify the Simulation</h2>
-<p>For the following steps, you may want to open a second terminal into the same running container (e.g., using <code>tmux</code>, splitting your terminal, or running <code>docker exec -it lab07 bash</code> from your host) so you can leave the simulation running while you run verification commands.</p>
+<p>Leave the simulator running in one shell and use another shell in the same container for checks or later launch commands.</p>
 <h3>3.6 Launch the Crazyflie Simulator</h3>
 <p>📍 <strong>Location:</strong> Docker Container Terminal</p>
 <p>In a container terminal, source the ROS 2 environment and launch the simulation.</p>

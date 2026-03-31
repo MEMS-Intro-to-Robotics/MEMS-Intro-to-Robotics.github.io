@@ -66,6 +66,8 @@ docker exec -it rdev bash
 - For command lookups during lab, use [Quick reference](quick_reference.md).
 - For Kinova work, continue to [Kinova Gen3 Lite + MoveIt 2 guide](kinova_gen3_lite_moveit2_guide.md).
 - For lab-specific starter assets, open [lab06_files/README.md](../lab06_files/README.md) or [lab07_files/README.md](../lab07_files/README.md).
+- For cross-lab setup issues, use the [Troubleshooting](../troubleshooting.md) page.
+- If you are adapting this outside the original course infrastructure, start with the [Educator Adoption Guide](../educator-adoption.md).
 
 ## Getting help
 

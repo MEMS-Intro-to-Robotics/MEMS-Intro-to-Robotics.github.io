@@ -4,6 +4,8 @@ Keep this page open during lab when you need command reminders. It is intentiona
 
 Assume you are on your Duke VCM inside the course Docker container unless noted. Use `$ROS_DISTRO` such as `jazzy`.
 
+For recurring setup or bring-up failures, use the centralized [Troubleshooting](../troubleshooting.md) page.
+
 ## Getting onto your VM desktop
 
 Open **FastX 4** on your laptop, SSH to your VCM host, and use:

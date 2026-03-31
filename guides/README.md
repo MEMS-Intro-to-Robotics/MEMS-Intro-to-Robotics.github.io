@@ -7,7 +7,9 @@ This repo has a few different audiences, so the docs are organized by task inste
 | If you need to... | Read this |
 |---|---|
 | Launch the standard course container and get into a working session | [Quick start](quick_start.md) |
+| Refresh the post-Lab-4 Docker, panes, and build workflow | [Robot platform lab workflow](robot_platform_lab_workflow.md) |
 | Look up Linux, Git, Docker, or ROS 2 commands during lab | [Quick reference](quick_reference.md) |
+| Write basic ROS 2 Python nodes with `rclpy` | [ROS 2 Python Nodes Reference](ros2_python_nodes_reference.md) |
 | Work with the Kinova Gen3 Lite, MoveIt 2, RViz, controllers, or planning scene | [Kinova Gen3 Lite + MoveIt 2 guide](kinova_gen3_lite_moveit2_guide.md) |
 | Write or debug `pymoveit2` code | [pymoveit2 API guide](pymoveit2_api_guide.md) |
 | Understand which machine setup script to use | [Setup scripts guide](setup_scripts.md) |
@@ -22,9 +24,10 @@ This repo has a few different audiences, so the docs are organized by task inste
 ## Recommended student path
 
 1. Start with [Quick start](quick_start.md).
-2. Keep [Quick reference](quick_reference.md) open during lab.
-3. Open the lab README for the assignment you are working on.
-4. Use the Kinova or `pymoveit2` guides only when your lab needs them.
+2. If you are in Lab 05 or later, keep [Robot platform lab workflow](robot_platform_lab_workflow.md) open as your shared refresher.
+3. Keep [Quick reference](quick_reference.md) open during lab.
+4. Open the lab README for the assignment you are working on.
+5. Use the Kinova or `pymoveit2` guides only when your lab needs them.
 
 ## Recommended maintainer path
 

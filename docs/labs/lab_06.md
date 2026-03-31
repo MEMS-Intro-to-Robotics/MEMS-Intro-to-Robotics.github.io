@@ -48,26 +48,20 @@ PLACE sequence:
 <hr />
 <h1>3 Pre-Lab Preparation (Environment Setup)</h1>
 <hr />
-<p>This section guides you through setting up the exact environment needed for the lab. You will only use the command line; <strong>no code will be written yet</strong>. Follow these steps in order to ensure a smooth start.</p>
-<h2>3.1 Update Your Course Repository (IMPORTANT First Step)</h2>
-<p>Before you do anything else, ensure your local copy of the course repository is up-to-date.</p>
-<p><strong>On your host VM (outside of Docker):</strong></p>
+<p>From this point in the course onward, the repeated Docker, panes, build, and debugging habits live in the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>. This section only lists the Lab 06-specific commands and checks.</p>
+<h2>3.1 Update Your Course Repository</h2>
+<p>On your host VM, make sure your local course repo is current.</p>
 <pre><code class="language-bash"># Navigate to your main robotics workspace
 cd ~/workspaces/[netid]_robotics_fall2025
 
 # Pull the latest changes from the main branch
 git pull
 </code></pre>
-<h2>3.2 The "One Container, Many Panes" Philosophy</h2>
-<p>You will start <strong>exactly one</strong> Docker container for the entire lab. All your work will happen inside it. If you need another terminal, you will open a <strong>new pane or tab inside Terminator</strong>, which runs within the container.<br /><strong>Do not</strong> run the <code>docker run</code> command more than once.</p>
-<hr />
-<h2>3.3 Pull the Docker Image</h2>
-<p>If you haven't already, pull the latest version of the course Docker image. This contains ROS2, Gazebo, and all the Kinova-specific software you'll need.</p>
-<p><strong>On your host VM (outside of Docker):</strong></p>
+<h2>3.2 Pull the Docker Image</h2>
+<p>Pull the Kinova image used for this lab.</p>
 <pre><code class="language-bash">docker pull gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:kinova-jazzy-latest</code></pre>
-<h2>3.4 Enable GPU Acceleration for Smooth Simulation (Run Once)</h2>
-<p>To ensure Gazebo and RViz run smoothly, we need to allow Docker to access the VM's NVIDIA GPU. The following script installs the necessary tools. You only need to do this once per VM.</p>
-<p><strong>On your host VM (outside of Docker):</strong></p>
+<h2>3.3 Optional: Enable GPU Acceleration (Run Once Per VM)</h2>
+<p>If Gazebo or RViz performance is poor, run the GPU setup script once on your host VM.</p>
 <pre><code class="language-bash">cd ~
 curl -L "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/gpu_install.sh" -o gpu_install.sh
 chmod +x gpu_install.sh
@@ -77,10 +71,8 @@ chmod +x gpu_install.sh
 <pre><code class="language-bash">sudo usermod -aG docker "$USER"
 </code></pre>
 <p>If you don't have a GPU, you can omit the <code>--gpus all</code> flag later, but you may need to enable software rendering if you see OpenGL errors by running <code>export LIBGL_ALWAYS_SOFTWARE=1</code> inside the container.</p>
-<hr />
-<h2>3.5 Start the ROS 2 Container</h2>
-<p>Now, launch the container. This command connects it to your display, mounts your workspace files, and gives it access to the GPU.</p>
-<p><strong>On your host VM (outside of Docker):</strong></p>
+<h2>3.4 Start the ROS 2 Container</h2>
+<p>On your host VM, allow GUI forwarding and start the single container for this lab.</p>
 <pre><code class="language-bash">xhost +local:docker
 
 docker run --rm -it \
@@ -92,42 +84,23 @@ docker run --rm -it \
   --name ros2_lab06 \
   gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:kinova-jazzy-latest \
   bash</code></pre>
-<p><strong>Understanding the command:</strong></p>
-<ul>
-    <li><code>--net=host</code>: Allows the container to share the host's network, which simplifies ROS2 communication.</li>
-    <li><code>-e DISPLAY</code> and <code>-v /tmp/.X11-unix</code>: Forwards the display so you can run GUI applications like Gazebo and RViz.</li>
-    <li><code>-v ~/workspaces:/workspaces</code>: <strong>Crucial!</strong> This mounts your local file system into the container, so any code you write is saved on your machine.</li>
-    <li><code>--gpus all</code>: Enables NVIDIA GPU acceleration.</li>
-</ul>
-<hr />
-<h2>3.6 Launch Terminator for a Multi-Pane Workflow</h2>
-<p>Once inside the container, launch Terminator to manage all your terminals in one window.</p>
-<p><strong>From the container prompt:</strong></p>
+<h2>3.5 Launch Terminator and Create the Lab 6 Workspace</h2>
+<p>Inside the container, launch Terminator and create the directory structure for this lab.</p>
 <pre><code class="language-bash">terminator &amp;
-</code></pre>
-<ul>
-    <li>New pane (split <strong>horizontally</strong>): <code>Ctrl+Shift+O</code></li>
-    <li>New pane (split <strong>vertically</strong>): <code>Ctrl+Shift+E</code></li>
-</ul>
-<blockquote>
-    <p>From now on, all commands will be run in a Terminator pane <strong>inside the container</strong>.</p>
-</blockquote>
-<h2>3.7 Create Your Lab 6 Workspace</h2>
-<p>In a Terminator pane, create the directory structure for this lab.</p>
-<pre><code class="language-bash"># The [netid]_robotics_fall2025 folder should already exist
+
+# In a pane inside the container
+# The [netid]_robotics_fall2025 folder should already exist
 cd /workspaces/[netid]_robotics_fall2025
 mkdir -p lab06/docs lab06/ros2_ws/src
 </code></pre>
-<h2>3.8 A Preview of Your Workspace Panes</h2>
-<p>During the lab, you will organize your work into four main panes. Do not run these commands yet; this is just to familiarize you with the workflow.</p>
+<h2>3.6 Recommended Pane Layout</h2>
 <ul>
     <li><strong>Pane A</strong>: Gazebo simulation for the Kinova Gen3 Lite.</li>
     <li><strong>Pane B</strong>: MoveIt and RViz for motion planning.</li>
     <li><strong>Pane C</strong>: Your development environment for building and running your Python node.</li>
     <li><strong>Pane D</strong>: Scripts for spawning objects into Gazebo.</li>
 </ul>
-<hr />
-<h2>3.9 "Ready for Lab" Checklist</h2>
+<h2>3.7 Ready for Lab Checklist</h2>
 <p>You are ready to begin the <strong>Lab Procedure</strong> when you can say "yes" to all of the following:</p>
 <ul>
     <li>I have successfully run <code>git pull</code> in my course repository on the <strong>host</strong>.</li>

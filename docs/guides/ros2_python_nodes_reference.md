@@ -1,0 +1,1 @@
+--8<-- "guides/ros2_python_nodes_reference.md"
