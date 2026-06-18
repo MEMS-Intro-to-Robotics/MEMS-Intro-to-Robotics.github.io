@@ -47,7 +47,7 @@ is yours to take home.
 
 - **[Challenge](challenge.md)**
 
-    Tallest standing stack: combine every knob, then tune for a tower that stays up.
+    Tallest standing stack: place your own cubes and stack the tallest tower that stays up.
 
 - **[Sandbox](99_sandbox.md)**
 

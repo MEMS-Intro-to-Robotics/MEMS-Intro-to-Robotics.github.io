@@ -10,7 +10,7 @@ browser-based 3D viewer in one container. You install nothing but Docker.
 ## In the room
 
 Open the JupyterLab URL printed on your table card (it looks like
-`http://<station>:8888`) and open `00_connect.ipynb`. There is nothing to install —
+`http://<station>:8888`) and open `00_connect.ipynb`. There is nothing to install;
 the station is already running the container.
 
 ## On your own machine (take-home)
@@ -33,7 +33,7 @@ docker compose up workshop
 Then open <http://localhost:8888> and run `00_connect.ipynb`. A green pre-flight and a
 slow `retract()` motion means you are ready.
 
-!!! note "Simulator vs. hardware — same notebooks"
+!!! note "Simulator vs. hardware: same notebooks"
     On your laptop the container runs a **mock simulator** (no arm needed). In the
     room the station container points the *same* notebooks at a real arm via
     `WORKSHOP_MODE` / `ROBOT_IP`. You never change the notebook to switch between them.

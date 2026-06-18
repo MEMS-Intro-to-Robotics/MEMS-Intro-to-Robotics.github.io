@@ -4,20 +4,23 @@ title: Challenge
 
 # Challenge · Tallest standing stack
 
-**What you'll do:** combine everything from `00` to `03` into a competition. The arm builds
-a tower of cubes, one block per level, and the tallest tower still standing wins.
+**What you'll do:** combine everything from `00` to `03` into a competition. You place your
+own cubes inside a marked zone, type each cube's (x, y), and the arm picks them and stacks
+them into one tower. The tallest tower still standing wins.
 
-**The levers you're learning:** the **release gap** (how far above the block below each cube
-is dropped) and **velocity**. Together they decide whether the tower stays up on the real
-arm. Too tight a gap and the place is rejected as a collision; too loose and the cube drops
-and topples.
+**The skills you're using:** coordinate measurement and spatial planning. There are no
+sliders. You read where each cube sits, enter it, and choose where the tower builds, all
+inside a small zone. The gripper orientation is fixed, so cubes set too close cannot be
+grasped, and the planner rejects the pick.
 
-**Your turn:** find the gap that never gets rejected and never topples, then push the block
-count. A reliable 4-stack beats a 6-stack in pieces.
+**Your turn:** lay out your cubes so every one is reachable and far enough apart to grab,
+then build the tallest tower that still stands. A clean four-cube stack beats an ambitious
+six that collapses.
 
 !!! note "Practice in sim, win on hardware"
-    Sim has no physics, so nothing topples there. Use it to dial in the motion and watch it
-    in the 3D view, then run the scored attempts on the real arm.
+    Sim has no physics, so nothing topples there, but the coordinate entry, the zone limits,
+    and the spacing rejections all behave the same. Dial in your layout in sim, then run the
+    scored attempts on the real arm.
 
 <!-- BEGIN:rendered-notebook -->
 
@@ -25,13 +28,13 @@ count. A reliable 4-stack beats a 6-stack in pieces.
 
 **ASEE 2026, Hardware Integration in Introductory Robotics.** Kinova Gen3 Lite.
 
-This is the competition. Everything from `00` through `03` comes together here: you set a few knobs and the arm builds a tower of cubes, one block per level. The tallest tower still standing wins. If it topples, you only get credit up to the last block left standing.
+This is the competition. You set out your own cubes inside a marked zone on the table, measure where each one is, and type its (x, y) into the panel. The arm picks every cube from where you said it is and stacks them into one tower. The tallest tower still standing wins. If it topples, you only get credit up to the last cube left standing.
 
-Two knobs decide whether the tower stays up on the real arm. The **release gap** is how far above the block below each cube gets dropped: set it too tight and the place reads as a collision and gets rejected, too loose and the cube falls the last few millimetres and can knock the tower over. **Velocity** is the other one, since a gentler placement settles better.
+There are no sliders to nudge here. The work is spatial: you choose where the cubes go and where the tower builds, all inside a small zone, and you read and enter real coordinates. Two things make it hard. The gripper orientation is fixed, so cubes set too close together cannot be grasped, because the fingers would hit the neighbour and the planner rejects the pick. And every coordinate has to be inside the zone and reachable, or the build stops.
 
 > **Safety.** The table e-stop is your real safety layer. The red Stop button is a soft-stop: it cancels the current motion and leaves the arm where it is. Start slow.
 
-> **Sim has no physics.** Nothing topples in sim and every placement "succeeds" there, so use sim to get the motion right and watch it in the 3D view. Then switch the station to hardware and tune the gap and velocity until the tower actually stands.
+> **Practice in sim first.** Sim has no physics, so nothing topples, but the coordinate entry, the zone limits, and the spacing rejections all behave the same. Get your layout working in sim, then run it on the real arm.
 
 
 ```python
@@ -44,9 +47,9 @@ arm.reset()
 
 ## Predict → Run → Explain
 
-1. **Predict:** which knob most affects whether the tower stays standing, and which way? What do you think happens at `release gap = 0`?
-2. **Run:** start at 3 blocks with the defaults, watch it in the 3D view, then change one knob at a time and add a block.
-3. **Explain:** when a place gets rejected, what does that tell you about the gap versus the block below? When a tower topples on hardware even though every place succeeded, what does that tell you about release height and velocity?
+1. **Predict:** before you run, sketch your cube layout on the graph paper. How far apart do two cubes need to be for the gripper to grab one without hitting the other? Where will you build the tower so the arm can reach every cube and the growing stack?
+2. **Run:** enter your cubes' coordinates and a stack location, then Build. Watch which picks succeed.
+3. **Explain:** if a pick is rejected, was the cube too close to a neighbour, outside the zone, or just hard to reach? Move it and try again.
 
 
 ```python
@@ -55,41 +58,45 @@ challenge_panel(arm)
 
 ## Scoring and strategy
 
-Your score is the standing height of the tower: the number of cubes still up, times 5 cm per cube. The panel reports how many levels it placed and the height if they all stand, but a judge counts what is actually still standing.
+Your score is the standing height of the tower: the number of cubes still up, times 5 cm per cube. A judge counts what is actually still standing on the real arm.
 
-A reliable 4-stack beats an ambitious 6-stack lying in pieces. Find a gap that never gets rejected and never topples, then push the count up from there.
+The temptation is to pack cubes in for a tall tower, but cubes set too close cannot be picked, and a tower built from sloppy coordinates leans and falls. A clean four-cube stack from well-measured, well-spaced positions beats an ambitious six that collapses. Measure carefully, give each cube room, and put the tower somewhere the arm can reach as it grows.
 
-The tower is tracked in the planning scene as it grows, so each higher place plans around the cubes already down.
+## Optional: script it instead
 
-## Optional: script your own strategy
-
-The panel above is enough to compete. If your team would rather write the strategy yourselves, with a different stacking order, custom positions, or a per-level gap, the cell below is the same loop the panel runs, opened up for you to edit.
+The panel is enough to compete. If your team would rather write the layout in code, the cell below does the same thing: a list of cube coordinates, a stack location, and the pick-and-place loop, open for you to edit. Coordinates here are in metres (the panel uses inches for convenience).
 
 
 ```python
 from workshop_core import poses
 
-n = 4                      # how many to stack (cap 6)
-base_xy = poses.STACK_XY   # where the tower goes (x, y)
-gap = 0.004                # release gap (m); tune for a standing tower on hardware
+# Where you set each cube, (x, y) in metres, inside the zone. Measure and enter
+# these; the arm picks from exactly here.
+sources = [
+    (0.33, -0.12),
+    (0.33,  0.12),
+    (0.45, -0.12),
+    (0.45,  0.12),
+]
+stack_xy = (0.39, 0.0)   # where the tower goes
+gap = 0.004
 arm.velocity_scaling = 0.25
 
-sources = poses.staging_row(n)
-targets = poses.stack_targets(base_xy, n, gap=gap)
-
+targets = poses.stack_targets(stack_xy, len(sources), gap=gap)
 arm.reset()
 arm.add_box(poses.TABLE_ID, poses.TABLE_CENTER, poses.TABLE_SIZE)
-for i, src in enumerate(sources, start=1):
-    arm.add_box(f"cube_{i}", src, (poses.BLOCK_SIZE,) * 3)
+for i, (x, y) in enumerate(sources, start=1):
+    assert poses.in_zone(x, y), f"cube {i} at ({x}, {y}) is outside the zone"
+    arm.add_box(f"cube_{i}", (x, y, poses.BLOCK_CENTER_Z), (poses.BLOCK_SIZE,) * 3)
 
-for i, (src, tgt) in enumerate(zip(sources, targets), start=1):
-    ok = arm.pick_and_place((src[0], src[1]), (tgt[0], tgt[1]),
+for i, ((x, y), tgt) in enumerate(zip(sources, targets), start=1):
+    ok = arm.pick_and_place((x, y), (tgt[0], tgt[1]),
                             place_height=tgt[2], block_id=f"cube_{i}")
-    print(f"level {i}: {'placed' if ok else 'rejected, stopping'}")
+    print(f"cube {i}: {'stacked' if ok else 'could not place, stopping'}")
     if not ok:
         break
 ```
 
-That is the whole workshop in one tower: configuration space, Cartesian descent, scene-aware planning, and grasping, all composed into something you can compete with. Good luck.
+That is the whole workshop in one tower: configuration space, Cartesian descent, scene-aware planning, and grasping, composed into something you can compete with. Place well, measure carefully, and good luck.
 
 <!-- END:rendered-notebook -->

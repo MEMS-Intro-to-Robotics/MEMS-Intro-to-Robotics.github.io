@@ -18,8 +18,8 @@ integration underneath. Those who want to go further can drop into Python and ex
 ## The knob ladder
 
 Each activity introduces **one** new lever, lets attendees feel it, then ends with a small
-"your turn" task. The challenge adds just one tuning knob, the release gap, and otherwise
-combines levers they have already used.
+"your turn" task. The challenge adds no new control: teams place their own cubes and enter
+coordinates, combining the skills from 00 to 03.
 
 | Activity | New lever | What it teaches |
 |---|---|---|
@@ -27,18 +27,19 @@ combines levers they have already used.
 | 01 Joints & Cartesian | joint sliders, Cartesian moves | reachability, the feasibility fraction |
 | 02 Planning scene | obstacle placement | collision-aware planning: the planner avoids only what the scene knows |
 | 03 Pick & place | pick/place coords, grip width, heights | the canonical pick → attach → place sequence (stacking is this, raised) |
-| Challenge | release gap, velocity | tune a reliable, tall tower; combines pick-place and the scene |
+| Challenge | cube coordinates (team-placed) | spatial planning: lay out reachable, well-spaced cubes and stack them |
 
 ## The challenge
 
-A friendly tallest-standing-stack contest: teams build a tower of cubes, each placed one
-block higher than the last, and the tallest tower still standing wins. The notebook builds
-the stack from a few knobs. The two that decide standing height are the release gap (too
-tight and the place is rejected as a collision, too loose and the cube drops and can
-topple) and the velocity (gentler placements settle better). A toppled tower counts only to
-the last standing block, so the contest rewards reliable tuning over ambition. Scoring is
-facilitator-judged on the final standing height. The scored runs are hardware-only, since
-sim has no physics and nothing topples, so sim stations are for practice and tuning.
+A friendly tallest-standing-stack contest. Teams place their own cubes inside a marked zone
+on the table, measure and type each cube's (x, y), and the arm picks every cube and stacks
+them into one tower. The tallest tower still standing wins. There are no sliders: the work
+is spatial. Teams choose reachable, well-spaced coordinates, because with the gripper
+orientation fixed, cubes set too close get rejected as collisions, and a tower from sloppy
+coordinates leans and falls. A toppled tower counts only to the last standing cube, so a
+clean four-cube stack beats an ambitious six that collapses. Scoring is facilitator-judged
+on the final standing height. The scored runs are hardware-only, since sim has no physics,
+so sim stations are for practice.
 
 ## Stations and safety
 

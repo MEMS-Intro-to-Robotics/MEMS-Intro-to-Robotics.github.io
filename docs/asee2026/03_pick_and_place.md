@@ -4,7 +4,7 @@ title: 03 · Pick & Place
 
 # 03 · Pick and place
 
-**What you'll do:** run the full manipulation sequence from one panel — approach,
+**What you'll do:** run the full manipulation sequence from one panel: approach,
 descend, grasp, attach, lift, place, release, retreat.
 
 **The levers you're learning:** *pick and place coordinates*, *grip width*, and
@@ -13,19 +13,19 @@ the planner a grasped block is temporarily part of the arm, so it doesn't try to
 the thing it's holding.
 
 **Your turn:** move one block from A to B; tune the grip so it holds without faulting;
-then stack a second block on top. Every knob you touch here is one you'll use in the
-challenge.
+then stack a second block on top. The pick, place, and stack you practise here is exactly
+what the challenge runs.
 
 !!! note "Grip and height are real, tunable things"
     Too loose and the block drops; too tight and the gripper faults. The right value is
-    something you dial in — on the real arm it differs from simulation, which is part of
+    something you dial in, and on the real arm it differs from simulation, which is part of
     the point.
 
 <!-- BEGIN:rendered-notebook -->
 
 # 03 · Pick and place
 
-The payoff. Everything so far — joint moves, Cartesian moves, the planning scene — composes into the canonical manipulation sequence:
+The payoff. Everything so far (joint moves, Cartesian moves, the planning scene) composes into the canonical manipulation sequence:
 
 > approach → descend → **grasp** → attach → lift → approach → descend → **release** → detach → retreat
 
@@ -53,7 +53,7 @@ pick_place_panel(arm)
 
 ## Stretch: stack the blocks
 
-Stacking is just pick-and-place with the place height raised one block per level. The cell below sets up three blocks and stacks them at a single (x, y) — each placed `BLOCK_SIZE` higher than the last. Edit `STACK_XY` or `count` and re-run.
+Stacking is just pick-and-place with the place height raised one block per level. The cell below sets up three blocks and stacks them at a single (x, y), each placed `BLOCK_SIZE` higher than the last. Edit `STACK_XY` or `count` and re-run.
 
 
 ```python
@@ -79,6 +79,6 @@ for i, (block, target) in enumerate(zip(blocks, targets), start=1):
         break
 ```
 
-That's the full workshop arc in one stack: configuration space, Cartesian descent, scene-aware planning, and grasping — composed.
+That's the full workshop arc in one stack: configuration space, Cartesian descent, scene-aware planning, and grasping, all composed.
 
 <!-- END:rendered-notebook -->
