@@ -62,6 +62,16 @@ nav:
       - Kinova Gen3 Lite + MoveIt 2: guides/kinova_gen3_lite_moveit2_guide.md
       - Kinova Lab Operating Guide: guides/kinova_lab_operating_guide.md
       - pymoveit2 API Guide: guides/pymoveit2_api_guide.md
+  - ASEE 2026 Workshop:
+      - asee2026/index.md
+      - Quick Start: asee2026/quickstart.md
+      - For Instructors: asee2026/for-instructors.md
+      - 00 · Connect: asee2026/00_connect.md
+      - 01 · Joints & Cartesian: asee2026/01_joint_and_cartesian.md
+      - 02 · Planning Scene: asee2026/02_planning_scene.md
+      - 03 · Pick & Place: asee2026/03_pick_and_place.md
+      - Challenge: asee2026/challenge.md
+      - Sandbox: asee2026/99_sandbox.md
   - For Educators:
       - educators/index.md
       - Overview: for-educators.md
