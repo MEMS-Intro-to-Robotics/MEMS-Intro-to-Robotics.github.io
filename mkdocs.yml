@@ -65,6 +65,8 @@ nav:
   - ASEE 2026 Workshop:
       - asee2026/index.md
       - Quick Start: asee2026/quickstart.md
+      - Materials: asee2026/materials.md
+      - Adopt This Workshop: asee2026/adopt.md
       - For Instructors: asee2026/for-instructors.md
       - 00 · Connect: asee2026/00_connect.md
       - 01 · Joints & Cartesian: asee2026/01_joint_and_cartesian.md

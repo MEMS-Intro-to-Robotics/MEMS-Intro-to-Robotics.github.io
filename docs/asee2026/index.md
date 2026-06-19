@@ -16,6 +16,44 @@ your own laptop, so the workshop is usable after ASEE too.
     you are combining controls you have already used, instead of learning a new interface
     under pressure.
 
+## Live materials
+
+| Item | Link |
+|---|---|
+| Site build | [GitHub Pages workflow](https://github.com/MEMS-Intro-to-Robotics/MEMS-Intro-to-Robotics.github.io/actions/workflows/docs.yml) |
+| Workshop image | `ghcr.io/mems-intro-to-robotics/asee2026-workshop:latest` |
+| License | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| Full course context | [Duke MEMS lab sequence](../labs/index.md) |
+
+## Start here Sunday morning
+
+<div class="grid cards" markdown>
+
+- **[I am in the room](quickstart.md#in-the-room)**
+
+    Open the JupyterLab URL on your table card, start `00_connect.ipynb`, and run the pre-flight before moving the arm.
+
+- **[I am facilitating](for-instructors.md)**
+
+    Use the run guide for timing, station checks, safety reminders, and the challenge rules.
+
+- **[I want to take this home](quickstart.md#on-your-own-machine-take-home)**
+
+    Run the same notebooks in simulator mode with one Docker image. No robot is required for the take-home path.
+
+- **[I want to adopt it](adopt.md)**
+
+    See what transfers cleanly, what you need to replace, and how to scale the workshop into a course module.
+
+</div>
+
+## What educators should notice
+
+- The workshop hides ROS 2 plumbing long enough for faculty to teach manipulation concepts first.
+- The same notebooks move from simulator to hardware through `WORKSHOP_MODE` and `ROBOT_IP`, not a second curriculum.
+- The full Duke MEMS course removes scaffolding later: students eventually write nodes, tune controllers, and debug the stack directly.
+- The take-home simulator makes the workshop usable even for programs that do not own a Kinova arm.
+
 ## The arc (about 2.5 hours)
 
 1. **Connect:** link your notebook to the arm, run a pre-flight check, and command one safe motion.
@@ -58,6 +96,17 @@ your own laptop, so the workshop is usable after ASEE too.
 
 - **In the room:** open the JupyterLab URL on your table card and start with `00_connect`.
 - **On your own machine (take-home):** see the [Quick Start](quickstart.md). It is one `docker` command, no arm required.
+- **Materials and links:** see [Materials](materials.md) for the Docker image, notebook path, course site, citation, and related lab pages.
 
 Instructors: the run guide, timing, and per-activity breakdown live in
 [For Instructors](for-instructors.md).
+
+## Trust signals
+
+| Item | Current workshop target |
+|---|---|
+| Robot | Kinova Gen3 Lite |
+| Middleware | ROS 2 with MoveIt 2 |
+| Delivery | Jupyter notebooks with `ipywidgets` controls |
+| Take-home path | Docker simulator mode, no arm required |
+| Public course context | Duke MEMS Introduction to Robotics and Automation |

@@ -12,7 +12,8 @@ hide:
       ROS 2 setup guides, lab manuals, and technical references for simulation-first robotics courses.
     </p>
     <div class="toolkit-actions">
-      <a class="md-button md-button--primary" href="guides/quick_start/">Launch a Lab Session</a>
+      <a class="md-button md-button--primary" href="asee2026/">ASEE 2026 Workshop</a>
+      <a class="md-button" href="guides/quick_start/">Launch a Lab Session</a>
       <a class="md-button" href="guides/pymoveit2_api_guide/">Browse the Technical References</a>
       <a class="md-button" href="for-educators/">See the Educator View</a>
     </div>
@@ -30,6 +31,10 @@ hide:
 ## Explore the site
 
 <div class="grid cards" markdown>
+
+- **ASEE 2026 workshop**
+
+  Start with the [faculty workshop landing page](asee2026/index.md) for the in-room path, take-home simulator, instructor run guide, and adoption package.
 
 - **Start a lab session**
 
