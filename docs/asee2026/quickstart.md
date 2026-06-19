@@ -4,8 +4,8 @@ title: Quick Start
 
 # Quick Start
 
-The workshop ships as a single Docker image: the simulator, the notebooks, and a
-browser-based 3D viewer in one container. You install nothing but Docker.
+The workshop ships as one Docker image: simulator, notebooks, and a browser-based 3D
+viewer in the same container. You install nothing but Docker.
 
 ## In the room
 
@@ -31,7 +31,7 @@ docker compose up workshop
 ```
 
 Then open <http://localhost:8888> and run `00_connect.ipynb`. A green pre-flight and a
-slow `retract()` motion means you are ready.
+slow `retract()` motion mean you are ready.
 
 !!! note "Simulator vs. hardware: same notebooks"
     On your laptop the container runs a **mock simulator** (no arm needed). In the

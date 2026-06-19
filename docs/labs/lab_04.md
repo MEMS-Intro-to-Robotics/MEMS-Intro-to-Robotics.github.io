@@ -148,7 +148,7 @@ docker run --rm -it --name lab04 \
             </li>
             <li><strong>Accept the repository invitation:</strong> GitHub Classroom creates your repo, but you must also accept a collaboration invite before you can access it.
                 <ul>
-                    <li>Check your email for an invite from <strong>MEMS-Intro-to-Robotics</strong>, or</li>
+                    <li>Check your email for an invite from the Duke MEMS course organization, <strong>MEMS-Intro-to-Robotics</strong>, or</li>
                     <li>Go directly to your repo URL (see next step) and click <strong>Accept invitation</strong> on the banner at the top.</li>
                 </ul>
             </li>

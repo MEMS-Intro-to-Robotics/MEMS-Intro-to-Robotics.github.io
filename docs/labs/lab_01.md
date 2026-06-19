@@ -19,15 +19,15 @@ title: "Lab 01: VM and Git Setup"
 <section id="introduction">
     <h2>1. Introduction</h2>
     <h3>1.1 Overview</h3>
-    <p>This lab serves as the foundation for the rest of the course. You will set up your virtual machine (VM), configure your development environment, and become familiar with the basic workflow we will use throughout the semester. In the second half of the lab, you will complete a Git scavenger hunt to practice essential Git commands in a guided, hands-on way.</p>
+    <p>This lab sets up the workflow you will use for the rest of the course. You will reserve your virtual machine (VM), configure your development environment, and practice the basic command-line habits we will use throughout the semester. In the second half of the lab, you will complete a Git scavenger hunt to practice Git commands in a guided, hands-on way.</p>
     <h3>1.2 Background</h3>
     <p>A consistent and reproducible development environment reduces troubleshooting time and ensures all students start from the same baseline. The Git scavenger hunt is designed to familiarize you with common commands such as <code>git log</code>, <code>git checkout</code>, and <code>git diff</code>, which you will use repeatedly in later labs.</p>
     <h4>Why Are We Using These Tools?</h4>
     <ul>
         <li><strong>Linux (Ubuntu):</strong> We use Linux because it is the industry-standard and primary supported operating system for robotics development, particularly for ROS.</li>
-        <li><strong>Git:</strong> Git is a version control system crucial for collaboration and tracking changes in code. Learning it is essential for managing complex software projects.</li>
+        <li><strong>Git:</strong> Git is the version control system we use to track code, collaborate, and submit work.</li>
         <li><strong>Docker:</strong> Docker allows us to run applications in isolated environments called containers. We use it to provide you with a pre-configured environment with ROS 2 and all its dependencies, saving you from a complex installation and ensuring everyone has the exact same setup.</li>
-        <li><strong>ROS 2 (Robot Operating System):</strong> ROS is a flexible framework for writing robot software. It is a collection of tools, libraries, and conventions that aim to simplify the task of creating complex and robust robot behavior across a wide variety of robotic platforms.</li>
+        <li><strong>ROS 2 (Robot Operating System):</strong> ROS is the framework we use for robot software. It provides tools, libraries, and conventions for connecting sensors, planners, controllers, and user code.</li>
     </ul>
     <h3>1.3 Objectives</h3>
     <ul>
@@ -243,7 +243,7 @@ ssh-add ~/.ssh/id_ed25519</code></pre>
         </li>
         <li><strong>Accept the repository invitation:</strong> GitHub Classroom creates your repo, but you must also accept a collaboration invite before you can access it.
             <ul>
-                <li>Check your email for an invite from <strong>MEMS-Intro-to-Robotics</strong>, or</li>
+                <li>Check your email for an invite from the Duke MEMS course organization, <strong>MEMS-Intro-to-Robotics</strong>, or</li>
                 <li>Go directly to your repo URL (see next step) and click <strong>Accept invitation</strong> on the banner at the top.</li>
             </ul>
         </li>

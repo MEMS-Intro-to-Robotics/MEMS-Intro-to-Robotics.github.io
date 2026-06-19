@@ -9,7 +9,7 @@ hide:
     <p class="toolkit-kicker">Getting Started</p>
     <h1>Start Here</h1>
     <p class="toolkit-lede">
-      Everything you need to go from first login to a running ROS 2 environment. These guides are designed to stay open during lab.
+      The short path from first login to a running ROS 2 environment. These guides are meant to stay open during lab.
     </p>
   </div>
 </div>
@@ -18,7 +18,7 @@ hide:
 
 - **Quick Start**
 
-    Get from login to a running course container with the least friction. This is the first page every student should read.
+    Get from login to a running course container. This is the first page every student should read.
 
     [:octicons-arrow-right-24: Quick Start](quick_start.md)
 
@@ -30,7 +30,7 @@ hide:
 
 - **Quick Reference**
 
-    A cheat sheet for Linux, Git, Docker, and ROS 2 commands. Designed to stay open in a side tab during lab sessions.
+    A cheat sheet for Linux, Git, Docker, and ROS 2 commands. Keep it open in a side tab during lab.
 
     [:octicons-arrow-right-24: Quick Reference](quick_reference.md)
 

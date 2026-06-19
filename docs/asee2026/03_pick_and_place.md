@@ -25,7 +25,7 @@ what the challenge runs.
 
 # 03 · Pick and place
 
-The payoff. Everything so far (joint moves, Cartesian moves, the planning scene) composes into the canonical manipulation sequence:
+This is where the earlier pieces come together. Joint moves, Cartesian moves, and the planning scene form the standard manipulation sequence:
 
 > approach → descend → **grasp** → attach → lift → approach → descend → **release** → detach → retreat
 
@@ -79,6 +79,6 @@ for i, (block, target) in enumerate(zip(blocks, targets), start=1):
         break
 ```
 
-That's the full workshop arc in one stack: configuration space, Cartesian descent, scene-aware planning, and grasping, all composed.
+That is the workshop arc in one stack: configuration space, Cartesian descent, scene-aware planning, and grasping.
 
 <!-- END:rendered-notebook -->

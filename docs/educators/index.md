@@ -9,7 +9,7 @@ hide:
     <p class="toolkit-kicker">Instructor Resources</p>
     <h1>For Educators</h1>
     <p class="toolkit-lede">
-      Guidance for instructors evaluating, adopting, or adapting this material for their own robotics courses. Licensed under CC BY 4.0.
+      Guidance for instructors evaluating or adapting this material for their own robotics courses. Licensed under CC BY 4.0.
     </p>
   </div>
 </div>
@@ -24,13 +24,13 @@ hide:
 
 - **Adoption Guide**
 
-    A practical walkthrough for adapting this material to your own course — covering infrastructure, lab sequencing, and platform substitutions.
+    A practical walkthrough for adapting this material to your own course, including infrastructure, lab sequencing, and platform substitutions.
 
     [:octicons-arrow-right-24: Adoption Guide](../educator-adoption.md)
 
 - **Lab Catalog**
 
-    A summary of each lab's purpose, technology stack, and portability rating to help you decide which labs to adopt.
+    A summary of each lab's purpose, technology stack, and portability rating.
 
     [:octicons-arrow-right-24: Lab Catalog](../lab-catalog.md)
 

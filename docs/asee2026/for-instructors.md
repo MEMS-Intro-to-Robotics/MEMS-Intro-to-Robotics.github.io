@@ -5,11 +5,11 @@ title: For Instructors
 # For Instructors
 
 This page is the run guide for facilitating the workshop. The attendee experience is
-designed to be **self-service**: people should know what to do from the notebooks and this
+meant to be **self-service**: people should know what to do from the notebooks and this
 site alone. Your job is to set up the stations, keep the arms safe, and judge the
 challenge, not to lecture.
 
-## Design in one sentence
+## Design
 
 Attendees never write ROS code. They turn labeled knobs (ipywidgets) that map to meaningful
 robot behavior, and the `workshop_core` helper package owns all the ROS 2 and MoveIt

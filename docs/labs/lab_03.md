@@ -98,7 +98,7 @@ title: "Lab 03: Shell Scripting for Robot Control"
             </li>
             <li><strong>Accept the repository invitation:</strong> GitHub Classroom creates your repo, but you must also accept a collaboration invite before you can access it.
                 <ul>
-                    <li>Check your email for an invite from <strong>MEMS-Intro-to-Robotics</strong>, or</li>
+                    <li>Check your email for an invite from the Duke MEMS course organization, <strong>MEMS-Intro-to-Robotics</strong>, or</li>
                     <li>Go directly to your repo URL (see next step) and click <strong>Accept invitation</strong> on the banner at the top.</li>
                 </ul>
             </li>
@@ -227,7 +227,7 @@ chmod +x turtleletter.sh
 </section>
 <section id="analysis">
     <h2>6. Analysis and Discussion</h2>
-    <p>Answer the following questions in your Gradescope submission. Be clear and specific&mdash;we&rsquo;re interested in your reasoning process, not just the final answer.</p>
+    <p>Answer the following questions in your Gradescope submission. Be clear and specific&mdash;we&rsquo;re interested in your reasoning process as well as the final answer.</p>
     <h3>Question 1: Drawing your first letter</h3>
     <ul>
         <li>What was your process for figuring out the correct values for <code>linear.x</code>, <code>angular.z</code>, and <code>sleep</code> duration?</li>

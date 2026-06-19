@@ -6,8 +6,8 @@ hide:
 
 <div class="toolkit-hero">
   <div class="toolkit-hero__copy">
-    <p class="toolkit-kicker">Open Robotics Course Website</p>
-    <h1>MEMS Robotics Toolkit</h1>
+    <p class="toolkit-kicker">Duke MEMS Robotics Course Website</p>
+    <h1>Duke MEMS Robotics Toolkit</h1>
     <p class="toolkit-lede">
       ROS 2 setup guides, lab manuals, and technical references for simulation-first robotics courses.
     </p>
@@ -31,13 +31,13 @@ hide:
 
 <div class="grid cards" markdown>
 
-- **Start working quickly**
+- **Start a lab session**
 
-  Use the [Quick Start](guides/quick_start.md) page to get from login to a running course container with the least friction.
+  Use the [Quick Start](guides/quick_start.md) page to get from login to a running course container.
 
-- **Reuse the post-Lab-4 workflow**
+- **Use the post-Lab-4 workflow**
 
-  The [Robot Platform Workflow](guides/robot_platform_lab_workflow.md) page centralizes the repeated Docker, pane, build, and debugging habits used across the robot-platform labs.
+  The [Robot Platform Workflow](guides/robot_platform_lab_workflow.md) page collects the Docker, pane, build, and debugging habits used across the robot-platform labs.
 
 - **Keep a practical cheat sheet open**
 
@@ -47,15 +47,15 @@ hide:
 
   Browse all 10 [lab manuals](labs/lab_01.md) — from VM setup and ROS 2 basics through MoveIt 2 manipulation, PID control, and autonomous SLAM exploration.
 
-- **Dig into robot-specific details**
+- **Look up robot-specific details**
 
   The [Kinova Gen3 Lite + MoveIt 2 guide](guides/kinova_gen3_lite_moveit2_guide.md) and [pymoveit2 API guide](guides/pymoveit2_api_guide.md) cover the deeper technical reference material.
 
-- **Adopt this material for your own course**
+- **Adapt this material for another course**
 
-  The [For Educators](for-educators.md) and [Educator Adoption Guide](educator-adoption.md) pages highlight what transfers cleanly and what you should replace first.
+  The [For Educators](for-educators.md) and [Educator Adoption Guide](educator-adoption.md) pages explain what transfers cleanly and what you should replace first.
 
-- **Maintain the underlying environments**
+- **Maintain the course environments**
 
   The [Setup Scripts](guides/setup_scripts.md) page explains which machine bootstrap script should own which environment.
 

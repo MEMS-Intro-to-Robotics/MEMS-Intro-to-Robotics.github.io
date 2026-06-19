@@ -24,7 +24,7 @@ its job.
 
 # 02 · The planning scene
 
-The motion planner doesn't see the world; it sees a *model* of the world that you give it. Anything you don't put in the scene, it will happily drive straight through. This notebook makes that consequence visible.
+The motion planner does not see the world directly; it sees the *model* you give it. Anything missing from the scene is invisible to the planner, so the arm may drive straight through it. This notebook makes that consequence visible.
 
 > *Teaching note:* this is the cheapest, highest-leverage safety concept in the whole stack. "The arm hit the fixture" is almost never a planner bug; it's a missing collision object.
 
@@ -50,7 +50,7 @@ The button below replans the **same** home→retract motion every time. The togg
 planning_scene_panel(arm)
 ```
 
-The planner found a longer path around a box you declared, and would have found *nothing to avoid* if you hadn't. Scene fidelity is safety: the model's accuracy is the arm's safety margin.
+The planner found a longer path around a box you declared. Without that collision object, it would have found nothing to avoid. Scene accuracy is the arm's safety margin.
 
 Next: **`03_pick_and_place`** (the payoff), where the scene holds a table to avoid and a block to grasp.
 

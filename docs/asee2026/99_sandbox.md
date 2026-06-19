@@ -18,8 +18,8 @@ your own machine (no arm required), so you can adapt it to your own course or ha
 
 !!! note "Maximal scaffolding, on purpose"
     This workshop is a 2.5-hour onboarding floor with deliberately heavy scaffolding. The
-    student-facing labs scaffold *less*: parameters become things students implement,
-    not just sliders they move.
+    student-facing labs scaffold *less*: students implement the parameters themselves
+    instead of only moving sliders.
 
 <!-- BEGIN:rendered-notebook -->
 
@@ -70,7 +70,7 @@ Everything here runs against simulation on your own machine (no arm required), s
 - **Course site & lab packets:** https://mems-intro-to-robotics.github.io/
 - **This workshop image:** `ghcr.io/mems-intro-to-robotics/asee2026-workshop` (public; `docker pull`, then `docker compose up workshop`). The sim path is the take-home path; hardware stations use the same notebooks with `WORKSHOP_MODE=hardware` and `ROBOT_IP` set by the container.
 - **Hardware:** Kinova Gen3 Lite (~$10k class). The notebook stack is portable to other MoveIt-supported arms; swap the model package and the named poses.
-- **Pedagogy:** this is deliberately maximal scaffolding (a 2.5-hour onboarding floor). The student-facing labs scaffold *less*: parameters become things students implement, not just sliders they move.
+- **Pedagogy:** this is deliberately maximal scaffolding (a 2.5-hour onboarding floor). The student-facing labs scaffold *less*: students implement the parameters themselves instead of only moving sliders.
 
 Questions, or want the lab packets and rubrics? Reach the organizers via the course site.
 

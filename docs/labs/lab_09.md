@@ -23,10 +23,10 @@ title: "Lab 09: Autonomous SLAM-Based Exploration"
 </nav>
 <section id="overview">
     <h2>1. Overview</h2>
-    <p>How does a machine make sense of a world it has never seen? This is one of the most fundamental questions in robotics. In this lab, you will architect the logic that enables a robot to do just that. You will program a simulated TurtleBot 4 to autonomously explore an unknown maze, building a map of its environment while simultaneously tracking its own position within that map&mdash;a process known as <strong>Simultaneous Localization and Mapping (SLAM)</strong>.</p>
-    <p>This entire lab is conducted within a high-fidelity simulation, allowing us to focus purely on the autonomous logic. You will write Python nodes to command the industry-standard ROS 2 Navigation Stack (Nav2), progressing from sending simple coordinate goals to implementing a complete, frontier-based exploration algorithm.</p>
+    <p>How does a robot make sense of a world it has never seen? In this lab, you will program a simulated TurtleBot 4 to explore an unknown maze, build a map of its environment, and track its own position within that map&mdash;a process known as <strong>Simultaneous Localization and Mapping (SLAM)</strong>.</p>
+    <p>The lab runs in simulation so you can focus on the autonomy logic. You will write Python nodes that command the ROS 2 Navigation Stack (Nav2), starting with simple coordinate goals and ending with a frontier-based exploration algorithm.</p>
     <figure style="text-align: center; margin: 2em auto; max-width: 500px;"><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:400px;min-height:150px;margin:1em auto;">A side-by-side comparison photo of the TurtleBot 4 and the smaller TurtleBot 4 Lite mobile robots.</div>
-        <figcaption style="margin-top: 0.5em; font-size: 0.9em; color: #555; font-style: italic;">The TurtleBot 4 (left) and Lite (right). In this lab, we use a high-fidelity <strong>digital twin</strong> of the standard model, allowing us to develop and test complex software before deploying to physical hardware.</figcaption>
+        <figcaption style="margin-top: 0.5em; font-size: 0.9em; color: #555; font-style: italic;">The TurtleBot 4 (left) and Lite (right). In this lab, we use a simulated standard model so you can develop and test navigation software before deploying to physical hardware.</figcaption>
     </figure>
     <blockquote style="border-left: 4px solid #005a9c; padding-left: 15px; margin-left: 0; color: #555;">
         <h4 style="margin-top: 0; color: #005a9c;">🧠 The SLAM Paradox</h4>
@@ -46,17 +46,17 @@ title: "Lab 09: Autonomous SLAM-Based Exploration"
 </section>
 <section id="background">
     <h2>3. Conceptual Background</h2>
-    <p>To engineer a solution, you first need a solid mental model of the system. A modern robotics stack isn't one program; it's a team of specialists working together. Let's meet the cast of characters you'll be directing.</p>
+    <p>Before writing the exploration logic, build a mental model of the stack. A modern robotics system is not one program; it is several specialized nodes working together.</p>
     <h3>The System Architecture: A Cast of Characters</h3>
     <ul>
         <li><strong>Gazebo (The Reality Engine):</strong> This is the physics simulator. It creates the virtual world, enforces the laws of physics, and generates the raw sensor data from the robot's virtual LiDAR. For our software, Gazebo <em>is</em> the real world.</li>
         <li><strong>SLAM Toolbox (The Cartographer):</strong> This node's sole job is to build the map. It listens to the robot's sensor data and wheel movements to solve the SLAM paradox, continuously publishing an updated map for others to use.</li>
         <li><strong>Nav2 (The Navigator):</strong> This is a sophisticated suite of nodes that handles all aspects of motion. It takes the map from the Cartographer and a goal from you, then calculates a safe, efficient path. Its final output is a stream of velocity commands sent to the robot's wheels.</li>
         <li><strong>Your Python Node (The Mission Commander):</strong> This is the node you will write. It represents the highest level of intelligence, making the strategic decisions. It decides <em>where</em> the robot should go and sends those goal requests to the Navigator.</li>
-        <li><strong>RViz (The Mission Control Dashboard):</strong> This visualization tool is your window into the robot's mind. It overlays all the different data streams&mdash;the map, the sensor readings, the planned path&mdash;into a single, coherent view, making it an indispensable tool for debugging.</li>
+        <li><strong>RViz (The Mission Control Dashboard):</strong> This visualization tool is your window into the robot's state. It overlays the map, sensor readings, and planned path into one view for debugging.</li>
     </ul>
     <blockquote style="border-left: 4px solid #ffc107; padding-left: 15px; margin-left: 0; color: #555;">
-        <p><strong>The Power of Decoupling</strong><br />Notice how the Cartographer (SLAM) and the Navigator (Nav2) are separate. This is a deliberate and powerful design choice. SLAM can focus entirely on building the best possible map, and Nav2 can focus on planning the best possible path on whatever map it's given. As SLAM discovers a new hallway, Nav2 can *immediately* start planning paths through it, no questions asked. This modularity is the foundation of robust robotics.</p>
+        <p><strong>Why the pieces are separate</strong><br />Notice how the Cartographer (SLAM) and the Navigator (Nav2) are separate. SLAM builds the map; Nav2 plans paths on whatever map it has. As SLAM discovers a new hallway, Nav2 can start planning paths through it immediately.</p>
     </blockquote>
     <h3>Occupancy Grids: A Map of Probabilities</h3>
     <p>The map shared between all these nodes is a data structure called an <strong>occupancy grid</strong>. It's a 2D grid where each cell holds a value representing the system's confidence that the corresponding physical space is occupied, free, or unknown. Your node will read this map to make intelligent decisions.</p>
@@ -102,9 +102,9 @@ gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:tb4-humble-la
 <section id="bringup">
     <h2>6. Part 1: System Bringup</h2>
     <p><strong>Goal:</strong> Launch the complete TurtleBot 4 simulation stack, including the simulator, core robot software, and visualization tools.</p>
-    <p><strong>Strategy:</strong> We will launch each major component in its own terminal pane. This modular approach is a critical debugging skill, allowing you to isolate and diagnose problems within the three pillars of a simulation: the world (Gazebo), the robot's mind (ROS 2 nodes), and the data bridges that connect them.</p>
+    <p><strong>Strategy:</strong> Launch each major component in its own terminal pane. This makes debugging easier because you can isolate problems in the world (Gazebo), the ROS 2 nodes, or the data bridges that connect them.</p>
     <blockquote style="border-left: 4px solid #ccc; padding-left: 15px; margin-left: 0; color: #555;">
-        <p><strong>Pro-Tip:</strong> Use <code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">Ctrl+Shift+O</code> to split panes horizontally and <code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">Ctrl+Shift+E</code> to split vertically in Terminator. Click a pane to focus it.</p>
+        <p><strong>Pane shortcut:</strong> Use <code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">Ctrl+Shift+O</code> to split panes horizontally and <code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">Ctrl+Shift+E</code> to split vertically in Terminator. Click a pane to focus it.</p>
     </blockquote>
     <hr style="margin: 2em 0;" />
     <h3>Step 1 (Pane A): Launch the Simulator</h3>
@@ -211,7 +211,7 @@ if __name__ == '__main__':
     goal.pose.position.y = 1.0
     goal.pose.orientation.w = 1.0</code></pre>
     <ul>
-        <li><strong><code>goal.header.frame_id = 'map'</code></strong>: This is crucial. It tells Nav2 that the coordinates `(1.0, 1.0)` are in the fixed, global `map` frame created by SLAM, not relative to the robot's current position.</li>
+        <li><strong><code>goal.header.frame_id = 'map'</code></strong>: This tells Nav2 that the coordinates `(1.0, 1.0)` are in the fixed, global `map` frame created by SLAM, not relative to the robot's current position.</li>
         <li><strong><code>goal.pose.orientation.w = 1.0</code></strong>: This sets the orientation using a quaternion for "no rotation" (i.e., face forward along the X-axis of the map frame).</li>
     </ul>
     <h5>Sending the Goal and Awaiting the Outcome</h5>
@@ -234,7 +234,7 @@ ros2 run turtlebot4_nav navigate_to_point</code></pre>
     <p>Observe RViz. You should see Nav2 generate a path (a pink line) and the robot will begin to follow it.</p>
     <hr style="margin: 2em 0;" />
     <h3>7.3 Part B: Adding Dynamic Behavior - Random Goals</h3>
-    <p>A robot that only goes to one hardcoded spot isn't very useful. Let's evolve our node to send the robot on a patrol of several random points.</p>
+    <p>A robot that only goes to one hardcoded spot is not very useful. Next, update the node so it sends the robot to several random points.</p>
     <blockquote style="border-left: 4px solid #2e7d32; padding-left: 15px; margin-left: 0; color: #555;">
         <h4 style="margin-top: 0; color: #2e7d32;">🎯 Goal</h4>
         <p>Modify the node to send a sequence of five randomly generated goals.</p>
@@ -277,7 +277,7 @@ if __name__ == '__main__':
         <li><strong><code>random.uniform(-1.5, 1.5)</code></strong>: Selects a floating-point number within the specified range. This effectively defines a "patrol box" for the robot.</li>
     </ul>
     <blockquote style="border-left: 4px solid #ffc107; padding-left: 15px; margin-left: 0; color: #555;">
-        <p><strong>Common Pitfall: Unsafe Random Goals</strong><br />This simple approach is fast, but what happens if `random.uniform` picks coordinates that are inside a wall on the map? Nav2 is smart enough to report failure, but a more robust system would check if the random coordinate is in "Free Space" on the occupancy grid before sending it. This is a key concept for the next section.</p>
+        <p><strong>Common Pitfall: Unsafe Random Goals</strong><br />This simple approach is fast, but what happens if `random.uniform` picks coordinates inside a wall? Nav2 can report failure, but a better node checks whether the random coordinate is in "Free Space" on the occupancy grid before sending it. This leads into the next section.</p>
     </blockquote>
     <h4>Step 2: Run the Node</h4>
     <p>Thanks to our `--symlink-install` build, we don't need to rebuild. Just run the node again.</p>
@@ -400,7 +400,7 @@ ros2 run turtlebot4_nav auto_explore</code></pre>
     <h2>8. Part 3: Post-Lab Questions &amp; Discussion</h2>
     <p>Please provide thoughtful and detailed answers to the following questions in your PDF submission. The goal is to connect the core concepts to the code you wrote and the robot behaviors you observed.</p>
     <ol>
-        <li><strong>System Symbiosis: SLAM and Nav2</strong><br />In this lab, SLAM Toolbox and Nav2 operate in a tightly coupled, symbiotic relationship.
+        <li><strong>SLAM and Nav2</strong><br />In this lab, SLAM Toolbox and Nav2 depend on each other while the map is changing.
             <ul>
                 <li><strong>A)</strong> Describe this relationship: Which system is the "producer" of the map, and which is the "consumer"?</li>
                 <li><strong>B)</strong> Recall your experience in Part 7.2 when you first sent a navigation goal while the map was still largely incomplete. Describe what you observed about Nav2's initial path. How did the path planning change in real-time as the SLAM system mapped more of the maze?</li>
@@ -453,7 +453,7 @@ ros2 run turtlebot4_nav auto_explore</code></pre>
     <h2>10. Debugging: An Engineer's Most Valuable Skill</h2>
     <p>Debugging is not guesswork; it is a systematic process of deduction based on your mental model of the system. When something goes wrong, ask "Which component is responsible for this behavior?" and check its terminal pane first.</p>
     <blockquote style="border-left: 4px solid #c62828; padding-left: 15px; margin-left: 0; color: #555;">
-        <p><strong>The Golden Rule of ROS 2 Debugging</strong><br />If your node isn't found or can't launch, your first instinct should always be: "Did I <code>source install/setup.bash</code> in this terminal?" This single step solves the vast majority of "command not found" errors.</p>
+        <p><strong>First ROS 2 debugging check</strong><br />If your node isn't found or can't launch, ask: "Did I <code>source install/setup.bash</code> in this terminal?" This step fixes most "command not found" errors.</p>
     </blockquote>
     <ul>
         <li><strong>Symptom: Blank or extremely slow GUI windows (Gazebo/RViz).</strong>

@@ -268,7 +268,7 @@ class AutonomousExplorer(Node):
     def odom_callback(self, msg):
         self.odom_data = msg</code></pre>
     <h4>2. The Bridge: Grid vs. World</h4>
-    <p>The robot lives in the physical world (Meters), but the map lives in computer memory (Grid Indices). We need robust helpers to translate between the two. We also need a way to measure distance.</p>
+    <p>The robot lives in the physical world (meters), but the map lives in computer memory (grid indices). We need helpers to translate between the two and a way to measure distance.</p>
     <p><em>Add these methods inside your class:</em></p>
     <pre><code class="language-python">    # --------------------------------------------------------------------------
     # COORDINATE TRANSFORMS
@@ -298,7 +298,7 @@ class AutonomousExplorer(Node):
         """Euclidean distance between two points (x, y)."""
         return math.hypot(p1[0] - p2[0], p1[1] - p2[1])</code></pre>
     <h4>3. Pathfinding (The "A*" Algorithm)</h4>
-    <p>To calculate the "Cost" in our efficiency equation, we cannot just use a straight line (Euclidean distance) because walls exist. We use <strong>A* (A-Star) Search</strong>.</p>
+    <p>To calculate the "Cost" in our efficiency equation, Euclidean distance is not enough because walls exist. We use <strong>A* (A-Star) Search</strong>.</p>
     <p>We also include a BFS search called <code>find_nearest_valid_point</code>. Often, the math says the center of a frontier is inside a wall (think of a donut shape). This function snaps the target to the nearest <em>reachable</em> pixel.</p>
     <p><em>Add these navigation algorithms:</em></p>
     <pre><code class="language-python">    # --------------------------------------------------------------------------
@@ -383,7 +383,7 @@ class AutonomousExplorer(Node):
 
         return float('inf')</code></pre>
     <h4>4. Safety Mechanisms</h4>
-    <p>A robust robot anticipates failure.</p>
+    <p>A useful robot anticipates failure.</p>
     <ul>
         <li><strong>Stuck Condition:</strong> If the robot tries to move but the odometer doesn't change (e.g., wheel slip), we must detect this to avoid burning out motors.</li>
         <li><strong>Blacklisting:</strong> If a target was unreachable or caused us to get stuck, we add it to a "Blacklist" so we don't obsessively retry the same bad idea.</li>
@@ -619,7 +619,7 @@ ros2 run turtlebot4_nav auto_explore
 <p><strong>Verification:</strong> If you implemented your logs correctly, you should see a stream of data in the terminal telling you exactly why the robot picked a specific frontier over another!</p>
 <section id="analysis">
     <h2>Part 3: Analysis &amp; Discussion</h2>
-    <p>Engineering is not just about building; it is about validation. You have replaced a "naive" geometric explorer with a "deliberative" Information Gain strategist. Now, you must prove that this extra computational effort actually results in smarter physical behavior.</p>
+    <p>Engineering includes validation. You have replaced a "naive" geometric explorer with an information-gain strategy. Now you need to show that the extra computation produces better physical behavior.</p>
     <h3>3.1 Required Evidence: The Data from the Field</h3>
     <ol>
         <li><strong>Decision Log (Instrumentation):</strong>

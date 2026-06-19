@@ -94,7 +94,7 @@ title: "Lab 02: ROS 2 CLI Fundamentals"
         </li>
         <li><strong>Accept the repository invitation:</strong> GitHub Classroom creates your repo, but you must also accept a collaboration invite before you can access it.
             <ul>
-                <li>Check your email for an invite from <strong>MEMS-Intro-to-Robotics</strong>, or</li>
+                <li>Check your email for an invite from the Duke MEMS course organization, <strong>MEMS-Intro-to-Robotics</strong>, or</li>
                 <li>Go directly to your repo URL and click <strong>Accept invitation</strong> on the banner at the top.</li>
             </ul>
         </li>
@@ -185,7 +185,7 @@ source ~/.bashrc</code></pre>
     <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;">You only need to run this once per Docker session. Close and reopen the terminal <em>within</em> Docker (or run <code>source ~/.bashrc</code>) for the changes to take effect.</blockquote>
     <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Note:</strong> Future Docker images will have these variables preconfigured &mdash; you do not need to repeat this step in later labs.</div>
     <h3>4.5 Complete Jazzy Beginner CLI Tutorials</h3>
-    <p>Inside the container&rsquo;s <strong>Terminator</strong> panes, follow these tutorials from the official ROS 2 documentation <strong>in order</strong>. As you work through them, focus not just on typing commands, but on understanding what each tells you about the ROS 2 system.</p>
+    <p>Inside the container&rsquo;s <strong>Terminator</strong> panes, follow these tutorials from the official ROS 2 documentation <strong>in order</strong>. As you work through them, focus on what each command tells you about the ROS 2 system rather than only getting the syntax right.</p>
     <p>You must capture <strong>one screenshot per tutorial</strong> for your deliverables:</p>
     <ol>
         <li><a href="https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Introducing-Turtlesim/Introducing-Turtlesim.html" target="_blank" rel="noopener">Introducing Turtlesim</a>

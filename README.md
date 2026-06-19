@@ -1,6 +1,6 @@
-# MEMS Intro to Robotics Website
+# Duke MEMS Intro to Robotics Website
 
-This repository hosts the public GitHub Pages site for the MEMS Intro to Robotics teaching materials.
+This repository hosts the public GitHub Pages site for the Duke MEMS Intro to Robotics teaching materials.
 
 The site is intended to support three audiences:
 
@@ -11,8 +11,8 @@ The site is intended to support three audiences:
 ## Local preview
 
 ```bash
-python -m pip install -r requirements-docs.txt
-mkdocs serve
+.venv/Scripts/python.exe -m pip install -r requirements-docs.txt
+.venv/Scripts/python.exe -m mkdocs serve
 ```
 
 Then open `http://127.0.0.1:8000/`.

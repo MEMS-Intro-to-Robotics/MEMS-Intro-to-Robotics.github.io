@@ -1,13 +1,13 @@
 # Educator Adoption Guide
 
-Use this page when you want to adapt the site into a course, module, or workshop rather than simply browse the labs.
+Use this page when you want to turn the site into a course, module, or workshop rather than just browse the labs.
 
 ## Choose an adoption scope
 
 | Scope | Best for | Recommended labs |
 |---|---|---|
 | **Simulation-first ROS 2 module** | A short unit that teaches ROS 2 tools, scripting, and Python nodes without requiring specialized hardware | Labs 02-05 |
-| **Manipulation and controls extension** | Courses that already teach ROS 2 basics and want a stronger controls or manipulation block | Labs 05-07 |
+| **Manipulation and controls extension** | Courses that already teach ROS 2 basics and want more manipulation or controls work | Labs 05-07 |
 | **Mobile autonomy extension** | Courses with Nav2, SLAM, or autonomous exploration goals | Lab 09, then Lab 10 if hardware is available |
 | **Full sequence** | Programs that can support onboarding, simulation, and multiple hardware platforms | Labs 01-10 |
 
@@ -32,7 +32,7 @@ You do not need Duke VCM, FastX, or Duke GitLab to reuse the academic core of th
 | **Crazyflie controls** | Labs 07-08 | Tracking setup or equivalent staff-run flight workflow, plus safety boundaries for live flight |
 | **TurtleBot 4 autonomy** | Labs 09-10 | Reliable robot networking, Nav2/SLAM support, and in-room staff during deployment |
 
-If your program is short-staffed, the simplest high-value version is still simulation-only.
+If your program is short-staffed, the most practical version is still simulation-only.
 
 ## Replace these Duke-specific dependencies first
 
@@ -69,7 +69,7 @@ This works well when you want students to compare planning-heavy and feedback-he
 
 Treat Lab 10 as optional unless you already have the hardware and staffing to support it safely.
 
-## Recommended public improvements if you fork this site
+## Practical improvements if you fork this site
 
 - Mirror starter code into the same public repo as the docs
 - Replace placeholder screenshots with local assets or original diagrams

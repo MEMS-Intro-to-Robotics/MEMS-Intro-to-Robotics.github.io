@@ -1,5 +1,5 @@
-site_name: MEMS Intro to Robotics
-site_description: Public lab manuals, setup guides, and technical references for simulation-first robotics teaching.
+site_name: Duke MEMS Intro to Robotics
+site_description: Public Duke MEMS lab manuals, setup guides, and technical references for simulation-first robotics teaching.
 docs_dir: docs
 site_dir: site
 

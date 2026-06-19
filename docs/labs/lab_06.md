@@ -8,7 +8,7 @@ title: "Lab 06: Pick-and-Place Manipulation"
 
 <h1>1 Introduction</h1>
 <h2>1.1 Overview</h2>
-<p>This lab is the culmination of your foundational robotics skills. You will implement a complete <strong>pick-and-place</strong> pipeline to stack several blocks using the Kinova Gen3 Lite arm. The core challenge is <strong>sequencing</strong> everything you learned previously&mdash;arm motion, gripper control, and planning-scene hygiene&mdash;into one robust routine. <strong>You will begin with a functional starter script that picks and places a single block, which you will then analyze, modify, and extend to achieve the full stacking task.</strong></p>
+<p>In this lab you will implement a complete <strong>pick-and-place</strong> pipeline to stack several blocks using the Kinova Gen3 Lite arm. The challenge is <strong>sequencing</strong> the pieces you have already practiced&mdash;arm motion, gripper control, and planning-scene hygiene&mdash;into one working routine. <strong>You will begin with a starter script that picks and places a single block, then analyze, modify, and extend it to complete the stacking task.</strong></p>
 <p>The workflow and tooling are <strong>identical to the previous lab</strong> to reduce setup friction:</p>
 <ul>
     <li>Docker &rarr; <strong>one</strong> container</li>
@@ -17,7 +17,7 @@ title: "Lab 06: Pick-and-Place Manipulation"
 </ul>
 <h2>1.2 Background: The Logic of a Pick-and-Place Task</h2>
 <p>A successful pick-and-place task is more than just a sequence of movements; it's an interaction with the environment. The robot's planner must know how the world changes as you grasp and release objects. In MoveIt, this means updating the <strong>Planning Scene</strong> (its internal world model). The key new concept in this lab is mastering the <strong>attach/detach</strong> workflow, which tells the planner that a grasped object is temporarily part of the robot, so it doesn't try to "avoid" the very thing it's holding.</p>
-<p>The entire process follows a clear, repeatable, and robust sequence.</p>
+<p>The process follows a fixed sequence.</p>
 <p><strong>Canonical Pick-and-Place Flow:</strong></p>
 <pre><code>
 PICK sequence:
@@ -584,13 +584,13 @@ git push</code></pre>
         <p><strong>Why Plans Can Fail.</strong><br />A straight-line (Cartesian) motion plan isn't always successful. Based on your experience in this lab, describe two different reasons why a plan might fail while the robot is trying to pick up or place a block (e.g., colliding with something, or the arm being unable to reach). What is the first thing you would try to adjust in the code to fix such a failure?</p>
     </li>
     <li>
-        <p><strong>The Importance of "Attaching" an Object.</strong><br />The commands <code>attach_collision_object</code> and <code>detach_collision_object</code> don't move the real robot at all, but they are critical for success. First, explain in your own words what "attaching" an object tells the MoveIt planner. Then, describe what would likely go wrong if you forgot to call <code>attach_collision_object</code> right after the gripper closed on the block.</p>
+        <p><strong>The Importance of "Attaching" an Object.</strong><br />The commands <code>attach_collision_object</code> and <code>detach_collision_object</code> don't move the real robot at all, but the planner depends on them. First, explain in your own words what "attaching" an object tells the MoveIt planner. Then, describe what would likely go wrong if you forgot to call <code>attach_collision_object</code> right after the gripper closed on the block.</p>
     </li>
     <li>
         <p><strong>Keeping the Planner Honest.</strong><br />At the start of the lab, you ran the <code>add_scene</code> task to put a table and blocks into RViz. What is the purpose of adding these "collision objects" to the planning scene? If you forgot this step and tried to run the pick-and-place task, what disastrous thing might the robot arm try to do, and why would this be dangerous?</p>
     </li>
     <li>
-        <p><strong>Beyond Hard-Coded Poses.</strong><br />In the starter code, the exact XYZ coordinates of the blocks are hard-coded. While this works for our controlled lab environment, it's not a robust solution for the real world. Describe one reason why hard-coding positions is risky or limiting. If you could add a camera to the robot, what information would you want the camera to provide to make the grasping code more reliable?</p>
+        <p><strong>Beyond Hard-Coded Poses.</strong><br />In the starter code, the exact XYZ coordinates of the blocks are hard-coded. That works in our controlled lab setup, but it does not generalize well. Describe one reason why hard-coding positions is risky or limiting. If you could add a camera to the robot, what information would you want the camera to provide to make the grasping code more reliable?</p>
     </li>
 </ol>
 <hr />

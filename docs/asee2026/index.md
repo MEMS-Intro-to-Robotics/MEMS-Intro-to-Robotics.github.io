@@ -7,15 +7,14 @@ title: ASEE 2026 Workshop
 **ASEE 2026 · Faculty Workshop.** Kinova Gen3 Lite with ROS 2 and MoveIt 2.
 
 Drive a real 6-DOF robot arm through a guided sequence of Jupyter notebooks. You move
-sliders and click buttons; the integration layer underneath (ROS 2, MoveIt, the
-controllers) is owned by a helper package you never have to touch. **No ROS code
-required.** The same container runs as a simulator on your own laptop, so everything here
-is yours to take home.
+sliders and click buttons; a helper package owns the ROS 2, MoveIt, and controller
+plumbing underneath. **No ROS code required.** The same container runs as a simulator on
+your own laptop, so the workshop is usable after ASEE too.
 
 !!! tip "You do not need prior ROS experience"
     Every control is a labeled knob, introduced one step at a time. By the last activity
-    you are combining knobs you have already used, so there is nothing new to learn under
-    pressure.
+    you are combining controls you have already used, instead of learning a new interface
+    under pressure.
 
 ## The arc (about 2.5 hours)
 
@@ -23,7 +22,7 @@ is yours to take home.
 2. **Joints & Cartesian:** drive the arm two ways and feel where it can and cannot reach.
 3. **Planning scene:** drop an obstacle in the way and watch the planner route around it.
 4. **Pick & place:** grasp, attach, lift, and place, the canonical manipulation sequence.
-5. **Challenge:** build the tallest standing stack in a friendly, hardware-only competition.
+5. **Challenge:** build the tallest standing stack in a friendly hardware competition.
 
 ## Activities
 

@@ -1,6 +1,6 @@
 # Lab Catalog
 
-This page summarizes what each lab is trying to teach, what stack it depends on, and how portable it is outside the original course environment.
+This page summarizes what each lab teaches, what stack it depends on, and how portable it is outside the original course environment.
 
 Portability ratings are practical adoption guidance, not a judgment of lab quality:
 
@@ -16,7 +16,7 @@ Portability ratings are practical adoption guidance, not a judgment of lab quali
 | **Lab 02** | Learn ROS 2 CLI concepts with `turtlesim` | `base-jazzy` image, ROS 2 CLI, `turtlesim` | High | Good first reusable ROS 2 lab once infrastructure references are swapped |
 | **Lab 03** | Automate robot behavior with shell scripts | `base-jazzy`, topics, services, `turtlesim`, Git | High | Transfers cleanly to nearly any intro ROS 2 environment |
 | **Lab 04** | Build ROS 2 Python nodes and workspaces | `base-jazzy`, `ament_python`, topics, subscriptions | High | One of the most portable labs in the set |
-| **Lab 05** | Use MoveIt 2 and RViz for Kinova motion planning | `kinova-jazzy`, Gazebo, RViz, MoveIt 2, `pymoveit2` | Medium | Excellent public reference value, but depends on the Kinova stack and a heavier simulation image |
+| **Lab 05** | Use MoveIt 2 and RViz for Kinova motion planning | `kinova-jazzy`, Gazebo, RViz, MoveIt 2, `pymoveit2` | Medium | Useful public reference, but depends on the Kinova stack and a heavier simulation image |
 | **Lab 06** | Implement pick-and-place logic and planning-scene workflows | Kinova sim, MoveIt 2, lab starter script, block spawner | Medium | Reusable, but current public packaging still points to externally hosted starter files |
 | **Lab 07** | Tune a 3D PID controller in simulation | Crazyflie sim, ROS 2 Python nodes, plotting workflow | Medium | Strong controls lab, but current public repo documents the files more than it bundles them |
 | **Lab 08** | Analyze real hardware controller performance from logged flight data | Staff-run hardware flight, CSV analysis, notebook or script tooling | Low | Useful as a validation lab, but depends on local operations and baseline data packaging |

@@ -23,7 +23,7 @@ title: "Lab 07: Crazyflie PID Tuning"
         <h2><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:341px;min-height:150px;margin:1em auto;">Image placeholder</div></h2>
         <h2>1.2 Background</h2>
         <h3>What is a PID Controller?</h3>
-        <p>At its core, a PID controller is a widely used feedback control mechanism. Its fundamental purpose is to make a system (like our drone) reach a desired state (a "setpoint") and maintain it by continuously correcting for any differences, or "errors." It works by calculating a corrective action based on three terms:</p>
+        <p>A PID controller uses feedback to drive a system, such as our drone, toward a desired state called a "setpoint." It repeatedly measures the error between the target and the current state, then computes a correction from three terms:</p>
         <ul>
             <li>The <strong>Proportional (P)</strong> term considers the <strong>present</strong> error. A larger error results in a larger corrective force.</li>
             <li>The <strong>Integral (I)</strong> term considers the <strong>past</strong> error, accumulating it over time to eliminate any small, persistent biases.</li>
@@ -40,7 +40,7 @@ title: "Lab 07: Crazyflie PID Tuning"
         <p><span class="math-display" data-latex="u[k]=K_p\,e[k]+K_i\,T_s\!\sum_{i=0}^{k} e[i]+K_d\,\frac{e[k]-e[k-1]}{T_s}"></span></p>
         <p>In this control architecture, the output <span class="math-inline" data-latex="u[k]"></span> for each axis represents the <strong>commanded velocity</strong> sent to the drone's low-level flight controller. Your PID's job is to calculate the appropriate velocity vector needed to drive the position error to zero.</p>
         <h3>Common Refinements in PID Control</h3>
-        <p>While the PID controller you will tune is built on the fundamental equations, most industrial or production-grade controllers include important refinements to improve performance and safety. Though not implemented in the baseline code for this lab, two critical concepts to be aware of are:</p>
+        <p>The PID controller you will tune uses the basic equations. Production controllers usually add safeguards for performance and safety. Two concepts worth knowing, even though they are not implemented in the baseline code, are:</p>
         <ul>
             <li><strong>Derivative filter</strong> to avoid amplifying sensor noise. The simple derivative term is often replaced with a low-pass filter (sometimes called a "dirty derivative"):
                 <p><span class="math-inline" data-latex="d[k]=\alpha\,d[k-1]+(1-\alpha)\,\frac{e[k]-e[k-1]}{T_s}"></span></p>
@@ -374,7 +374,7 @@ ros2 run lab07_crazyflie plotting
 <hr />
 <h3>7.1 Foundational PID and Control Theory</h3>
 <ul>
-    <li><strong>Control System Lectures by Brian Douglas</strong><br />This is perhaps one of the most highly-regarded, free resources for learning control theory. Brian Douglas provides exceptionally clear and intuitive video explanations of fundamental concepts, from transfer functions to state-space. His videos are an ideal supplement to a traditional textbook.
+    <li><strong>Control System Lectures by Brian Douglas</strong><br />Brian Douglas explains control theory clearly, from transfer functions to state-space. These videos are a good supplement to a traditional textbook.
         <ul>
             <li><a href="https://www.youtube.com/user/ControlLectures" target="_blank" rel="noopener">Main YouTube Channel</a></li>
         </ul>
@@ -382,7 +382,7 @@ ros2 run lab07_crazyflie plotting
 </ul>
 <p>&nbsp;</p>
 <ul>
-    <li><strong><em>Feedback Systems: An Introduction for Scientists and Engineers</em> by &Aring;str&ouml;m and Murray</strong><br />Often considered the modern "bible" of control theory, this entire textbook is available for free online from the authors. It provides a rigorous, comprehensive, and up-to-date look at the field.
+    <li><strong><em>Feedback Systems: An Introduction for Scientists and Engineers</em> by &Aring;str&ouml;m and Murray</strong><br />This textbook is available for free online from the authors and gives a rigorous treatment of feedback control.
         <ul>
             <li><a href="https://fbswiki.org/wiki/index.php/Main_Page" target="_blank" rel="noopener">Feedback Systems Wiki (with full PDF)</a></li>
         </ul>

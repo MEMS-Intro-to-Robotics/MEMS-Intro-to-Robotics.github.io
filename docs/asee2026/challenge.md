@@ -97,6 +97,6 @@ for i, ((x, y), tgt) in enumerate(zip(sources, targets), start=1):
         break
 ```
 
-That is the whole workshop in one tower: configuration space, Cartesian descent, scene-aware planning, and grasping, composed into something you can compete with. Place well, measure carefully, and good luck.
+That is the workshop in one tower: configuration space, Cartesian descent, scene-aware planning, and grasping. Place well, measure carefully, and good luck.
 
 <!-- END:rendered-notebook -->
