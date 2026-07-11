@@ -18,7 +18,7 @@ hide:
 
 - **Setup Scripts**
 
-    All six environment bootstrap scripts with full source, usage documentation, and an environment ownership model explaining which script targets which machine type.
+    Every environment bootstrap script with full source, usage documentation, and an environment ownership model explaining which script targets which machine type.
 
     [:octicons-arrow-right-24: Setup Scripts](../guides/setup_scripts.md)
 

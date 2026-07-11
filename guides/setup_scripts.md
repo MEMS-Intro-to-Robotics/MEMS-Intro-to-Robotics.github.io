@@ -10,8 +10,7 @@ Bootstrap scripts for provisioning student VMs, developer workstations, shared l
 | [`vm_setup_dev.sh`](#vm_setup_devsh) | Developer/TA VM (VMware) | ~330 |
 | [`ubuntu_desktop_setup.sh`](#ubuntu_desktop_setupsh) | Shared lab desktop | ~390 |
 | [`ubuntu_desktop_setup.env.example`](#ubuntu_desktop_setupenvexample) | Config template for lab desktop setup | ~15 |
-| [`gpu_install.sh`](#gpu_installsh) | NVIDIA Container Toolkit install | ~85 |
-| [`utilities.sh`](#utilitiessh) | Legacy helper (Firefox, misc packages) | ~70 |
+| [`gpu_install.sh`](#gpu_installsh) | Standalone NVIDIA Container Toolkit install (GPU dev VMs, Lab 06) | ~85 |
 
 ## Environment Ownership Model
 
@@ -20,7 +19,7 @@ Each script targets one environment. Pick the one that matches your setup:
 - **Student environment** (`vm_setup.sh`): The default path for students. Installs ROS 2 Jazzy, Docker, course container images, and shell configuration on a clean Ubuntu VM with FastX remote desktop access.
 - **Developer environment** (`vm_setup_dev.sh`): A richer path for TAs and maintainers. Assumes VMware instead of FastX, installs additional dev tooling.
 - **Shared lab desktops** (`ubuntu_desktop_setup.sh`): Machine-level bootstrap for persistent lab computers. Handles Docker, optional NVIDIA runtime, and system services — avoids per-user customization.
-- **GPU repair path** (`gpu_install.sh`): Narrowly scoped — only installs NVIDIA Container Toolkit for machines that need GPU-accelerated containers.
+- **Standalone GPU path** (`gpu_install.sh`): Narrowly scoped — only installs the NVIDIA Container Toolkit. Use it on GPU-enabled dev VMs (Lab 06 points students here) or to repair a machine's GPU container runtime. The lab desktop script already includes this logic, so shared lab desktops never need it separately.
 
 ---
 
@@ -71,18 +70,8 @@ Configuration template for the lab desktop setup script.
 
 ## `gpu_install.sh`
 
-Installs the NVIDIA Container Toolkit on Ubuntu (24.04-friendly). Safe to re-run.
+Installs the NVIDIA Container Toolkit on Ubuntu (24.04-friendly). Safe to re-run. `ubuntu_desktop_setup.sh` performs these same steps when it detects an NVIDIA GPU — this standalone copy exists for machines that only need the GPU container runtime added (for example, a student dev VM being prepared for Lab 06).
 
 ```bash
 --8<-- "scripts/gpu_install.sh"
-```
-
----
-
-## `utilities.sh`
-
-Legacy helper script for removing snap Firefox and installing miscellaneous packages. Largely superseded by the environment-specific scripts above.
-
-```bash
---8<-- "scripts/utilities.sh"
 ```
