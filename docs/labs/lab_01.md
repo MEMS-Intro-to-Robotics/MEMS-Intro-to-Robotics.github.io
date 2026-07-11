@@ -94,7 +94,7 @@ title: "Lab 01: VM and Git Setup"
         </li>
         <li>Download the setup script:
             <pre><code class="language-bash">cd ~
-curl -L "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/vm_setup.sh" -o vm_setup.sh
+curl -L "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/vm_setup.sh" -o vm_setup.sh
 chmod +x vm_setup.sh</code></pre>
         </li>
         <li>Run the setup script with the provided license key:
@@ -424,7 +424,7 @@ docker run --rm -it \
     <ol>
         <li><strong>Clone the scavenger hunt repository:</strong>
             <pre><code class="language-bash">cd ~/workspaces
-git clone https://gitlab.oit.duke.edu/introtorobotics/git-scavenger-hunt.git
+git clone https://github.com/MEMS-Intro-to-Robotics/git-scavenger-hunt.git
 cd git-scavenger-hunt</code></pre>
         </li>
         <li><strong>Read the starting clue:</strong>

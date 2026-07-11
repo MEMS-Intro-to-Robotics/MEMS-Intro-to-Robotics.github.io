@@ -202,15 +202,15 @@ SCRIPTS_DIR="lab07_crazyflie/lab07_crazyflie/scripts"
 # Download the PID controller node. Note: we save it as goal_3d_control.py
 # because Python module names cannot start with a digit.
 curl -L -o "$SCRIPTS_DIR/goal_3d_control.py" \
-  "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/lab07_files/3d_goal_control.py"
+  "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/lab07_files/3d_goal_control.py"
 
 # Download the arrival-based trajectory publisher
 curl -L -o "$SCRIPTS_DIR/trajectory_publisher.py" \
-  "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/lab07_files/trajectory_publisher.py"
+  "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/lab07_files/trajectory_publisher.py"
 
 # Download the plotting utility
 curl -L -o "$SCRIPTS_DIR/plotting.py" \
-  "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/lab07_files/plotting.py"
+  "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/lab07_files/plotting.py"
 
 # IMPORTANT: Make all downloaded scripts executable
 chmod +x $SCRIPTS_DIR/*.py

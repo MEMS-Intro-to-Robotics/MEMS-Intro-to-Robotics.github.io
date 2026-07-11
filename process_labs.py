@@ -127,7 +127,7 @@ LAB6_PRELAB_SHARED_WORKFLOW = dedent(
     <h2>3.3 Optional: Enable GPU Acceleration (Run Once Per VM)</h2>
     <p>If Gazebo or RViz performance is poor, run the GPU setup script once on your host VM.</p>
     <pre><code class="language-bash">cd ~
-    curl -L "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/gpu_install.sh" -o gpu_install.sh
+    curl -L "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/gpu_install.sh" -o gpu_install.sh
     chmod +x gpu_install.sh
     ./gpu_install.sh
     </code></pre>

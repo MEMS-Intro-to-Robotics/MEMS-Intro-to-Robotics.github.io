@@ -89,22 +89,24 @@ free -h
 ssh-keygen -t ed25519 -C "netid@duke.edu"
 ssh-add ~/.ssh/id_ed25519
 cat ~/.ssh/id_ed25519.pub
-ssh -T git@gitlab.oit.duke.edu
+ssh -T git@github.com
 ```
 
-Add the public key in GitLab before expecting `ssh -T` to succeed.
+Add the public key to your GitHub account (Settings → SSH and GPG keys) before expecting `ssh -T` to succeed.
 
 **Everyday flow**
 
 ```bash
-git clone git@gitlab.oit.duke.edu:<netid>/<netid>_robotics.git
-cd <netid>_robotics
+git clone git@github.com:MEMS-Intro-to-Robotics/<assignment-repo>.git
+cd <assignment-repo>
 
 git status
 git add <files>
 git commit -m "meaningful message"
 git push origin main
 ```
+
+Each lab's GitHub Classroom link creates your `<assignment-repo>` under the course organization.
 
 **Branching**
 

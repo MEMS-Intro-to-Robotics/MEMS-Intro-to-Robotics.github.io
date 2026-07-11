@@ -63,7 +63,7 @@ git pull
 <h2>3.3 Optional: Enable GPU Acceleration (Run Once Per VM)</h2>
 <p>If Gazebo or RViz performance is poor, run the GPU setup script once on your host VM.</p>
 <pre><code class="language-bash">cd ~
-curl -L "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/gpu_install.sh" -o gpu_install.sh
+curl -L "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/gpu_install.sh" -o gpu_install.sh
 chmod +x gpu_install.sh
 ./gpu_install.sh
 </code></pre>
@@ -129,7 +129,7 @@ mkdir -p lab06_moveit/lab06_moveit/scripts
 
 # Download the provided script (use the RAW link)
 curl -L -o lab06_moveit/lab06_moveit/scripts/pick_and_place.py \
-  "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/lab06_files/pick_and_place.py"</code></pre>
+  "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/lab06_files/pick_and_place.py"</code></pre>
 <h1>5.0.2 Register the console entry (so <code>ros2 run</code> works)</h1>
 <p>Open <code>lab06_moveit/setup.py</code> and set <strong>entry_points</strong> like this:</p>
 <pre><code class="language-python">entry_points={
@@ -201,7 +201,7 @@ cd ~/workspaces/[netid]_robotics_fall2025/lab06/ros2_ws/src/mems-toolkit/lab06_f
 
 # 2) Download the script (use the RAW link)
 curl -L -o spawn_blocks.sh \
-  "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/lab06_files/spawn_blocks.sh"
+  "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/lab06_files/spawn_blocks.sh"
 
 # 3) Make it executable
 chmod +x spawn_blocks.sh
