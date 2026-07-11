@@ -98,7 +98,7 @@ curl -L "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw
 chmod +x vm_setup.sh</code></pre>
         </li>
         <li>Run the setup script with the provided license key:
-            <pre><code class="language-bash">FASTX_ACTIVATION_KEY="<key-from-course-staff>" ./vm_setup.sh</code></pre>
+            <pre><code class="language-bash">FASTX_ACTIVATION_KEY="&lt;key-from-course-staff&gt;" ./vm_setup.sh</code></pre>
         </li>
     </ol>
     <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>Notes on Using the Terminal</strong><br />
@@ -110,7 +110,7 @@ chmod +x vm_setup.sh</code></pre>
     <ol start="4">
         <li>If the setup script does not fully activate FastX, run the following command manually:
             <pre><code class="language-bash">sudo -u fastx /usr/lib/fastx/4/install/activate</code></pre>
-            <p>Enter the license key when prompted: <code><key-from-course-staff></code></p>
+            <p>Enter the license key provided by course staff when prompted.</p>
             <p>Enter 1 for number of seats to activate. When activation succeeds, you should see confirmation messages about the license being applied.</p>
         </li>
         <li>When the script finishes, <strong>log out of the SSH session by typing <code>exit</code> in the terminal</strong>.</li>

@@ -572,9 +572,27 @@ def replace_canvas_images(html: str) -> str:
     return html
 
 
+def redact_secrets(html: str) -> str:
+    """Redact license keys and similar credentials before public export."""
+    html = re.sub(
+        r'FASTX_ACTIVATION_KEY="[^"]*"',
+        'FASTX_ACTIVATION_KEY="&lt;key-from-course-staff&gt;"',
+        html,
+    )
+    html = re.sub(
+        r'Enter the license key when prompted: <code>[^<]*</code>',
+        'Enter the license key provided by course staff when prompted.',
+        html,
+    )
+    # Backstop: never let a FastX-style key (4x4 digit groups) reach the site.
+    html = re.sub(r'\b\d{4}-\d{4}-\d{4}-\d{4}\b', '&lt;redacted&gt;', html)
+    return html
+
+
 def clean_lab(html: str, lab_num: int) -> str:
     """Apply all cleaning transformations."""
-    # 0. Replace Canvas-hosted images with placeholders
+    # 0. Redact credentials, then replace Canvas-hosted images with placeholders
+    html = redact_secrets(html)
     html = replace_canvas_images(html)
 
     # 1. Remove instructor headers
