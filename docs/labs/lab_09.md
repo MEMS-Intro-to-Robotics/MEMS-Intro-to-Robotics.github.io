@@ -227,7 +227,7 @@ if __name__ == '__main__':
     'navigate_to_point = turtlebot4_nav.navigate_to_point:main',
 ],</code></pre>
     <p>Finally, navigate to your workspace root, build to register the new entry point, source the environment, and run your node.</p>
-    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~workspaces/[netid]_robotics_fall2025/lab09/ros2_ws
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~/workspaces/[netid]_robotics_fall2025/lab09/ros2_ws
 colcon build --symlink-install
 source install/setup.bash
 ros2 run turtlebot4_nav navigate_to_point</code></pre>
@@ -291,7 +291,7 @@ if __name__ == '__main__':
         <p>Create a stateful, class-based node that subscribes to the map, identifies "frontiers" (the boundary between known and unknown space), and navigates to them until the map is complete.</p>
     </blockquote>
     <h4>Step 1: Create the new script file</h4>
-    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~workspaces/[netid]_robotics_fall2025/lab09/ros2_ws/src/turtlebot4_nav/turtlebot4_nav
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~/workspaces/[netid]_robotics_fall2025/lab09/ros2_ws/src/turtlebot4_nav/turtlebot4_nav
 touch autonomous_explore.py
 chmod +x autonomous_explore.py</code></pre>
     <figure style="text-align: center; margin: 2em auto; max-width: 450px;"><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:400px;min-height:150px;margin:1em auto;">A partially explored map in RViz.</div>
@@ -390,7 +390,7 @@ if __name__ == '__main__':
     'auto_explore = turtlebot4_nav.autonomous_explore:main',
 ],</code></pre>
     <p>Build, source, and run your new autonomous node.</p>
-    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~workspaces/[netid]_robotics_fall2025/lab09/ros2_ws
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~/workspaces/[netid]_robotics_fall2025/lab09/ros2_ws
 colcon build --symlink-install
 source install/setup.bash
 ros2 run turtlebot4_nav auto_explore</code></pre>

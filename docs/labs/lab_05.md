@@ -432,7 +432,8 @@ cd /workspaces/[netid]_robotics_fall2025/lab05/ros2_ws</code></pre>
     self.moveit2.add_collision_box(
         id="obstacle_box",
         size=(0.10, 0.50, 0.10),           # (sx, sy, sz) meters
-        position=(0.25, 0.00, 0.15),       # (x, y, z) meters<br />        quat_xyzw=(0.0, 0.0, 0.0, 1.0),
+        position=(0.25, 0.00, 0.15),       # (x, y, z) meters
+        quat_xyzw=(0.0, 0.0, 0.0, 1.0),
         frame_id=self.moveit2.base_link_name,
     )
     self.get_logger().info("Added collision box to the planning scene.")

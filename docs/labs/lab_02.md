@@ -29,16 +29,6 @@ title: "Lab 02: ROS 2 CLI Fundamentals"
         <li>Apply core ROS 2 concepts (nodes, topics, services, parameters) using <strong>turtlesim</strong>.</li>
         <li>Capture screenshots to document your progress and confirm milestone completion.</li>
     </ul>
-    </li>
-        <li><strong>Gradescope PDF (single file)</strong> including:
-            <ul>
-                <li>First page: your GitHub repo URL.</li>
-                <li>The same 5 labeled screenshots.</li>
-                <li>Written answers to the Discussion Questions.</li>
-            </ul>
-        </li>
-    </ul>
-    <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>Note:</strong> Refer to <strong>Section 6 &ndash; Deliverables</strong> for the required repository layout and full submission details.</blockquote>
     <h3>1.3 Background</h3>
     <p>ROS 2 (Robot Operating System 2) is a flexible framework for building robotic applications. It is built on a <strong>distributed architecture</strong> where multiple processes can run independently and communicate with each other.</p>
     <p>The core concepts you will explore are:</p>

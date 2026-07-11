@@ -199,8 +199,9 @@ mkdir -p lab07_crazyflie/lab07_crazyflie/scripts
 <pre><code class="language-bash"># Define the destination directory for convenience
 SCRIPTS_DIR="lab07_crazyflie/lab07_crazyflie/scripts"
 
-# Download the PID controller node
-curl -L -o "$SCRIPTS_DIR/3d_goal_control.py" \
+# Download the PID controller node. Note: we save it as goal_3d_control.py
+# because Python module names cannot start with a digit.
+curl -L -o "$SCRIPTS_DIR/goal_3d_control.py" \
   "https://gitlab.oit.duke.edu/introtorobotics/mems-robotics-toolkit/-/raw/main/lab07_files/3d_goal_control.py"
 
 # Download the arrival-based trajectory publisher
@@ -217,7 +218,7 @@ chmod +x $SCRIPTS_DIR/*.py
 <blockquote>
     <p><strong>Node Descriptions:</strong></p>
     <ul>
-        <li><code>3d_goal_control.py</code>: The core PID controller. It subscribes to <code>/goal_pose</code>, calculates error, and publishes velocity commands to <code>/crazyflie/cmd_vel</code>.</li>
+        <li><code>goal_3d_control.py</code>: The core PID controller. It subscribes to <code>/goal_pose</code>, calculates error, and publishes velocity commands to <code>/crazyflie/cmd_vel</code>.</li>
         <li><code>trajectory_publisher.py</code>: An intelligent waypoint sequencer. It publishes a goal and waits until the drone's position is within a specified tolerance (<code>arrival_tol_m</code>) for a certain number of messages (<code>arrival_hits</code>) before publishing the next waypoint.</li>
         <li><code>plotting.py</code>: A utility node that logs the drone's position and goal, and generates the final plots for your report.</li>
     </ul>
@@ -237,9 +238,9 @@ chmod +x $SCRIPTS_DIR/*.py
 <p>Open <code>~/workspaces/[netid]_robotics_fall2025/lab07/ros2_ws/src/lab07_crazyflie/setup.py</code>. The <code>entry_points</code> section creates runnable console commands for your Python scripts. This allows you to run your node with a simple command like <code>ros2 run lab07_crazyflie goal_3d_controller</code>. Modify the <code>entry_points</code> dictionary to match this exactly:</p>
 <pre><code>entry_points={
     'console_scripts': [
-        'goal_3d_controller = lab07_crazyflie.scripts.3d_goal_control:main',
+        'goal_3d_controller = lab07_crazyflie.scripts.goal_3d_control:main',
         'trajectory_publisher = lab07_crazyflie.scripts.trajectory_publisher:main',
-        'plotting = lab07_crazyflie.scripts.plotting:main',
+        'trajectory_plotter = lab07_crazyflie.scripts.plotting:main',
     ],
 },
 </code></pre>
@@ -339,11 +340,11 @@ ros2 run lab07_crazyflie trajectory_publisher --ros-args \
 <ol>
     <li><strong>Start the Plotting Node:</strong> In an available terminal (e.g., Pane 3 after the timed run finishes, or a new Pane 4), start the plotter:
         <pre><code class="language-bash">source ~/workspaces/[netid]_robotics_fall2025/lab07/ros2_ws/install/setup.bash
-ros2 run lab07_crazyflie plotting
+ros2 run lab07_crazyflie trajectory_plotter
 </code></pre>
     </li>
     <li><strong>Run the Final Course Again:</strong> Relaunch the trajectory publisher (as in the previous step) to perform one complete, non-looping run of the Final Course.</li>
-    <li><strong>Stop the Plotting Node:</strong> Once the course is complete, press <code>Ctrl+C</code> in the plotting terminal. It will automatically save two plot files (<code>xy_vs_goal.png</code> and <code>xyz_traces.png</code>) to your current directory.</li>
+    <li><strong>Stop the Plotting Node:</strong> Once the course is complete, press <code>Ctrl+C</code> in the plotting terminal. It will automatically save a data log (<code>trajectory_log.csv</code>) and two plot files (<code>traj_xyz_timeplots.png</code> and <code>traj_xy_traj.png</code>) to your current directory.</li>
     <li><strong>Organize Your Files:</strong> Move the generated images into your lab07/docs/ folder and rename them according to the deliverables checklist.</li>
 </ol>
 <p><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:677px;min-height:150px;margin:1em auto;">Sample solution for a well tuned controller</div></p>

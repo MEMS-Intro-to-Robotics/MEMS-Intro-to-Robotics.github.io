@@ -622,9 +622,11 @@ def clean_lab(html: str, lab_num: int) -> str:
 
     # 6. Remove inline "Deliverables (at a glance)" subsections
     # These are <h4>Deliverables...</h4> followed by lists and notes
+    # Consume through any nested lists and trailing blockquotes up to the next
+    # heading/section boundary (a lazy <ul>.*?</ul> stops at the first nested
+    # </ul> and strands the outer list's tail).
     html = re.sub(
-        r'<h4>Deliverables[^<]*</h4>\s*<ul>.*?</ul>\s*'
-        r'(?:<blockquote[^>]*>.*?</blockquote>\s*)?',
+        r'<h4>Deliverables[^<]*</h4>.*?(?=<h[1-6][ >]|<section\b|</section)',
         '', html, flags=re.DOTALL,
     )
     # Also remove "Deliverables At a Glance" as <h1> in labs 5/6 intro areas
@@ -672,6 +674,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default=DEFAULT_LABS_DST,
         help="Path to the destination markdown directory",
     )
+    parser.add_argument(
+        "--labs",
+        type=int,
+        nargs="+",
+        default=list(range(1, 11)),
+        help="Lab numbers to process (default: all)",
+    )
     return parser.parse_args(argv)
 
 
@@ -685,7 +694,7 @@ def main(argv: list[str] | None = None):
 
     labs_dst.mkdir(parents=True, exist_ok=True)
 
-    for lab_num in range(1, 11):
+    for lab_num in args.labs:
         src = labs_src / f"lab_{lab_num}.html"
         if not src.exists():
             print(f"WARNING: {src} not found, skipping")
@@ -696,7 +705,7 @@ def main(argv: list[str] | None = None):
         md = wrap_in_markdown(cleaned, lab_num)
 
         dst = labs_dst / f"lab_{lab_num:02d}.md"
-        dst.write_text(md, encoding="utf-8")
+        dst.write_text(md, encoding="utf-8", newline="\n")
         print(f"Processed lab {lab_num:02d} -> {dst.name} ({len(html)} -> {len(cleaned)} chars)")
 
     print("\nDone! All labs processed.")
