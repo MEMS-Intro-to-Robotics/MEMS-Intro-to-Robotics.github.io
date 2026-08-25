@@ -40,6 +40,40 @@ Try:
 
 This is especially relevant in the TurtleBot and some simulation workflows.
 
+### `docker run` says the container name is already in use
+
+A container from an earlier session is still running or still being cleaned up.
+Either attach to it:
+
+```bash
+docker exec -it <name> bash
+```
+
+or remove it and start again:
+
+```bash
+docker rm -f <name>
+```
+
+### FastX connects but the screen is black or blank
+
+Usually a stale desktop session, or one started with the wrong command or
+window mode. Terminate the session in the FastX client and start a new one with
+command `startxfce4` and window mode **Single**. If it persists, reboot the VM
+from an SSH terminal with `sudo reboot`.
+
+### `pytest` is not found
+
+Course VMs install it through the setup script. If it is missing, the script did
+not finish. Install it with apt:
+
+```bash
+sudo apt-get install -y python3-pytest
+```
+
+Do not use `python3 -m pip install pytest`. Ubuntu 24.04 treats the system
+Python as externally managed and refuses that install.
+
 ## Git and repository workflow
 
 ### `git push` is denied
@@ -61,6 +95,50 @@ git rebase origin/main
 ```
 
 Only use destructive reset flows when you explicitly want to discard local work.
+
+### `git push` is rejected as non-fast-forward
+
+The message says `! [rejected]` with `fetch first` or `non-fast-forward`. The
+remote holds a commit your branch does not contain, and the rejection is
+protecting it.
+
+Do not force-push. Inspect first:
+
+```bash
+git fetch origin
+git log --oneline --graph --decorate --all
+```
+
+Then integrate with the strategy your lab specifies.
+
+### `git pull` asks how to reconcile divergent branches
+
+Both branches have new commits and Git will not guess. Unless a lab says
+otherwise, replay your local commits on top of the remote ones:
+
+```bash
+git pull --rebase origin main
+```
+
+### A rebase stops with a conflict
+
+Git found edits to the same lines on both sides and needs your decision.
+
+```bash
+git status
+```
+
+Open the file, replace the whole `<<<<<<<` / `=======` / `>>>>>>>` marker block
+with the content you actually want, then:
+
+```bash
+git add <file>
+GIT_EDITOR=true git rebase --continue
+```
+
+To return to the state before the rebase, run `git rebase --abort`. If you have
+tried once carefully and are still stuck after about ten minutes, ask a TA
+rather than reaching for force-push or a hard reset.
 
 ## ROS 2 basics
 
