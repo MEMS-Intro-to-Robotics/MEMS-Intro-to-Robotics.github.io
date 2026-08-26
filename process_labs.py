@@ -18,7 +18,7 @@ from pathlib import Path
 from textwrap import dedent
 
 REPO_ROOT = Path(__file__).resolve().parent
-DEFAULT_LABS_SRC = REPO_ROOT.parent / "intro-to-robotics-labs" / "2026_labs"
+DEFAULT_LABS_SRC = REPO_ROOT.parent / "intro-to-robotics-labs" / "2026_fall_labs"
 DEFAULT_LABS_DST = REPO_ROOT / "docs" / "labs"
 
 LAB_TITLES = {
