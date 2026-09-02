@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 250" role="img" aria-labelledby="t d">
+  <title id="t">The turtlesim node graph</title>
+  <desc id="d">The node slash teleop underscore turtle publishes geometry msgs Twist messages on the topic slash turtle1 slash cmd underscore vel. The node slash turtlesim subscribes to that topic and moves the turtle. This is the same structure rqt graph draws.</desc>
+
+  <style>
+    .node   { fill: #ffffff; stroke: #012169; stroke-width: 2.5; }
+    .tnode  { fill: #ffffff; stroke: #0f766e; stroke-width: 2.5; }
+    .name   { font-family: "Cascadia Code", Consolas, monospace; font-size: 15px; font-weight: 700; fill: #012169; }
+    .role   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #5a6675; }
+    .topic  { font-family: "Cascadia Code", Consolas, monospace; font-size: 14px; font-weight: 700; fill: #0f766e; }
+    .msg    { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #6b7684; }
+    .verb   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; font-weight: 600; fill: #0f766e; }
+    .flow   { stroke: #0f766e; stroke-width: 2.5; fill: none; marker-end: url(#a); }
+    .cap    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono   { font-family: "Cascadia Code", Consolas, monospace; font-size: 12.5px; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <rect width="860" height="250" fill="#ffffff"/>
+
+  <!-- Publisher node -->
+  <ellipse class="node" cx="120" cy="110" rx="100" ry="46"/>
+  <text class="name" x="120" y="106" text-anchor="middle">/teleop_turtle</text>
+  <text class="role" x="120" y="128" text-anchor="middle">reads your arrow keys</text>
+
+  <!-- Topic -->
+  <rect class="tnode" x="310" y="82" width="190" height="56" rx="6"/>
+  <text class="topic" x="405" y="106" text-anchor="middle">/turtle1/cmd_vel</text>
+  <text class="msg"   x="405" y="126" text-anchor="middle">geometry_msgs/Twist</text>
+
+  <!-- Subscriber node -->
+  <ellipse class="node" cx="690" cy="110" rx="100" ry="46"/>
+  <text class="name" x="690" y="106" text-anchor="middle">/turtlesim</text>
+  <text class="role" x="690" y="128" text-anchor="middle">draws and moves the turtle</text>
+
+  <line class="flow" x1="224" y1="110" x2="306" y2="110"/>
+  <line class="flow" x1="504" y1="110" x2="586" y2="110"/>
+
+  <text class="verb" x="265" y="100" text-anchor="middle">publishes</text>
+  <text class="verb" x="545" y="100" text-anchor="middle">subscribes</text>
+
+  <text class="cap" x="430" y="196" text-anchor="middle">Neither node knows the other exists. They are connected only by agreeing on the topic name and message type.</text>
+  <text class="cap" x="430" y="222" text-anchor="middle">This is the structure <tspan class="mono">rqt_graph</tspan> draws: ovals are nodes, rectangles are topics.</text>
+</svg>

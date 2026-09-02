@@ -31,14 +31,24 @@ Try:
 
 ### Files created in the container cannot be edited on the host
 
-This usually means the container wrote files as `root`.
+The container runs as `root` and mounts `~/workspaces` at `/root/workspaces`. A
+bind mount shares ownership by numeric user ID, so any file created from a
+container terminal is owned by `root` on the VM. Your NetID account cannot write
+to it, and editing it or running `git add` fails with `Permission denied`.
 
-Try:
+Check the owner, then take the files back:
 
-- Use the documented host-side `chown` flow in labs that mount host workspaces
-- Decide on one ownership strategy for your course and document it consistently
+```bash
+ls -l <file>
+sudo chown -R "$USER:$USER" ~/workspaces
+```
 
-This is especially relevant in the TurtleBot and some simulation workflows.
+If you cloned the repository from inside the container, `.git` is root-owned too
+and every Git command fails the same way. The same command fixes it.
+
+Create and edit repository files from the host VM terminal, and use the
+container terminal for `ros2` commands. This applies to every lab that mounts
+`~/workspaces` into the container.
 
 ### `docker run` says the container name is already in use
 
@@ -309,6 +319,10 @@ the script from a container terminal. In another pane,
 ### A script fails with `Permission denied`
 
 The file is not marked executable. Run `chmod +x <script>.sh`.
+
+If `chmod` itself is denied, or `ls -l` shows the file owned by `root`, this is
+the container ownership problem instead: see
+[Files created in the container cannot be edited on the host](#files-created-in-the-container-cannot-be-edited-on-the-host).
 
 ### `set_pen` with the pen-off field fails with a YAML error
 

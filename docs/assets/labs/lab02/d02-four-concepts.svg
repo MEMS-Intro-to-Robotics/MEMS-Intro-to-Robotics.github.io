@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-labelledby="t d">
+  <title id="t">Nodes, topics, services, and parameters at a glance</title>
+  <desc id="d">Four ideas cover everything in this lab. A node is a running program that does one job. A topic is a named stream that any number of nodes can publish to or subscribe from, with no reply. A service is a request and a reply between one caller and one provider, used for one-off changes. A parameter is a setting inside a node that can be read or changed while the node is running. Each has its own family of ros2 commands.</desc>
+
+  <style>
+    .card  { fill: #ffffff; stroke: #cdd6e4; stroke-width: 1.5; }
+    .strip { fill: #012169; }
+    .stripT{ fill: #0f766e; }
+    .stripO{ fill: #b45309; }
+    .stripP{ fill: #7c3aed; }
+    .name  { font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #012169; }
+    .what  { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; fill: #26313f; }
+    .when  { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; fill: #5a6675; font-style: italic; }
+    .cmd   { font-family: "Cascadia Code", Consolas, monospace; font-size: 10.5px; fill: #012169; font-weight: 700; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .lbl   { font-family: "Segoe UI", Arial, sans-serif; font-size: 10.5px; font-weight: 700; fill: #ffffff; }
+  </style>
+
+  <rect width="900" height="420" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="30">Four ideas, and the commands that inspect each one</text>
+
+  <!-- ============ NODE ============ -->
+  <rect class="card"  x="40" y="48" width="196" height="230" rx="8"/>
+  <rect class="strip" x="40" y="48" width="196" height="26" rx="8"/>
+  <rect class="strip" x="40" y="62" width="196" height="12"/>
+  <text class="lbl" x="138" y="66" text-anchor="middle">NODE</text>
+
+  <text class="name" x="60" y="100">A running program</text>
+  <text class="what" x="60" y="124">One job each. Turtlesim is</text>
+  <text class="what" x="60" y="140">a node; your teleop is</text>
+  <text class="what" x="60" y="156">another node.</text>
+  <text class="when" x="60" y="182">they find each other by name</text>
+
+  <text class="cmd" x="60" y="212">ros2 node list</text>
+  <text class="cmd" x="60" y="232">ros2 node info &lt;name&gt;</text>
+  <text class="cmd" x="60" y="252">ros2 run &lt;pkg&gt; &lt;exe&gt;</text>
+
+  <!-- ============ TOPIC ============ -->
+  <rect class="card"   x="252" y="48" width="196" height="230" rx="8"/>
+  <rect class="stripT" x="252" y="48" width="196" height="26" rx="8"/>
+  <rect class="stripT" x="252" y="62" width="196" height="12"/>
+  <text class="lbl" x="350" y="66" text-anchor="middle">TOPIC</text>
+
+  <text class="name" x="272" y="100" style="fill:#0f766e">A named stream</text>
+  <text class="what" x="272" y="124">Anyone can publish, anyone</text>
+  <text class="what" x="272" y="140">can subscribe. Nobody</text>
+  <text class="what" x="272" y="156">replies.</text>
+  <text class="when" x="272" y="182">for things that keep happening</text>
+
+  <text class="cmd" x="272" y="212">ros2 topic list</text>
+  <text class="cmd" x="272" y="232">ros2 topic echo &lt;t&gt;</text>
+  <text class="cmd" x="272" y="252">ros2 topic pub --once</text>
+
+  <!-- ============ SERVICE ============ -->
+  <rect class="card"   x="464" y="48" width="196" height="230" rx="8"/>
+  <rect class="stripO" x="464" y="48" width="196" height="26" rx="8"/>
+  <rect class="stripO" x="464" y="62" width="196" height="12"/>
+  <text class="lbl" x="562" y="66" text-anchor="middle">SERVICE</text>
+
+  <text class="name" x="484" y="100" style="fill:#b45309">A request and a reply</text>
+  <text class="what" x="484" y="124">One caller, one provider,</text>
+  <text class="what" x="484" y="140">and an answer comes</text>
+  <text class="what" x="484" y="156">back.</text>
+  <text class="when" x="484" y="182">for one-off changes of state</text>
+
+  <text class="cmd" x="484" y="212">ros2 service list</text>
+  <text class="cmd" x="484" y="232">ros2 service type &lt;s&gt;</text>
+  <text class="cmd" x="484" y="252">ros2 service call &lt;s&gt;</text>
+
+  <!-- ============ PARAMETER ============ -->
+  <rect class="card"   x="676" y="48" width="196" height="230" rx="8"/>
+  <rect class="stripP" x="676" y="48" width="196" height="26" rx="8"/>
+  <rect class="stripP" x="676" y="62" width="196" height="12"/>
+  <text class="lbl" x="774" y="66" text-anchor="middle">PARAMETER</text>
+
+  <text class="name" x="696" y="100" style="fill:#7c3aed">A setting inside a node</text>
+  <text class="what" x="696" y="124">Read or changed while the</text>
+  <text class="what" x="696" y="140">node keeps running, with no</text>
+  <text class="what" x="696" y="156">restart needed.</text>
+  <text class="when" x="696" y="182">for tuning without recompiling</text>
+
+  <text class="cmd" x="696" y="212">ros2 param list</text>
+  <text class="cmd" x="696" y="232">ros2 param get &lt;n&gt; &lt;p&gt;</text>
+  <text class="cmd" x="696" y="252">ros2 param set &lt;n&gt; &lt;p&gt;</text>
+
+  <!-- ============ notes ============ -->
+  <line x1="40" y1="310" x2="860" y2="310" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <text class="note" x="40" y="336">Nodes are the things; topics, services, and parameters are the three ways nodes deal with each other. Every command above</text>
+  <text class="note" x="40" y="356">is a way of asking a running system what it is actually doing.</text>
+
+  <text class="note" x="40" y="388">Later labs lean on all four: Lab 3 scripts topics and services, Lab 4 writes nodes that publish and subscribe, and Lab 7</text>
+  <text class="note" x="40" y="408">tunes a live controller entirely through <tspan class="mono">ros2 param set</tspan>.</text>
+</svg>
