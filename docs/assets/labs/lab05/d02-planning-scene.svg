@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-labelledby="t d">
+  <title id="t">What Gazebo shows compared with what MoveIt plans against</title>
+  <desc id="d">Gazebo renders and simulates every object in the world, so you can see the box on the table. MoveIt plans only against the planning scene, which starts empty. Until you add the box as a collision object, the planner does not know it exists and will plan a path straight through it. Adding the box makes the planner route around it.</desc>
+
+  <style>
+    .panel  { fill: #f8fafc; stroke: #cdd6e4; stroke-width: 1.5; }
+    .hd     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .hdt    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #0f766e; }
+    .sub    { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; fill: #5a6675; }
+    .table  { fill: #eceff4; stroke: #b9c2ce; stroke-width: 1.5; }
+    .solid  { fill: #d64545; stroke: #8f2020; stroke-width: 1.5; }
+    .ghost  { fill: none; stroke: #b9c2ce; stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .colbox { fill: #eefaf7; stroke: #0f766e; stroke-width: 2.2; }
+    .pathb  { fill: none; stroke: #a32e22; stroke-width: 2.6; stroke-dasharray: 6 4; }
+    .pathg  { fill: none; stroke: #0f766e; stroke-width: 2.6; stroke-dasharray: 6 4; }
+    .ee     { fill: #012169; }
+    .lbl    { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; font-weight: 600; fill: #26313f; }
+    .bad    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 700; fill: #a32e22; }
+    .good   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 700; fill: #0f766e; }
+    .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono   { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+  </style>
+
+  <rect width="900" height="420" fill="#ffffff"/>
+
+  <!-- ============ LEFT : scene not populated ============ -->
+  <rect class="panel" x="24" y="20" width="410" height="250" rx="10"/>
+  <text class="hd"  x="48" y="48">Box exists in Gazebo only</text>
+  <text class="sub" x="48" y="68">you can see it; the planner cannot</text>
+
+  <rect class="table" x="60" y="216" width="340" height="14"/>
+  <rect class="solid" x="210" y="156" width="46" height="60" rx="3"/>
+  <text class="sub" x="233" y="248" text-anchor="middle">solid in simulation</text>
+
+  <circle class="ee" cx="90"  cy="180" r="7"/>
+  <circle class="ee" cx="376" cy="180" r="7"/>
+  <text class="lbl" x="90"  y="162" text-anchor="middle">start</text>
+  <text class="lbl" x="376" y="162" text-anchor="middle">goal</text>
+
+  <path class="pathb" d="M 90 180 L 376 180"/>
+  <text class="bad" x="233" y="112" text-anchor="middle">plans straight through it</text>
+
+  <!-- ============ RIGHT : scene populated ============ -->
+  <rect class="panel" x="466" y="20" width="410" height="250" rx="10"/>
+  <text class="hdt" x="490" y="48">Box added to the planning scene</text>
+  <text class="sub" x="490" y="68">now it is part of the world the planner sees</text>
+
+  <rect class="table" x="502" y="216" width="340" height="14"/>
+  <rect class="colbox" x="652" y="156" width="46" height="60" rx="3"/>
+  <text class="sub" x="675" y="248" text-anchor="middle">collision object</text>
+
+  <circle class="ee" cx="532" cy="180" r="7"/>
+  <circle class="ee" cx="818" cy="180" r="7"/>
+  <text class="lbl" x="532" y="162" text-anchor="middle">start</text>
+  <text class="lbl" x="818" y="162" text-anchor="middle">goal</text>
+
+  <path class="pathg" d="M 532 180 C 600 180, 610 132, 675 132 C 740 132, 750 180, 818 180"/>
+  <text class="good" x="675" y="112" text-anchor="middle">routes around it</text>
+
+  <!-- ============ notes ============ -->
+  <line x1="24" y1="300" x2="876" y2="300" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <text class="note" x="24" y="326">The planning scene starts <tspan style="font-weight:700">empty</tspan>. Gazebo's physics and MoveIt's collision checking are separate worlds, and nothing</text>
+  <text class="note" x="24" y="346">synchronises them for you; <tspan class="mono">add_collision_box(...)</tspan> is what puts an obstacle into the planner's world.</text>
+
+  <text class="note" x="24" y="378">This is why a plan can succeed and still drive the arm into something. The plan was valid in the scene as described;</text>
+  <text class="note" x="24" y="398">the scene was just wrong. If the arm hits something, check what you added to the scene.</text>
+</svg>

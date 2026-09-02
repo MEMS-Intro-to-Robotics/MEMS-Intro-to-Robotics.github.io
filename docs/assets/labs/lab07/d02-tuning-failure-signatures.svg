@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" role="img" aria-labelledby="t d">
+  <title id="t">What each tuning fault looks like on a plot</title>
+  <desc id="d">Four characteristic response shapes. A sluggish response that arrives too slowly means the proportional gain is too low. Overshoot followed by ringing means the proportional gain is too high or the derivative gain too low. A response that flattens out short of the goal means the integral gain is too low. A twitchy response that jitters around the goal means the derivative gain is too high and is amplifying noise.</desc>
+
+  <style>
+    .panel { fill: #ffffff; stroke: #cdd6e4; stroke-width: 1.5; }
+    .axis  { stroke: #26313f; stroke-width: 1.5; }
+    .goal  { stroke: #012169; stroke-width: 1.4; stroke-dasharray: 5 3; }
+    .curve { fill: none; stroke: #012169; stroke-width: 2.4; }
+    .bad   { fill: none; stroke: #c2410c; stroke-width: 2.4; }
+    .sym   { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #012169; }
+    .fix   { font-family: "Cascadia Code", Consolas, monospace; font-size: 12.5px; font-weight: 700; fill: #0f766e; }
+    .why   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; fill: #5a6675; }
+    .gl    { font-family: "Segoe UI", Arial, sans-serif; font-size: 10px; fill: #5a6675; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+  </style>
+
+  <rect width="900" height="340" fill="#ffffff"/>
+
+  <!-- ============ panel 1 : sluggish ============ -->
+  <text class="sym" x="120" y="34" text-anchor="middle">Sluggish</text>
+  <rect class="panel" x="30" y="46" width="180" height="130" rx="6"/>
+  <line class="goal" x1="46" y1="80" x2="194" y2="80"/>
+  <text class="gl" x="194" y="74" text-anchor="end">goal</text>
+  <line class="axis" x1="46" y1="46" x2="46" y2="158"/>
+  <line class="axis" x1="46" y1="158" x2="194" y2="158"/>
+  <path class="bad" d="M 46 158 C 92 154, 120 122, 194 100"/>
+  <text class="fix" x="120" y="200" text-anchor="middle">raise Kp</text>
+  <text class="why" x="120" y="220" text-anchor="middle">never gets there</text>
+  <text class="why" x="120" y="236" text-anchor="middle">in the time allowed</text>
+
+  <!-- ============ panel 2 : ringing ============ -->
+  <text class="sym" x="340" y="34" text-anchor="middle">Overshoot and ringing</text>
+  <rect class="panel" x="250" y="46" width="180" height="130" rx="6"/>
+  <line class="goal" x1="266" y1="80" x2="414" y2="80"/>
+  <text class="gl" x="414" y="74" text-anchor="end">goal</text>
+  <line class="axis" x1="266" y1="46" x2="266" y2="158"/>
+  <line class="axis" x1="266" y1="158" x2="414" y2="158"/>
+  <path class="bad" d="M 266 158 C 288 158, 296 60, 316 56
+                       C 332 53, 340 104, 356 98
+                       C 372 92, 380 68, 394 78
+                       C 402 84, 408 80, 414 80"/>
+  <text class="fix" x="340" y="200" text-anchor="middle">lower Kp, raise Kd</text>
+  <text class="why" x="340" y="220" text-anchor="middle">too aggressive, and</text>
+  <text class="why" x="340" y="236" text-anchor="middle">nothing damping it</text>
+
+  <!-- ============ panel 3 : steady offset ============ -->
+  <text class="sym" x="560" y="34" text-anchor="middle">Settles short</text>
+  <rect class="panel" x="470" y="46" width="180" height="130" rx="6"/>
+  <line class="goal" x1="486" y1="80" x2="634" y2="80"/>
+  <text class="gl" x="634" y="74" text-anchor="end">goal</text>
+  <line class="axis" x1="486" y1="46" x2="486" y2="158"/>
+  <line class="axis" x1="486" y1="158" x2="634" y2="158"/>
+  <path class="bad" d="M 486 158 C 518 154, 538 112, 568 106
+                       C 598 101, 618 103, 634 103"/>
+  <text class="fix" x="560" y="200" text-anchor="middle">raise Ki</text>
+  <text class="why" x="560" y="220" text-anchor="middle">a constant offset that</text>
+  <text class="why" x="560" y="236" text-anchor="middle">never closes on its own</text>
+
+  <!-- ============ panel 4 : twitchy ============ -->
+  <text class="sym" x="780" y="34" text-anchor="middle">Twitchy</text>
+  <rect class="panel" x="690" y="46" width="180" height="130" rx="6"/>
+  <line class="goal" x1="706" y1="80" x2="854" y2="80"/>
+  <text class="gl" x="854" y="74" text-anchor="end">goal</text>
+  <line class="axis" x1="706" y1="46" x2="706" y2="158"/>
+  <line class="axis" x1="706" y1="158" x2="854" y2="158"/>
+  <path class="bad" d="M 706 158 L 718 138 L 726 118 L 734 128 L 742 96
+                       L 750 106 L 758 80 L 766 92 L 774 74 L 782 88
+                       L 790 76 L 798 86 L 806 78 L 814 86 L 822 78
+                       L 830 84 L 838 79 L 854 80"/>
+  <text class="fix" x="780" y="200" text-anchor="middle">lower Kd</text>
+  <text class="why" x="780" y="220" text-anchor="middle">the derivative term is</text>
+  <text class="why" x="780" y="236" text-anchor="middle">amplifying sensor noise</text>
+
+  <!-- ============ note ============ -->
+  <line x1="30" y1="268" x2="870" y2="268" stroke="#cdd6e4" stroke-width="1.5"/>
+  <text class="note" x="30" y="294">Change one gain at a time and re-fly. If two symptoms show at once, calm the ringing first. A stable but slow</text>
+  <text class="note" x="30" y="314">controller is far easier to speed up than an oscillating one is to settle.</text>
+</svg>

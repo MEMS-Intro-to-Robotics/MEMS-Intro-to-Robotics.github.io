@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" role="img" aria-labelledby="t d">
+  <title id="t">The PID control loop as wired in the Crazyflie lab</title>
+  <desc id="d">The goal position is compared with the measured position to produce an error. The error feeds three parallel terms: proportional gain times error, integral gain times accumulated error, and derivative gain times the rate of change of error. Their sum is the commanded velocity published on cmd underscore vel. The drone dynamics respond, odometry measures the new position, and that measurement is fed back to the comparison point. You tune the three gains; everything else is fixed.</desc>
+
+  <style>
+    .blk    { fill: #ffffff; stroke: #012169; stroke-width: 2.2; }
+    .tune   { fill: #eefaf7; stroke: #0f766e; stroke-width: 2.2; }
+    .plant  { fill: #f4f7fc; stroke: #012169; stroke-width: 2.2; }
+    .n      { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #012169; }
+    .nt     { font-family: "Cascadia Code", Consolas, monospace; font-size: 15px; font-weight: 700; fill: #0f766e; }
+    .s      { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; fill: #5a6675; }
+    .sig    { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #0f766e; font-weight: 700; }
+    .wire   { stroke: #012169; stroke-width: 2.2; fill: none; }
+    .flow   { stroke: #012169; stroke-width: 2.2; fill: none; marker-end: url(#a); }
+    .fb     { stroke: #b45309; stroke-width: 2.2; fill: none; marker-end: url(#b); }
+    .op     { font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #012169; }
+    .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#012169"/>
+    </marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="400" fill="#ffffff"/>
+
+  <!-- Goal -->
+  <rect class="blk" x="20" y="132" width="112" height="56" rx="6"/>
+  <text class="n" x="76" y="156" text-anchor="middle">Goal</text>
+  <text class="s" x="76" y="174" text-anchor="middle">x, y, z setpoint</text>
+
+  <!-- Error junction -->
+  <line class="flow" x1="132" y1="160" x2="148" y2="160"/>
+  <circle cx="170" cy="160" r="20" fill="#ffffff" stroke="#012169" stroke-width="2.2"/>
+  <text class="op" x="159" y="155" text-anchor="middle">+</text>
+  <text class="op" x="159" y="177" text-anchor="middle">−</text>
+
+  <line class="wire" x1="190" y1="160" x2="246" y2="160"/>
+  <text class="sig" x="218" y="150" text-anchor="middle">error</text>
+
+  <!-- Fan-out trunk -->
+  <line class="wire" x1="246" y1="78" x2="246" y2="242"/>
+  <line class="flow" x1="246" y1="78"  x2="256" y2="78"/>
+  <line class="flow" x1="246" y1="160" x2="256" y2="160"/>
+  <line class="flow" x1="246" y1="242" x2="256" y2="242"/>
+
+  <!-- Three terms -->
+  <rect class="tune" x="260" y="52" width="150" height="52" rx="6"/>
+  <text class="nt" x="335" y="76"  text-anchor="middle">Kp · e</text>
+  <text class="s"  x="335" y="94"  text-anchor="middle">reacts to error now</text>
+
+  <rect class="tune" x="260" y="134" width="150" height="52" rx="6"/>
+  <text class="nt" x="335" y="158" text-anchor="middle">Ki · ∫e dt</text>
+  <text class="s"  x="335" y="176" text-anchor="middle">removes lasting offset</text>
+
+  <rect class="tune" x="260" y="216" width="150" height="52" rx="6"/>
+  <text class="nt" x="335" y="240" text-anchor="middle">Kd · de/dt</text>
+  <text class="s"  x="335" y="258" text-anchor="middle">damps the approach</text>
+
+  <!-- Fan-in bus -->
+  <line class="wire" x1="410" y1="78"  x2="440" y2="78"/>
+  <line class="wire" x1="410" y1="160" x2="440" y2="160"/>
+  <line class="wire" x1="410" y1="242" x2="440" y2="242"/>
+  <line class="wire" x1="440" y1="78"  x2="440" y2="242"/>
+
+  <circle cx="460" cy="160" r="20" fill="#ffffff" stroke="#012169" stroke-width="2.2"/>
+  <text class="op" x="460" y="166" text-anchor="middle">Σ</text>
+
+  <!-- Command out -->
+  <line class="flow" x1="480" y1="160" x2="546" y2="160"/>
+  <text class="sig"  x="513" y="150" text-anchor="middle">/cmd_vel</text>
+
+  <rect class="plant" x="550" y="126" width="160" height="68" rx="6"/>
+  <text class="n" x="630" y="152" text-anchor="middle">Drone dynamics</text>
+  <text class="s" x="630" y="170" text-anchor="middle">Gazebo simulation</text>
+  <text class="s" x="630" y="186" text-anchor="middle">mass, drag, thrust</text>
+
+  <line class="flow" x1="710" y1="160" x2="774" y2="160"/>
+
+  <rect class="plant" x="778" y="126" width="102" height="68" rx="6"/>
+  <text class="n" x="829" y="156" text-anchor="middle">Odometry</text>
+  <text class="s" x="829" y="176" text-anchor="middle">measured pose</text>
+
+  <!-- Feedback path -->
+  <path class="fb" d="M 829 194 L 829 300 L 170 300 L 170 182"/>
+  <text class="sig" x="509" y="292" text-anchor="middle" style="fill:#b45309">measured position fed back</text>
+
+  <line x1="20" y1="330" x2="880" y2="330" stroke="#cdd6e4" stroke-width="1.5"/>
+  <rect class="tune" x="20" y="346" width="20" height="14" rx="3"/>
+  <text class="note" x="48" y="358">These three gains are the only thing you change. Tune one axis at a time, and change one gain at a time.</text>
+  <text class="note" x="20" y="384">Each axis (x, y, and z) has its own independent set of gains, so there are nine numbers in total.</text>
+</svg>

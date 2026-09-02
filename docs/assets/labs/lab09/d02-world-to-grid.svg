@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 450" role="img" aria-labelledby="t d">
+  <title id="t">Converting between world coordinates and grid cells</title>
+  <desc id="d">Nav2 works in metres and the map works in cells. The map's origin is the world position of the bottom-left corner of the grid, and the resolution is the width of one cell in metres. To go from a world point to a cell, subtract the origin and divide by the resolution. To go back, multiply the cell index by the resolution, add the origin, and add half a cell to land in the centre rather than the corner.</desc>
+
+  <style>
+    .free  { fill: #ffffff; stroke: #d3dae4; stroke-width: 1.4; }
+    .hi    { fill: #eefaf7; stroke: #0f766e; stroke-width: 2.4; }
+    .ax    { stroke: #26313f; stroke-width: 1.8; }
+    .axl   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #5a6675; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .cell  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #0f766e; font-weight: 700; }
+    .form  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12.5px; fill: #012169; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .small { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #5a6675; }
+    .lbl   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; font-weight: 600; fill: #0f766e; }
+    .org   { fill: #c2410c; }
+    .orgl  { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; font-weight: 700; fill: #c2410c; }
+    .pt    { fill: #0f766e; }
+    .dim   { stroke: #0f766e; stroke-width: 1.4; }
+    .box   { fill: #f8fafc; stroke: #cdd6e4; stroke-width: 1.5; }
+  </style>
+
+  <rect width="860" height="450" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="30">The map is a grid; Nav2 speaks metres</text>
+
+  <!-- resolution bracket over one cell -->
+  <line class="dim" x1="310" y1="56" x2="350" y2="56"/>
+  <line class="dim" x1="310" y1="50" x2="310" y2="62"/>
+  <line class="dim" x1="350" y1="50" x2="350" y2="62"/>
+  <text class="lbl" x="330" y="44" text-anchor="middle">resolution</text>
+
+  <!-- Grid 6 x 5, 40px cells, bottom-left corner at (110, 264) -->
+  <g>
+    <rect class="free" x="110" y="64"  width="40" height="40"/><rect class="free" x="150" y="64"  width="40" height="40"/>
+    <rect class="free" x="190" y="64"  width="40" height="40"/><rect class="free" x="230" y="64"  width="40" height="40"/>
+    <rect class="free" x="270" y="64"  width="40" height="40"/><rect class="free" x="310" y="64"  width="40" height="40"/>
+
+    <rect class="free" x="110" y="104" width="40" height="40"/><rect class="free" x="150" y="104" width="40" height="40"/>
+    <rect class="free" x="190" y="104" width="40" height="40"/><rect class="free" x="230" y="104" width="40" height="40"/>
+    <rect class="free" x="270" y="104" width="40" height="40"/><rect class="free" x="310" y="104" width="40" height="40"/>
+
+    <rect class="free" x="110" y="144" width="40" height="40"/><rect class="free" x="150" y="144" width="40" height="40"/>
+    <rect class="free" x="190" y="144" width="40" height="40"/><rect class="free" x="230" y="144" width="40" height="40"/>
+    <rect class="free" x="270" y="144" width="40" height="40"/><rect class="free" x="310" y="144" width="40" height="40"/>
+
+    <rect class="free" x="110" y="184" width="40" height="40"/><rect class="free" x="150" y="184" width="40" height="40"/>
+    <rect class="free" x="190" y="184" width="40" height="40"/><rect class="free" x="230" y="184" width="40" height="40"/>
+    <rect class="free" x="270" y="184" width="40" height="40"/><rect class="free" x="310" y="184" width="40" height="40"/>
+
+    <rect class="free" x="110" y="224" width="40" height="40"/><rect class="free" x="150" y="224" width="40" height="40"/>
+    <rect class="free" x="190" y="224" width="40" height="40"/><rect class="free" x="230" y="224" width="40" height="40"/>
+    <rect class="free" x="270" y="224" width="40" height="40"/><rect class="free" x="310" y="224" width="40" height="40"/>
+  </g>
+
+  <!-- highlighted cell : column 3, row 1 counting from the bottom-left -->
+  <rect class="hi" x="230" y="184" width="40" height="40"/>
+  <circle class="pt" cx="250" cy="204" r="5"/>
+
+  <!-- cell index labelled outside the grid -->
+  <text class="cell" x="362" y="200">c = 3</text>
+  <text class="cell" x="362" y="216">r = 1</text>
+
+  <!-- world axes anchored at the grid corner -->
+  <line class="ax" x1="110" y1="264" x2="372" y2="264"/>
+  <line class="ax" x1="110" y1="264" x2="110" y2="54"/>
+  <text class="axl" x="378" y="268">x (m)</text>
+  <text class="axl" x="104" y="48" text-anchor="middle">y (m)</text>
+
+  <circle class="org" cx="110" cy="264" r="6"/>
+  <text class="orgl"  x="110" y="286" text-anchor="middle">origin</text>
+  <text class="small" x="40"  y="308">map.info.origin = world position of this corner</text>
+
+  <!-- ================= formulas ================= -->
+  <rect class="box" x="430" y="64" width="392" height="106" rx="8"/>
+  <text class="hd"   x="452" y="90">World point → cell</text>
+  <text class="form" x="452" y="116">c = int((x − origin.x) / resolution)</text>
+  <text class="form" x="452" y="138">r = int((y − origin.y) / resolution)</text>
+  <text class="note" x="452" y="160">integer division floors onto the containing cell</text>
+
+  <rect class="box" x="430" y="186" width="392" height="128" rx="8"/>
+  <text class="hd"   x="452" y="212">Cell → world point</text>
+  <text class="form" x="452" y="238">x = origin.x + (c + 0.5) × resolution</text>
+  <text class="form" x="452" y="260">y = origin.y + (r + 0.5) × resolution</text>
+  <text class="note" x="452" y="284">the <tspan class="mono">+ 0.5</tspan> lands in the centre of the cell,</text>
+  <text class="note" x="452" y="302">not on its bottom-left corner</text>
+
+  <!-- ================= notes ================= -->
+  <line x1="40" y1="344" x2="820" y2="344" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <text class="note" x="40" y="370">Forget the <tspan class="mono">+ 0.5</tspan> and every goal lands on a cell corner. Near a wall that corner can be inside the obstacle, and Nav2</text>
+  <text class="note" x="40" y="390">rejects the goal for no reason you can see on the map.</text>
+
+  <text class="note" x="40" y="418">The origin is <tspan style="font-weight:700">not</tspan> the robot's start and it is usually negative. Read it from the message rather than assuming zero.</text>
+</svg>

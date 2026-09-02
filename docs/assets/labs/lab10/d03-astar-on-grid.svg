@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-labelledby="t d">
+  <title id="t">How A star finds a path across the occupancy grid</title>
+  <desc id="d">A star expands cells outward from the start, always choosing the unexpanded cell with the lowest f score. The f score is g, the number of steps already taken from the start, plus h, an estimate of the steps still to go. A wall blocks the direct route, so the shortest path detours down and back up, taking eleven steps. Cells that were expanded and rejected are shaded grey; cells still queued are pale. Because h never overestimates the true remaining distance, the first route that reaches the goal is already the shortest.</desc>
+
+  <style>
+    .free  { fill: #ffffff; stroke: #e4e9f0; stroke-width: 1.2; }
+    .wall  { fill: #26313f; stroke: #ffffff; stroke-width: 1.2; }
+    .open  { fill: #eefaf7; stroke: #cfe8e0; stroke-width: 1.2; }
+    .shut  { fill: #dde4ec; stroke: #ccd5e0; stroke-width: 1.2; }
+    .path  { fill: #7fcbb0; stroke: #0f766e; stroke-width: 1.6; }
+    .start { fill: #012169; }
+    .goalm { fill: #c2410c; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .lbl   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #ffffff; }
+    .key   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #26313f; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .form  { font-family: "Cascadia Code", Consolas, monospace; font-size: 15px; fill: #012169; font-weight: 700; }
+    .cellv { font-family: "Cascadia Code", Consolas, monospace; font-size: 10.5px; fill: #26313f; }
+    .box   { fill: #f8fafc; stroke: #cdd6e4; stroke-width: 1.5; }
+    .term  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #5a6675; }
+  </style>
+
+  <rect width="900" height="470" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="30">Expand the cheapest cell first, until the goal falls out</text>
+
+  <!-- Grid 9 cols x 7 rows, 36px cells, origin (40,48) -->
+  <g>
+    <!-- row 0 -->
+    <rect class="free" x="40"  y="48" width="36" height="36"/><rect class="free" x="76"  y="48" width="36" height="36"/>
+    <rect class="free" x="112" y="48" width="36" height="36"/><rect class="open" x="148" y="48" width="36" height="36"/>
+    <rect class="wall" x="184" y="48" width="36" height="36"/><rect class="free" x="220" y="48" width="36" height="36"/>
+    <rect class="free" x="256" y="48" width="36" height="36"/><rect class="free" x="292" y="48" width="36" height="36"/>
+    <rect class="free" x="328" y="48" width="36" height="36"/>
+    <!-- row 1 -->
+    <rect class="shut" x="40"  y="84" width="36" height="36"/><rect class="shut" x="76"  y="84" width="36" height="36"/>
+    <rect class="shut" x="112" y="84" width="36" height="36"/><rect class="shut" x="148" y="84" width="36" height="36"/>
+    <rect class="wall" x="184" y="84" width="36" height="36"/><rect class="open" x="220" y="84" width="36" height="36"/>
+    <rect class="open" x="256" y="84" width="36" height="36"/><rect class="free" x="292" y="84" width="36" height="36"/>
+    <rect class="free" x="328" y="84" width="36" height="36"/>
+    <!-- row 2 : the corridor the path runs along -->
+    <rect class="path" x="40"  y="120" width="36" height="36"/><rect class="path" x="76"  y="120" width="36" height="36"/>
+    <rect class="path" x="112" y="120" width="36" height="36"/><rect class="path" x="148" y="120" width="36" height="36"/>
+    <rect class="wall" x="184" y="120" width="36" height="36"/><rect class="path" x="220" y="120" width="36" height="36"/>
+    <rect class="path" x="256" y="120" width="36" height="36"/><rect class="path" x="292" y="120" width="36" height="36"/>
+    <rect class="open" x="328" y="120" width="36" height="36"/>
+    <!-- row 3 -->
+    <rect class="shut" x="40"  y="156" width="36" height="36"/><rect class="shut" x="76"  y="156" width="36" height="36"/>
+    <rect class="shut" x="112" y="156" width="36" height="36"/><rect class="path" x="148" y="156" width="36" height="36"/>
+    <rect class="wall" x="184" y="156" width="36" height="36"/><rect class="path" x="220" y="156" width="36" height="36"/>
+    <rect class="open" x="256" y="156" width="36" height="36"/><rect class="open" x="292" y="156" width="36" height="36"/>
+    <rect class="free" x="328" y="156" width="36" height="36"/>
+    <!-- row 4 : the detour beneath the wall -->
+    <rect class="shut" x="40"  y="192" width="36" height="36"/><rect class="shut" x="76"  y="192" width="36" height="36"/>
+    <rect class="shut" x="112" y="192" width="36" height="36"/><rect class="path" x="148" y="192" width="36" height="36"/>
+    <rect class="path" x="184" y="192" width="36" height="36"/><rect class="path" x="220" y="192" width="36" height="36"/>
+    <rect class="free" x="256" y="192" width="36" height="36"/><rect class="free" x="292" y="192" width="36" height="36"/>
+    <rect class="free" x="328" y="192" width="36" height="36"/>
+    <!-- row 5 -->
+    <rect class="free" x="40"  y="228" width="36" height="36"/><rect class="free" x="76"  y="228" width="36" height="36"/>
+    <rect class="wall" x="112" y="228" width="36" height="36"/><rect class="wall" x="148" y="228" width="36" height="36"/>
+    <rect class="shut" x="184" y="228" width="36" height="36"/><rect class="shut" x="220" y="228" width="36" height="36"/>
+    <rect class="free" x="256" y="228" width="36" height="36"/><rect class="free" x="292" y="228" width="36" height="36"/>
+    <rect class="free" x="328" y="228" width="36" height="36"/>
+    <!-- row 6 -->
+    <rect class="free" x="40"  y="264" width="36" height="36"/><rect class="free" x="76"  y="264" width="36" height="36"/>
+    <rect class="free" x="112" y="264" width="36" height="36"/><rect class="free" x="148" y="264" width="36" height="36"/>
+    <rect class="free" x="184" y="264" width="36" height="36"/><rect class="free" x="220" y="264" width="36" height="36"/>
+    <rect class="free" x="256" y="264" width="36" height="36"/><rect class="free" x="292" y="264" width="36" height="36"/>
+    <rect class="free" x="328" y="264" width="36" height="36"/>
+  </g>
+
+  <!-- start and goal -->
+  <circle class="start" cx="58"  cy="138" r="12"/>
+  <text class="lbl" x="58" y="142" text-anchor="middle">S</text>
+  <circle class="goalm" cx="310" cy="138" r="12"/>
+  <text class="lbl" x="310" y="142" text-anchor="middle">G</text>
+
+  <!-- ============ f = g + h ============ -->
+  <rect class="box" x="410" y="48" width="450" height="150" rx="8"/>
+  <text class="form" x="434" y="82">f  =  g  +  h</text>
+  <text class="term" x="434" y="110"><tspan class="mono">g</tspan>  steps already taken to reach this cell</text>
+  <text class="term" x="434" y="134"><tspan class="mono">h</tspan>  estimate of the steps still to go</text>
+  <text class="term" x="434" y="158"><tspan class="mono">f</tspan>  best total cost any route through this cell could have</text>
+  <text class="term" x="434" y="182">Always expand the unexpanded cell with the smallest <tspan class="mono">f</tspan>.</text>
+
+  <!-- worked cell -->
+  <rect class="box" x="410" y="214" width="450" height="110" rx="8"/>
+  <text class="hd" x="434" y="240">One cell on the path</text>
+  <rect class="path" x="434" y="254" width="52" height="52" rx="3"/>
+  <text class="cellv" x="460" y="274" text-anchor="middle">g=4</text>
+  <text class="cellv" x="460" y="290" text-anchor="middle">h=5</text>
+  <text class="term" x="502" y="276">four steps from the start, at least five still to go,</text>
+  <text class="term" x="502" y="298">so no route through this cell can beat nine.</text>
+
+  <!-- ============ legend ============ -->
+  <rect class="path" x="40"  y="322" width="20" height="20"/>
+  <text class="key"  x="68"  y="337">chosen path</text>
+  <rect class="shut" x="176" y="322" width="20" height="20"/>
+  <text class="key"  x="204" y="337">expanded, rejected</text>
+  <rect class="open" x="348" y="322" width="20" height="20"/>
+  <text class="key"  x="376" y="337">still queued</text>
+  <rect class="wall" x="490" y="322" width="20" height="20"/>
+  <text class="key"  x="518" y="337">obstacle</text>
+
+  <!-- ============ notes ============ -->
+  <line x1="40" y1="366" x2="860" y2="366" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <text class="note" x="40" y="392">The wall blocks the direct run, so the shortest route drops below it and climbs back: eleven steps, not seven. A* found</text>
+  <text class="note" x="40" y="412">that without ever exploring the whole map, because every cell it skipped already had a worse <tspan class="mono">f</tspan>.</text>
+
+  <text class="note" x="40" y="444">Cost matters here: A* written in Python over a full hardware map takes seconds, not milliseconds. Plan a path to the</text>
+  <text class="note" x="40" y="464">frontier you chose, not to every candidate, or the robot waits while the search runs.</text>
+</svg>

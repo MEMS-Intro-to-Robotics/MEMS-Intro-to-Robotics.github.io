@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" role="img" aria-labelledby="t d">
+  <title id="t">Topics compared with services in ROS 2</title>
+  <desc id="d">A topic is like a radio broadcast: one publisher sends a continuous stream to any number of subscribers, nobody replies, and the publisher does not know who is listening. A service is like a phone call: one client sends a single request to one server and waits for a reply. Use a topic for continuous streams such as velocity commands, and a service for one-off state changes such as spawning a turtle.</desc>
+
+  <style>
+    .panel  { fill: #f4f7fc; stroke: #cdd6e4; stroke-width: 1.5; }
+    .node   { fill: #ffffff; stroke: #012169; stroke-width: 2; }
+    .hd     { font-family: "Segoe UI", Arial, sans-serif; font-size: 16px; font-weight: 700; fill: #012169; }
+    .analog { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; font-style: italic; }
+    .name   { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; font-weight: 700; fill: #012169; }
+    .sub    { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; fill: #5a6675; }
+    .mono   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; fill: #0f766e; }
+    .flow   { stroke: #0f766e; stroke-width: 2.2; fill: none; marker-end: url(#a); }
+    .back   { stroke: #b45309; stroke-width: 2.2; fill: none; marker-end: url(#b); stroke-dasharray: 5 3; }
+    .tag    { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; font-weight: 600; fill: #0f766e; }
+    .tagb   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; font-weight: 600; fill: #b45309; }
+    .rule   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #26313f; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="380" fill="#ffffff"/>
+
+  <!-- ================= TOPIC ================= -->
+  <rect class="panel" x="20" y="20" width="420" height="270" rx="10"/>
+  <text class="hd"     x="44" y="52">Topic — a radio broadcast</text>
+  <text class="analog" x="44" y="73">keeps transmitting; nobody answers back</text>
+
+  <rect class="node" x="44" y="98" width="118" height="52" rx="6"/>
+  <text class="name" x="103" y="120" text-anchor="middle">publisher</text>
+  <text class="sub"  x="103" y="138" text-anchor="middle">sends on a timer</text>
+
+  <line class="flow" x1="164" y1="124" x2="252" y2="104"/>
+  <line class="flow" x1="164" y1="124" x2="252" y2="152"/>
+  <line class="flow" x1="164" y1="124" x2="252" y2="200"/>
+
+  <rect class="node" x="256" y="82" width="150" height="44" rx="6"/>
+  <text class="sub" x="331" y="109" text-anchor="middle">subscriber</text>
+  <rect class="node" x="256" y="130" width="150" height="44" rx="6"/>
+  <text class="sub" x="331" y="157" text-anchor="middle">subscriber</text>
+  <rect class="node" x="256" y="178" width="150" height="44" rx="6"/>
+  <text class="sub" x="331" y="205" text-anchor="middle">subscriber</text>
+
+  <text class="mono" x="44" y="252">/turtle1/cmd_vel</text>
+  <text class="sub"  x="44" y="272">one to many · continuous stream · no reply</text>
+
+  <!-- ================= SERVICE ================= -->
+  <rect class="panel" x="460" y="20" width="420" height="270" rx="10"/>
+  <text class="hd"     x="484" y="52">Service — a phone call</text>
+  <text class="analog" x="484" y="73">ask once, wait for the answer</text>
+
+  <rect class="node" x="484" y="120" width="130" height="56" rx="6"/>
+  <text class="name" x="549" y="144" text-anchor="middle">client</text>
+  <text class="sub"  x="549" y="163" text-anchor="middle">your script</text>
+
+  <rect class="node" x="726" y="120" width="130" height="56" rx="6"/>
+  <text class="name" x="791" y="144" text-anchor="middle">server</text>
+  <text class="sub"  x="791" y="163" text-anchor="middle">/turtlesim</text>
+
+  <line class="flow" x1="616" y1="136" x2="722" y2="136"/>
+  <text class="tag"  x="669" y="126" text-anchor="middle">request</text>
+
+  <line class="back" x1="722" y1="164" x2="618" y2="164"/>
+  <text class="tagb" x="669" y="186" text-anchor="middle">response</text>
+
+  <text class="mono" x="484" y="252">/spawn · /set_pen · /clear</text>
+  <text class="sub"  x="484" y="272">one to one · happens once · you get an answer</text>
+
+  <!-- Decision rule -->
+  <line x1="20" y1="312" x2="880" y2="312" stroke="#cdd6e4" stroke-width="1.5"/>
+  <text class="rule" x="20" y="338">Choosing between them: if the robot should <tspan style="font-weight:700">keep doing</tspan> something, publish to a topic.</text>
+  <text class="rule" x="20" y="360">If something should <tspan style="font-weight:700">change once</tspan> and you need to know it worked, call a service.</text>
+</svg>

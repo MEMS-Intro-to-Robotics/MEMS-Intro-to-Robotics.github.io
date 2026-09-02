@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" role="img" aria-labelledby="title desc">
+  <title id="title">Lab 4 three-node publisher, relay, and subscriber pipeline</title>
+  <desc id="desc">Node A publishes std_msgs/String messages on the topic slash topic underscore a underscore to underscore b. Node B subscribes to that topic, transforms each message, and republishes on slash topic underscore b underscore to underscore c. Node C subscribes to the second topic and logs what it receives.</desc>
+
+  <style>
+    .box      { fill: #ffffff; stroke: #012169; stroke-width: 2; }
+    .box-mid  { fill: #f4f7fc; stroke: #012169; stroke-width: 2; }
+    .nodename { font-family: "Cascadia Code", Consolas, monospace; font-size: 17px; font-weight: 700; fill: #012169; }
+    .role     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; fill: #3d4a5c; }
+    .cmd      { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; fill: #5a6675; }
+    .topic    { font-family: "Cascadia Code", Consolas, monospace; font-size: 13.5px; font-weight: 700; fill: #0f766e; }
+    .msgtype  { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #6b7684; }
+    .flow     { stroke: #0f766e; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    .caption  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; font-style: italic; }
+    .pubsub   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; fill: #0f766e; font-weight: 600; }
+  </style>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <rect width="880" height="300" fill="#ffffff"/>
+
+  <!-- Node A -->
+  <rect class="box" x="30" y="88" width="200" height="86" rx="8"/>
+  <text class="nodename" x="130" y="122" text-anchor="middle">node_a</text>
+  <text class="role"     x="130" y="143" text-anchor="middle">Publisher</text>
+  <text class="cmd"      x="130" y="162" text-anchor="middle">ros2 run lab04_pub_sub node_a</text>
+
+  <!-- Node B -->
+  <rect class="box-mid" x="340" y="88" width="200" height="86" rx="8"/>
+  <text class="nodename" x="440" y="122" text-anchor="middle">node_b</text>
+  <text class="role"     x="440" y="143" text-anchor="middle">Relay — subscribes and republishes</text>
+  <text class="cmd"      x="440" y="162" text-anchor="middle">ros2 run lab04_pub_sub node_b</text>
+
+  <!-- Node C -->
+  <rect class="box" x="650" y="88" width="200" height="86" rx="8"/>
+  <text class="nodename" x="750" y="122" text-anchor="middle">node_c</text>
+  <text class="role"     x="750" y="143" text-anchor="middle">Subscriber</text>
+  <text class="cmd"      x="750" y="162" text-anchor="middle">ros2 run lab04_pub_sub node_c</text>
+
+  <!-- Flow A -> B -->
+  <line class="flow" x1="230" y1="131" x2="336" y2="131"/>
+  <text class="topic"   x="283" y="72"  text-anchor="middle">/topic_a_to_b</text>
+  <text class="msgtype" x="283" y="90"  text-anchor="middle">std_msgs/String</text>
+  <text class="pubsub"  x="283" y="152" text-anchor="middle">publishes</text>
+
+  <!-- Flow B -> C -->
+  <line class="flow" x1="540" y1="131" x2="646" y2="131"/>
+  <text class="topic"   x="593" y="72"  text-anchor="middle">/topic_b_to_c</text>
+  <text class="msgtype" x="593" y="90"  text-anchor="middle">std_msgs/String</text>
+  <text class="pubsub"  x="593" y="152" text-anchor="middle">republishes</text>
+
+  <!-- Verification callout -->
+  <line x1="593" y1="174" x2="593" y2="222" stroke="#9aa4b2" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <rect x="430" y="222" width="326" height="46" rx="6" fill="#f4f7fc" stroke="#9aa4b2" stroke-width="1"/>
+  <text class="cmd" x="593" y="242" text-anchor="middle">ros2 topic echo /topic_b_to_c</text>
+  <text class="caption" x="593" y="259" text-anchor="middle">a fourth terminal watches the relay output</text>
+
+  <text class="caption" x="30" y="290">Each node runs in its own terminal. Every terminal must source the workspace before running a node.</text>
+</svg>

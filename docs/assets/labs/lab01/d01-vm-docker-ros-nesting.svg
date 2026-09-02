@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-labelledby="t d">
+  <title id="t">Where your laptop, the Duke VM, the Docker container, and ROS 2 sit relative to each other</title>
+  <desc id="d">Your laptop connects over SSH or FastX to a Duke VCM virtual machine running Ubuntu. On that VM you edit files with VS Code in a folder called tilde slash workspaces. A Docker container runs on the same VM and holds ROS 2 Jazzy; all ROS 2 nodes run inside it. The VM folder and the container folder slash root slash workspaces are the same files, connected by a bind mount, so an edit on the VM is visible immediately inside the container.</desc>
+
+  <style>
+    .vm       { fill: #f4f7fc; stroke: #012169; stroke-width: 2.5; }
+    .ctr      { fill: #ffffff; stroke: #0f766e; stroke-width: 2.5; }
+    .card     { fill: #ffffff; stroke: #9aa4b2; stroke-width: 1.5; }
+    .card-t   { fill: #eefaf7; stroke: #0f766e; stroke-width: 1.5; }
+    .zone     { font-family: "Segoe UI", Arial, sans-serif; font-size: 15px; font-weight: 700; fill: #012169; }
+    .zone-t   { font-family: "Segoe UI", Arial, sans-serif; font-size: 15px; font-weight: 700; fill: #0f766e; }
+    .lbl      { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; fill: #26313f; font-weight: 600; }
+    .sub      { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; fill: #5a6675; }
+    .mono     { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; }
+    .prompt   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #6b7684; }
+    .flow     { stroke: #012169; stroke-width: 2.5; fill: none; marker-end: url(#a); }
+    .mount    { stroke: #0f766e; stroke-width: 2.5; fill: none; stroke-dasharray: 6 4;
+                marker-end: url(#at); marker-start: url(#at); }
+    .cap      { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#012169"/>
+    </marker>
+    <marker id="at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="470" fill="#ffffff"/>
+
+  <!-- Laptop -->
+  <rect class="card" x="20" y="196" width="132" height="80" rx="8"/>
+  <text class="lbl" x="86" y="228" text-anchor="middle">Your laptop</text>
+  <text class="sub" x="86" y="248" text-anchor="middle">Windows or macOS</text>
+  <text class="sub" x="86" y="264" text-anchor="middle">no ROS 2 here</text>
+
+  <line class="flow" x1="152" y1="236" x2="212" y2="236"/>
+  <text class="sub" x="182" y="226" text-anchor="middle">SSH</text>
+  <text class="sub" x="182" y="258" text-anchor="middle">FastX</text>
+
+  <!-- VM -->
+  <rect class="vm" x="218" y="36" width="660" height="376" rx="10"/>
+  <text class="zone"   x="240" y="66">Duke VCM VM — Ubuntu 24.04</text>
+  <text class="prompt" x="240" y="86">eck27@vcm-51478:~$</text>
+
+  <!-- Editor -->
+  <rect class="card" x="242" y="104" width="212" height="74" rx="7"/>
+  <text class="lbl" x="348" y="132" text-anchor="middle">VS Code</text>
+  <text class="sub" x="348" y="152" text-anchor="middle">edit your code here,</text>
+  <text class="sub" x="348" y="168" text-anchor="middle">on the VM</text>
+
+  <!-- Host folder -->
+  <rect class="card" x="242" y="202" width="212" height="74" rx="7"/>
+  <text class="mono" x="348" y="230" text-anchor="middle">~/workspaces</text>
+  <text class="sub"  x="348" y="250" text-anchor="middle">your files live here</text>
+  <text class="sub"  x="348" y="266" text-anchor="middle">git clone / push from here</text>
+
+  <line x1="348" y1="178" x2="348" y2="198" stroke="#9aa4b2" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- Container -->
+  <rect class="ctr" x="520" y="104" width="336" height="278" rx="9"/>
+  <text class="zone-t" x="542" y="132">Docker container</text>
+  <text class="sub"    x="542" y="150">ROS 2 Jazzy lives only in here</text>
+  <text class="prompt" x="542" y="169">root@a1b2c3:/#</text>
+
+  <rect class="card-t" x="542" y="184" width="292" height="66" rx="7"/>
+  <text class="mono" x="688" y="212" text-anchor="middle">/root/workspaces</text>
+  <text class="sub"  x="688" y="232" text-anchor="middle">the same files, seen from inside</text>
+
+  <rect class="card-t" x="542" y="272" width="292" height="88" rx="7"/>
+  <text class="lbl"  x="688" y="300" text-anchor="middle">ROS 2 runs here</text>
+  <text class="mono" x="688" y="322" text-anchor="middle">colcon build</text>
+  <text class="mono" x="688" y="342" text-anchor="middle">ros2 run / ros2 topic</text>
+
+  <!-- Bind mount -->
+  <line class="mount" x1="458" y1="217" x2="536" y2="217"/>
+  <text class="sub" x="497" y="200" text-anchor="middle" style="fill:#0f766e;font-weight:600">bind</text>
+  <text class="sub" x="497" y="240" text-anchor="middle" style="fill:#0f766e;font-weight:600">mount</text>
+
+  <text class="cap" x="20" y="438">The container is thrown away when it exits; only files under the mount survive. Edit on the VM, run in the container.</text>
+  <text class="cap" x="20" y="458">Check the prompt before typing: <tspan class="mono">eck27@vcm</tspan> means the VM, <tspan class="mono">root@</tspan> means inside the container.</text>
+</svg>

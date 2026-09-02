@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-labelledby="t d">
+  <title id="t">Why a shell script needs a sleep after every publish</title>
+  <desc id="d">Publishing a velocity once does not move the turtle a fixed distance. Turtlesim applies the velocity and then stops it automatically after about one second if no new command arrives. The sleep in your script is what lets that second of motion actually happen before the next command overwrites it. Distance travelled equals the linear speed multiplied by that one second, so sleeping longer does not travel further, because the turtle has already stopped.</desc>
+
+  <style>
+    .ax    { stroke: #26313f; stroke-width: 1.6; }
+    .axl   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; fill: #5a6675; }
+    .vel   { fill: #dbeee6; stroke: #0f766e; stroke-width: 2.2; }
+    .pub   { stroke: #012169; stroke-width: 2; stroke-dasharray: 4 3; }
+    .publ  { font-family: "Cascadia Code", Consolas, monospace; font-size: 10.5px; font-weight: 700; fill: #012169; }
+    .sleep { stroke: #b45309; stroke-width: 1.8; }
+    .sleepl{ font-family: "Cascadia Code", Consolas, monospace; font-size: 10.5px; font-weight: 700; fill: #b45309; }
+    .stop  { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; font-weight: 600; fill: #a32e22; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .warn  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #8a5a10; }
+    .eq    { font-family: "Cascadia Code", Consolas, monospace; font-size: 14px; font-weight: 700; fill: #012169; }
+  </style>
+
+  <rect width="900" height="420" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="30">One publish buys you about one second of motion</text>
+
+  <!-- axes -->
+  <line class="ax" x1="90" y1="180" x2="840" y2="180"/>
+  <line class="ax" x1="90" y1="180" x2="90"  y2="70"/>
+  <text class="axl" x="62" y="128" transform="rotate(-90 62 128)" text-anchor="middle">speed</text>
+  <text class="axl" x="465" y="202" text-anchor="middle">time</text>
+
+  <!-- velocity pulses : each publish gives ~1 s of motion -->
+  <rect class="vel" x="120" y="110" width="130" height="70"/>
+  <rect class="vel" x="320" y="110" width="130" height="70"/>
+  <rect class="vel" x="520" y="110" width="130" height="70"/>
+
+  <!-- publish events -->
+  <line class="pub" x1="120" y1="70"  x2="120" y2="180"/>
+  <line class="pub" x1="320" y1="70"  x2="320" y2="180"/>
+  <line class="pub" x1="520" y1="70"  x2="520" y2="180"/>
+  <text class="publ" x="120" y="62" text-anchor="middle">pub --once</text>
+  <text class="publ" x="320" y="62" text-anchor="middle">pub --once</text>
+  <text class="publ" x="520" y="62" text-anchor="middle">pub --once</text>
+
+  <!-- auto-stop markers -->
+  <text class="stop" x="250" y="104" text-anchor="end">stops on its own</text>
+  <text class="stop" x="450" y="104" text-anchor="end">stops on its own</text>
+  <text class="stop" x="650" y="104" text-anchor="end">stops on its own</text>
+
+  <!-- sleep spans -->
+  <line class="sleep" x1="120" y1="228" x2="320" y2="228"/>
+  <line class="sleep" x1="120" y1="222" x2="120" y2="234"/>
+  <line class="sleep" x1="320" y1="222" x2="320" y2="234"/>
+  <text class="sleepl" x="220" y="248" text-anchor="middle">sleep 1</text>
+
+  <line class="sleep" x1="320" y1="228" x2="520" y2="228"/>
+  <line class="sleep" x1="520" y1="222" x2="520" y2="234"/>
+  <text class="sleepl" x="420" y="248" text-anchor="middle">sleep 1</text>
+
+  <line class="sleep" x1="520" y1="228" x2="720" y2="228"/>
+  <line class="sleep" x1="720" y1="222" x2="720" y2="234"/>
+  <text class="sleepl" x="620" y="248" text-anchor="middle">sleep 1</text>
+
+  <!-- distance -->
+  <text class="eq"  x="40" y="292">distance  =  linear.x  ×  1 second</text>
+
+  <!-- notes -->
+  <line x1="40" y1="312" x2="860" y2="312" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <text class="note" x="40" y="338">Without the <tspan class="mono">sleep</tspan>, the next publish arrives immediately and overwrites the velocity before the turtle has gone</text>
+  <text class="note" x="40" y="358">anywhere. The script races through and the turtle barely twitches.</text>
+
+  <text class="warn" x="40" y="388">Sleeping <tspan style="font-weight:700">longer</tspan> does not travel further. Turtlesim has already stopped the turtle, so the extra time is spent standing still.</text>
+  <text class="warn" x="40" y="408">To draw a bigger letter, raise <tspan class="mono">linear.x</tspan>, or publish repeatedly so the command keeps being renewed.</text>
+</svg>

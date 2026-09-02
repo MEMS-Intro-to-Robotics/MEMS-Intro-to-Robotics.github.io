@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 450" role="img" aria-labelledby="t d">
+  <title id="t">How Lab 10 redefines a frontier compared with Lab 9</title>
+  <desc id="d">Lab 9 treats the unknown cells next to free space as the frontier and sends the robot to one of them at random. Lab 10 moves the frontier one cell back, onto the free cells that touch unknown space, and chooses between them by score instead of at random. Sending a goal into an unknown cell relies on the planner accepting unknown space and is often rejected; a free cell is always a valid, reachable goal.</desc>
+
+  <style>
+    .unk   { fill: #b9c2ce; stroke: #ffffff; stroke-width: 1.4; }
+    .free  { fill: #ffffff; stroke: #d3dae4; stroke-width: 1.4; }
+    .occ   { fill: #26313f; stroke: #ffffff; stroke-width: 1.4; }
+    .mark9 { stroke: #c2410c; stroke-width: 3; fill: none; }
+    .mark10{ stroke: #0f766e; stroke-width: 3; fill: none; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #c2410c; }
+    .hd2   { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #0f766e; }
+    .sub   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #5a6675; }
+    .key   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #26313f; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .robot { fill: #0f766e; }
+    .tag   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; font-weight: 700; }
+  </style>
+
+  <rect width="860" height="450" fill="#ffffff"/>
+
+  <!-- ================= LAB 9 ================= -->
+  <text class="hd"  x="40" y="30">Lab 9 — the unknown cell itself</text>
+  <text class="sub" x="40" y="50">picked at random from the frontier list</text>
+
+  <g>
+    <!-- 8 cols x 5 rows, 34px, origin (40,66) -->
+    <!-- row 0 unknown -->
+    <rect class="unk" x="40"  y="66" width="34" height="34"/><rect class="unk" x="74"  y="66" width="34" height="34"/>
+    <rect class="unk" x="108" y="66" width="34" height="34"/><rect class="unk" x="142" y="66" width="34" height="34"/>
+    <rect class="unk" x="176" y="66" width="34" height="34"/><rect class="unk" x="210" y="66" width="34" height="34"/>
+    <rect class="unk" x="244" y="66" width="34" height="34"/><rect class="unk" x="278" y="66" width="34" height="34"/>
+    <!-- row 1 unknown (frontier row for lab 9) -->
+    <rect class="unk" x="40"  y="100" width="34" height="34"/><rect class="unk" x="74"  y="100" width="34" height="34"/>
+    <rect class="unk" x="108" y="100" width="34" height="34"/><rect class="unk" x="142" y="100" width="34" height="34"/>
+    <rect class="unk" x="176" y="100" width="34" height="34"/><rect class="unk" x="210" y="100" width="34" height="34"/>
+    <rect class="unk" x="244" y="100" width="34" height="34"/><rect class="unk" x="278" y="100" width="34" height="34"/>
+    <!-- row 2 free (frontier row for lab 10) -->
+    <rect class="occ"  x="40"  y="134" width="34" height="34"/>
+    <rect class="free" x="74"  y="134" width="34" height="34"/><rect class="free" x="108" y="134" width="34" height="34"/>
+    <rect class="free" x="142" y="134" width="34" height="34"/><rect class="free" x="176" y="134" width="34" height="34"/>
+    <rect class="free" x="210" y="134" width="34" height="34"/><rect class="free" x="244" y="134" width="34" height="34"/>
+    <rect class="occ"  x="278" y="134" width="34" height="34"/>
+    <!-- row 3 free -->
+    <rect class="occ"  x="40"  y="168" width="34" height="34"/>
+    <rect class="free" x="74"  y="168" width="34" height="34"/><rect class="free" x="108" y="168" width="34" height="34"/>
+    <rect class="free" x="142" y="168" width="34" height="34"/><rect class="free" x="176" y="168" width="34" height="34"/>
+    <rect class="free" x="210" y="168" width="34" height="34"/><rect class="free" x="244" y="168" width="34" height="34"/>
+    <rect class="occ"  x="278" y="168" width="34" height="34"/>
+    <!-- row 4 wall -->
+    <rect class="occ" x="40"  y="202" width="34" height="34"/><rect class="occ" x="74"  y="202" width="34" height="34"/>
+    <rect class="occ" x="108" y="202" width="34" height="34"/><rect class="occ" x="142" y="202" width="34" height="34"/>
+    <rect class="occ" x="176" y="202" width="34" height="34"/><rect class="occ" x="210" y="202" width="34" height="34"/>
+    <rect class="occ" x="244" y="202" width="34" height="34"/><rect class="occ" x="278" y="202" width="34" height="34"/>
+  </g>
+
+  <!-- lab 9 frontier marks : unknown row -->
+  <rect class="mark9" x="74"  y="100" width="34" height="34"/>
+  <rect class="mark9" x="108" y="100" width="34" height="34"/>
+  <rect class="mark9" x="142" y="100" width="34" height="34"/>
+  <rect class="mark9" x="176" y="100" width="34" height="34"/>
+  <rect class="mark9" x="210" y="100" width="34" height="34"/>
+  <rect class="mark9" x="244" y="100" width="34" height="34"/>
+
+  <circle class="robot" cx="159" cy="185" r="9"/>
+
+  <text class="tag" x="40" y="256" style="fill:#c2410c">goal sits in unknown space</text>
+  <text class="sub" x="40" y="274">the planner may refuse it</text>
+
+  <!-- ================= LAB 10 ================= -->
+  <text class="hd2" x="470" y="30">Lab 10 — the free cell beside it</text>
+  <text class="sub" x="470" y="50">chosen by score, not at random</text>
+
+  <g>
+    <rect class="unk" x="470" y="66" width="34" height="34"/><rect class="unk" x="504" y="66" width="34" height="34"/>
+    <rect class="unk" x="538" y="66" width="34" height="34"/><rect class="unk" x="572" y="66" width="34" height="34"/>
+    <rect class="unk" x="606" y="66" width="34" height="34"/><rect class="unk" x="640" y="66" width="34" height="34"/>
+    <rect class="unk" x="674" y="66" width="34" height="34"/><rect class="unk" x="708" y="66" width="34" height="34"/>
+
+    <rect class="unk" x="470" y="100" width="34" height="34"/><rect class="unk" x="504" y="100" width="34" height="34"/>
+    <rect class="unk" x="538" y="100" width="34" height="34"/><rect class="unk" x="572" y="100" width="34" height="34"/>
+    <rect class="unk" x="606" y="100" width="34" height="34"/><rect class="unk" x="640" y="100" width="34" height="34"/>
+    <rect class="unk" x="674" y="100" width="34" height="34"/><rect class="unk" x="708" y="100" width="34" height="34"/>
+
+    <rect class="occ"  x="470" y="134" width="34" height="34"/>
+    <rect class="free" x="504" y="134" width="34" height="34"/><rect class="free" x="538" y="134" width="34" height="34"/>
+    <rect class="free" x="572" y="134" width="34" height="34"/><rect class="free" x="606" y="134" width="34" height="34"/>
+    <rect class="free" x="640" y="134" width="34" height="34"/><rect class="free" x="674" y="134" width="34" height="34"/>
+    <rect class="occ"  x="708" y="134" width="34" height="34"/>
+
+    <rect class="occ"  x="470" y="168" width="34" height="34"/>
+    <rect class="free" x="504" y="168" width="34" height="34"/><rect class="free" x="538" y="168" width="34" height="34"/>
+    <rect class="free" x="572" y="168" width="34" height="34"/><rect class="free" x="606" y="168" width="34" height="34"/>
+    <rect class="free" x="640" y="168" width="34" height="34"/><rect class="free" x="674" y="168" width="34" height="34"/>
+    <rect class="occ"  x="708" y="168" width="34" height="34"/>
+
+    <rect class="occ" x="470" y="202" width="34" height="34"/><rect class="occ" x="504" y="202" width="34" height="34"/>
+    <rect class="occ" x="538" y="202" width="34" height="34"/><rect class="occ" x="572" y="202" width="34" height="34"/>
+    <rect class="occ" x="606" y="202" width="34" height="34"/><rect class="occ" x="640" y="202" width="34" height="34"/>
+    <rect class="occ" x="674" y="202" width="34" height="34"/><rect class="occ" x="708" y="202" width="34" height="34"/>
+  </g>
+
+  <!-- lab 10 frontier marks : free row -->
+  <rect class="mark10" x="504" y="134" width="34" height="34"/>
+  <rect class="mark10" x="538" y="134" width="34" height="34"/>
+  <rect class="mark10" x="572" y="134" width="34" height="34"/>
+  <rect class="mark10" x="606" y="134" width="34" height="34"/>
+  <rect class="mark10" x="640" y="134" width="34" height="34"/>
+  <rect class="mark10" x="674" y="134" width="34" height="34"/>
+
+  <circle class="robot" cx="589" cy="185" r="9"/>
+
+  <text class="tag" x="470" y="256" style="fill:#0f766e">goal sits in free space</text>
+  <text class="sub" x="470" y="274">always a reachable target</text>
+
+  <!-- ================= legend + notes ================= -->
+  <line x1="40" y1="300" x2="820" y2="300" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <rect class="unk"    x="40"  y="316" width="20" height="20"/>
+  <text class="key"    x="68"  y="331">unknown</text>
+  <rect class="free"   x="150" y="316" width="20" height="20"/>
+  <text class="key"    x="178" y="331">free</text>
+  <rect class="occ"    x="232" y="316" width="20" height="20"/>
+  <text class="key"    x="260" y="331">occupied</text>
+  <rect class="mark9"  x="350" y="316" width="20" height="20"/>
+  <text class="key"    x="378" y="331">Lab 9 frontier</text>
+  <rect class="mark10" x="490" y="316" width="20" height="20"/>
+  <text class="key"    x="518" y="331">Lab 10 frontier</text>
+
+  <text class="note" x="40" y="368">The frontier moves one cell back, from the unknown side of the boundary to the free side. Both mark the same edge, but only</text>
+  <text class="note" x="40" y="388">the free cell is somewhere the robot is allowed to be, so Nav2 will accept it without relying on <tspan class="mono">allow_unknown</tspan>.</text>
+
+  <text class="note" x="40" y="420">Lab 9 also picked its target with <tspan class="mono">random.choice()</tspan>. Lab 10 replaces that with a score, which is what makes the robot's</text>
+  <text class="note" x="40" y="440">choices explainable, and it is the score you log and discuss in the analysis.</text>
+</svg>

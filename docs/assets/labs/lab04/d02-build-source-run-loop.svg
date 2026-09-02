@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" role="img" aria-labelledby="t d">
+  <title id="t">The edit, build, source, run loop and what breaks when a step is skipped</title>
+  <desc id="d">The development cycle is: edit your Python file, run colcon build from the workspace root, source install slash setup dot bash, then ros2 run your node. Skipping the build means your old code runs again. Skipping the source step produces a package not found error. Every new terminal must be sourced again before it can run a node.</desc>
+
+  <style>
+    .step   { fill: #ffffff; stroke: #012169; stroke-width: 2.5; }
+    .num    { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #ffffff; }
+    .numbg  { fill: #012169; }
+    .name   { font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #012169; }
+    .mono   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; fill: #26313f; }
+    .where  { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; fill: #5a6675; }
+    .flow   { stroke: #0f766e; stroke-width: 2.5; fill: none; marker-end: url(#a); }
+    .loop   { stroke: #0f766e; stroke-width: 2.5; fill: none; marker-end: url(#a); stroke-dasharray: 6 4; }
+    .looplb { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #0f766e; }
+    .warn   { fill: #fdf3e2; stroke: #d9a441; stroke-width: 1.5; }
+    .warnh  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 700; fill: #8a5a10; }
+    .warnt  { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; fill: #6b5220; }
+    .err    { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #a32e22; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="400" fill="#ffffff"/>
+
+  <!-- Steps -->
+  <g>
+    <rect class="step" x="24" y="72" width="186" height="92" rx="8"/>
+    <circle class="numbg" cx="46" cy="94" r="11"/>
+    <text class="num"  x="46"  y="98"  text-anchor="middle">1</text>
+    <text class="name" x="117" y="120" text-anchor="middle">Edit</text>
+    <text class="mono" x="117" y="140" text-anchor="middle">node_b.py</text>
+    <text class="where" x="117" y="157" text-anchor="middle">VS Code, on the VM</text>
+  </g>
+
+  <g>
+    <rect class="step" x="248" y="72" width="186" height="92" rx="8"/>
+    <circle class="numbg" cx="270" cy="94" r="11"/>
+    <text class="num"  x="270" y="98"  text-anchor="middle">2</text>
+    <text class="name" x="341" y="120" text-anchor="middle">Build</text>
+    <text class="mono" x="341" y="140" text-anchor="middle">colcon build</text>
+    <text class="where" x="341" y="157" text-anchor="middle">from the workspace root</text>
+  </g>
+
+  <g>
+    <rect class="step" x="472" y="72" width="186" height="92" rx="8"/>
+    <circle class="numbg" cx="494" cy="94" r="11"/>
+    <text class="num"  x="494" y="98"  text-anchor="middle">3</text>
+    <text class="name" x="565" y="120" text-anchor="middle">Source</text>
+    <text class="mono" x="565" y="140" text-anchor="middle">install/setup.bash</text>
+    <text class="where" x="565" y="157" text-anchor="middle">once per terminal</text>
+  </g>
+
+  <g>
+    <rect class="step" x="696" y="72" width="186" height="92" rx="8"/>
+    <circle class="numbg" cx="718" cy="94" r="11"/>
+    <text class="num"  x="718" y="98"  text-anchor="middle">4</text>
+    <text class="name" x="789" y="120" text-anchor="middle">Run</text>
+    <text class="mono" x="789" y="140" text-anchor="middle">ros2 run …</text>
+    <text class="where" x="789" y="157" text-anchor="middle">inside the container</text>
+  </g>
+
+  <line class="flow" x1="210" y1="118" x2="244" y2="118"/>
+  <line class="flow" x1="434" y1="118" x2="468" y2="118"/>
+  <line class="flow" x1="658" y1="118" x2="692" y2="118"/>
+
+  <!-- Return loop -->
+  <path class="loop" d="M 789 164 L 789 200 L 117 200 L 117 168"/>
+  <text class="looplb" x="453" y="192" text-anchor="middle">every change starts the cycle again</text>
+
+  <!-- Failure callouts -->
+  <rect class="warn" x="24" y="234" width="410" height="86" rx="8"/>
+  <text class="warnh" x="44" y="258">Skipped the build?</text>
+  <text class="warnt" x="44" y="279">Your old code runs and nothing seems to change.</text>
+  <text class="warnt" x="44" y="298">No error appears, so nothing points at the build step.</text>
+  <text class="warnt" x="44" y="314" style="font-style:italic">Symptom: edits have no effect.</text>
+
+  <rect class="warn" x="466" y="234" width="410" height="86" rx="8"/>
+  <text class="warnh" x="486" y="258">Skipped the source?</text>
+  <text class="warnt" x="486" y="279">ROS 2 cannot find the package at all.</text>
+  <text class="err"   x="486" y="298">Package 'lab04_pub_sub' not found</text>
+  <text class="warnt" x="486" y="314" style="font-style:italic">Every new terminal needs this again.</text>
+
+  <text class="where" x="24" y="356" style="font-size:12.5px">Step 2 only needs a rebuild when package metadata, dependencies, or entry points change.</text>
+  <text class="where" x="24" y="376" style="font-size:12.5px">With <tspan class="mono">--symlink-install</tspan>, ordinary edits to an existing Python file take effect on the next run.</text>
+</svg>

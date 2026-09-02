@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-labelledby="t d">
+  <title id="t">The pick and place sequence, and where the planning scene changes</title>
+  <desc id="d">The canonical pick and place cycle has eight steps: approach above the block, descend, close the gripper, attach the block to the robot in the planning scene, lift, move to the place location, descend and open the gripper, then detach the block and retreat. The attach and detach steps change the planning scene rather than moving the arm; they tell the motion planner that the block is now part of the robot, or is again part of the world.</desc>
+
+  <style>
+    .mv     { fill: #ffffff; stroke: #012169; stroke-width: 2; }
+    .sc     { fill: #eefaf7; stroke: #0f766e; stroke-width: 2; }
+    .gr     { fill: #fdf3e2; stroke: #d9a441; stroke-width: 2; }
+    .n      { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #012169; }
+    .nt     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #0f766e; }
+    .ng     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #8a5a10; }
+    .s      { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; fill: #5a6675; }
+    .idx    { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #9aa4b2; }
+    .flow   { stroke: #9aa4b2; stroke-width: 2; fill: none; marker-end: url(#a); }
+    .key    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #26313f; }
+    .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; fill: #0f766e; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9aa4b2"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="420" fill="#ffffff"/>
+
+  <!-- Row 1 -->
+  <g>
+    <rect class="mv" x="24" y="48" width="186" height="72" rx="7"/>
+    <text class="idx" x="38"  y="66">01</text>
+    <text class="n"   x="117" y="84"  text-anchor="middle">Approach</text>
+    <text class="s"   x="117" y="104" text-anchor="middle">above the block</text>
+  </g>
+  <g>
+    <rect class="mv" x="238" y="48" width="186" height="72" rx="7"/>
+    <text class="idx" x="252" y="66">02</text>
+    <text class="n"   x="331" y="84"  text-anchor="middle">Descend</text>
+    <text class="s"   x="331" y="104" text-anchor="middle">Cartesian, straight down</text>
+  </g>
+  <g>
+    <rect class="gr" x="452" y="48" width="186" height="72" rx="7"/>
+    <text class="idx" x="466" y="66">03</text>
+    <text class="ng"  x="545" y="84"  text-anchor="middle">Close gripper</text>
+    <text class="s"   x="545" y="104" text-anchor="middle">grasp the block</text>
+  </g>
+  <g>
+    <rect class="sc" x="666" y="48" width="210" height="72" rx="7"/>
+    <text class="idx" x="680" y="66">04</text>
+    <text class="nt"  x="771" y="84"  text-anchor="middle">Attach</text>
+    <text class="s"   x="771" y="104" text-anchor="middle">block becomes part of the robot</text>
+  </g>
+
+  <line class="flow" x1="210" y1="84" x2="234" y2="84"/>
+  <line class="flow" x1="424" y1="84" x2="448" y2="84"/>
+  <line class="flow" x1="638" y1="84" x2="662" y2="84"/>
+
+  <!-- wrap -->
+  <path class="flow" d="M 876 120 L 890 120 L 890 152 L 10 152 L 10 184 L 20 184"/>
+
+  <!-- Row 2 -->
+  <g>
+    <rect class="mv" x="24" y="196" width="186" height="72" rx="7"/>
+    <text class="idx" x="38"  y="214">05</text>
+    <text class="n"   x="117" y="232" text-anchor="middle">Lift</text>
+    <text class="s"   x="117" y="252" text-anchor="middle">clear the table</text>
+  </g>
+  <g>
+    <rect class="mv" x="238" y="196" width="186" height="72" rx="7"/>
+    <text class="idx" x="252" y="214">06</text>
+    <text class="n"   x="331" y="232" text-anchor="middle">Transit and place</text>
+    <text class="s"   x="331" y="252" text-anchor="middle">move above the target</text>
+  </g>
+  <g>
+    <rect class="gr" x="452" y="196" width="186" height="72" rx="7"/>
+    <text class="idx" x="466" y="214">07</text>
+    <text class="ng"  x="545" y="232" text-anchor="middle">Open gripper</text>
+    <text class="s"   x="545" y="252" text-anchor="middle">release the block</text>
+  </g>
+  <g>
+    <rect class="sc" x="666" y="196" width="210" height="72" rx="7"/>
+    <text class="idx" x="680" y="214">08</text>
+    <text class="nt"  x="771" y="232" text-anchor="middle">Detach and retreat</text>
+    <text class="s"   x="771" y="252" text-anchor="middle">block returns to the world</text>
+  </g>
+
+  <line class="flow" x1="210" y1="232" x2="234" y2="232"/>
+  <line class="flow" x1="424" y1="232" x2="448" y2="232"/>
+  <line class="flow" x1="638" y1="232" x2="662" y2="232"/>
+
+  <!-- Legend -->
+  <line x1="24" y1="298" x2="876" y2="298" stroke="#cdd6e4" stroke-width="1.5"/>
+  <rect class="mv" x="24"  y="314" width="20" height="14" rx="3"/>
+  <text class="key" x="52"  y="326">arm motion</text>
+  <rect class="gr" x="164" y="314" width="20" height="14" rx="3"/>
+  <text class="key" x="192" y="326">gripper action</text>
+  <rect class="sc" x="316" y="314" width="20" height="14" rx="3"/>
+  <text class="key" x="344" y="326">planning scene change — the arm does not move</text>
+
+  <text class="note" x="24" y="364">Steps 04 and 08 are bookkeeping, not motion. Attaching tells the planner the block travels with the gripper, so it plans</text>
+  <text class="note" x="24" y="384">around the block instead of colliding with it. Skip the attach and the planner will drive the held block through the table.</text>
+  <text class="note" x="24" y="404">Skip the detach and the block follows the arm forever, even after you let go.</text>
+</svg>

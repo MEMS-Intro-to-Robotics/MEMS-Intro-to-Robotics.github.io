@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="t d">
+  <title id="t">Splitting a flight log into phases before computing metrics</title>
+  <desc id="d">A single flight log contains four distinct phases: takeoff while the drone climbs to altitude, hover while it holds position, traverse while it flies the waypoint course, and landing while it descends. Metrics computed over the whole log are meaningless because the climb and the descent dominate the error. Each phase is cut at the times the commanded setpoint changes, and metrics are reported per phase.</desc>
+
+  <style>
+    .ax    { stroke: #26313f; stroke-width: 1.8; }
+    .axl   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #5a6675; }
+    .ph1   { fill: #e6eef8; }
+    .ph2   { fill: #eefaf7; }
+    .ph3   { fill: #fdf3e2; }
+    .ph4   { fill: #f2ecf6; }
+    .cut   { stroke: #9aa4b2; stroke-width: 1.4; stroke-dasharray: 4 3; }
+    .meas  { fill: none; stroke: #012169; stroke-width: 2.6; }
+    .cmd   { fill: none; stroke: #c2410c; stroke-width: 2; stroke-dasharray: 6 4; }
+    .phl   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; font-weight: 700; fill: #26313f; }
+    .phs   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; fill: #5a6675; }
+    .key   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #26313f; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+  </style>
+
+  <rect width="900" height="460" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="30">One log, four phases: cut it before you measure</text>
+
+  <!-- phase bands -->
+  <rect class="ph1" x="70"  y="56" width="130" height="194"/>
+  <rect class="ph2" x="200" y="56" width="140" height="194"/>
+  <rect class="ph3" x="340" y="56" width="300" height="194"/>
+  <rect class="ph4" x="640" y="56" width="190" height="194"/>
+
+  <!-- phase cut lines -->
+  <line class="cut" x1="200" y1="56" x2="200" y2="250"/>
+  <line class="cut" x1="340" y1="56" x2="340" y2="250"/>
+  <line class="cut" x1="640" y1="56" x2="640" y2="250"/>
+
+  <!-- axes -->
+  <line class="ax" x1="70" y1="250" x2="850" y2="250"/>
+  <line class="ax" x1="70" y1="250" x2="70"  y2="56"/>
+  <text class="axl" x="46" y="150" transform="rotate(-90 46 150)" text-anchor="middle">altitude</text>
+  <text class="axl" x="460" y="272" text-anchor="middle">time</text>
+
+  <!-- commanded setpoint -->
+  <path class="cmd" d="M 70 250 L 96 250 L 96 110 L 340 110 L 340 96 L 640 96 L 640 250 L 830 250"/>
+
+  <!-- measured response -->
+  <path class="meas" d="M 70 250
+                        C 88 250, 96 140, 112 118
+                        C 124 102, 140 116, 160 112
+                        C 180 108, 190 111, 200 110
+                        C 240 110, 300 108, 340 106
+                        C 380 100, 420 90, 470 100
+                        C 520 110, 560 88, 600 98
+                        C 620 102, 632 96, 640 96
+                        C 660 96, 676 200, 700 236
+                        C 720 248, 780 250, 830 250"/>
+
+  <!-- phase labels -->
+  <text class="phl" x="135" y="300" text-anchor="middle">Takeoff</text>
+  <text class="phs" x="135" y="318" text-anchor="middle">climb to altitude</text>
+  <text class="phs" x="135" y="334" text-anchor="middle">excluded from metrics</text>
+
+  <text class="phl" x="270" y="300" text-anchor="middle">Hover</text>
+  <text class="phs" x="270" y="318" text-anchor="middle">hold one point</text>
+  <text class="phs" x="270" y="334" text-anchor="middle">station-keeping error</text>
+
+  <text class="phl" x="490" y="300" text-anchor="middle">Traverse</text>
+  <text class="phs" x="490" y="318" text-anchor="middle">fly the waypoint course</text>
+  <text class="phs" x="490" y="334" text-anchor="middle">tracking error, path deviation</text>
+
+  <text class="phl" x="735" y="300" text-anchor="middle">Landing</text>
+  <text class="phs" x="735" y="318" text-anchor="middle">controlled descent</text>
+  <text class="phs" x="735" y="334" text-anchor="middle">excluded from metrics</text>
+
+  <!-- legend -->
+  <line class="meas" x1="40" y1="362" x2="76" y2="362"/>
+  <text class="key" x="84" y="366">measured</text>
+  <line class="cmd" x1="176" y1="362" x2="212" y2="362"/>
+  <text class="key" x="220" y="366">commanded setpoint</text>
+
+  <text class="note" x="40" y="398">Cut the log where the commanded setpoint changes. That boundary is recorded in the data.</text>
+
+  <text class="note" x="40" y="428">Metrics over the whole log are dominated by the climb and the descent, so a well-tuned controller can score worse than a</text>
+  <text class="note" x="40" y="448">badly tuned one. Report each phase separately, and say which rows of the CSV each phase covers.</text>
+</svg>

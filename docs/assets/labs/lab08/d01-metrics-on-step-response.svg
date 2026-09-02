@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-labelledby="t d">
+  <title id="t">How each flight metric is measured on a step response</title>
+  <desc id="d">Two responses to the same commanded step. The underdamped response rises past the goal; its overshoot is the largest excursion beyond the goal after the first crossing, and its settling time is when it last enters and stays inside the plus or minus five centimetre band. The overdamped response never crosses the goal, so its overshoot is zero by definition while it still has a settling time. Root mean square error is computed across the whole segment, not at a single instant.</desc>
+
+  <style>
+    .ax     { stroke: #26313f; stroke-width: 1.8; }
+    .grid   { stroke: #e4e9f0; stroke-width: 1; }
+    .goal   { stroke: #012169; stroke-width: 1.8; stroke-dasharray: 7 4; }
+    .band   { fill: #eefaf7; stroke: #0f766e; stroke-width: 1; stroke-dasharray: 3 3; }
+    .curve  { fill: none; stroke: #012169; stroke-width: 2.6; }
+    .curve2 { fill: none; stroke: #b45309; stroke-width: 2.6; }
+    .ann    { stroke: #a32e22; stroke-width: 1.5; }
+    .annt   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; font-weight: 600; fill: #a32e22; }
+    .lbl    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #26313f; }
+    .axl    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #5a6675; }
+    .hd     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .hd2    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #b45309; }
+    .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; fill: #0f766e; }
+  </style>
+
+  <rect width="900" height="470" fill="#ffffff"/>
+
+  <!-- ============ LEFT: underdamped ============ -->
+  <text class="hd" x="40" y="32">Underdamped — crosses the goal</text>
+
+  <!-- band -->
+  <rect class="band" x="60" y="112" width="360" height="28"/>
+  <!-- goal line -->
+  <line class="goal" x1="60" y1="126" x2="420" y2="126"/>
+  <text class="lbl" x="424" y="130">goal</text>
+
+  <!-- axes -->
+  <line class="ax" x1="60" y1="250" x2="60"  y2="60"/>
+  <line class="ax" x1="60" y1="250" x2="420" y2="250"/>
+  <text class="axl" x="30" y="160" transform="rotate(-90 30 160)" text-anchor="middle">position</text>
+  <text class="axl" x="240" y="272" text-anchor="middle">time</text>
+
+  <!-- response curve: rise, overshoot, ring down into band -->
+  <path class="curve" d="M 60 250
+                         C 90 250, 100 120, 132 92
+                         C 158 70, 178 150, 200 140
+                         C 220 132, 232 112, 252 116
+                         C 272 120, 282 132, 302 129
+                         C 330 126, 360 126, 418 126"/>
+
+  <!-- overshoot annotation -->
+  <line class="ann" x1="132" y1="92" x2="132" y2="126"/>
+  <line class="ann" x1="122" y1="92" x2="142" y2="92"/>
+  <text class="annt" x="150" y="70">overshoot</text>
+  <text class="annt" x="150" y="84" style="font-weight:400">peak above goal</text>
+
+  <!-- settling time annotation -->
+  <line class="ann" x1="302" y1="129" x2="302" y2="250" stroke-dasharray="4 3"/>
+  <line class="ann" x1="60"  y1="238" x2="302" y2="238"/>
+  <text class="annt" x="181" y="230" text-anchor="middle">settling time</text>
+  <text class="annt" x="306" y="270" style="font-weight:400">stays in band</text>
+
+  <text class="mono" x="60" y="300">band = goal ± 0.05 m</text>
+
+  <!-- ============ RIGHT: overdamped ============ -->
+  <text class="hd2" x="490" y="32">Overdamped — never crosses</text>
+
+  <rect class="band" x="510" y="112" width="360" height="28"/>
+  <line class="goal" x1="510" y1="126" x2="870" y2="126"/>
+  <text class="lbl" x="874" y="130">goal</text>
+
+  <line class="ax" x1="510" y1="250" x2="510" y2="60"/>
+  <line class="ax" x1="510" y1="250" x2="870" y2="250"/>
+  <text class="axl" x="690" y="272" text-anchor="middle">time</text>
+
+  <path class="curve2" d="M 510 250
+                          C 560 250, 580 190, 620 160
+                          C 660 133, 700 129, 760 127
+                          C 810 126, 840 126, 868 126"/>
+
+  <line class="ann" x1="700" y1="129" x2="700" y2="250" stroke-dasharray="4 3"/>
+  <line class="ann" x1="510" y1="238" x2="700" y2="238"/>
+  <text class="annt" x="605" y="230" text-anchor="middle">settling time</text>
+
+  <text class="annt" x="700" y="80">overshoot = 0</text>
+  <text class="annt" x="700" y="94" style="font-weight:400">goal never crossed</text>
+
+  <!-- ============ definitions ============ -->
+  <line x1="40" y1="330" x2="860" y2="330" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <text class="note" x="40" y="356"><tspan style="font-weight:700;fill:#012169">Overshoot.</tspan> The largest excursion beyond the goal <tspan style="font-style:italic">after the first crossing</tspan>. If the response never crosses the goal,</text>
+  <text class="note" x="40" y="376">overshoot is zero. Report it as zero rather than measuring the closest approach.</text>
+
+  <text class="note" x="40" y="404"><tspan style="font-weight:700;fill:#012169">Settling time.</tspan> The time after which the response enters the ±0.05 m band and stays there. A brief re-exit resets it.</text>
+
+  <text class="note" x="40" y="432"><tspan style="font-weight:700;fill:#012169">RMS error.</tspan> Computed across the whole segment, not at one instant, so a response that is close on average scores better,</text>
+  <text class="note" x="40" y="452">and a fast but oscillatory flight can score worse than a slower, smoother one.</text>
+</svg>

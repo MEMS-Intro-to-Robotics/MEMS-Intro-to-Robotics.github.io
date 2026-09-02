@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" role="img" aria-labelledby="t d">
+  <title id="t">What happens between your goal pose and the arm moving</title>
+  <desc id="d">Your node hands MoveIt a goal. The planner searches for a route that avoids everything in the planning scene and returns a trajectory, or nothing at all if it cannot find one. Planning and execution are separate steps: a returned trajectory is only a proposal until you execute it, and the controller is what actually drives the joints. If planning fails you get None, so calling execute without checking is what turns a planning failure into a crash.</desc>
+
+  <style>
+    .box   { fill: #ffffff; stroke: #012169; stroke-width: 2.2; }
+    .mid   { fill: #f4f7fc; stroke: #012169; stroke-width: 2.2; }
+    .okbox { fill: #eefaf7; stroke: #0f766e; stroke-width: 2.2; }
+    .nobox { fill: #fbeae8; stroke: #a32e22; stroke-width: 2.2; }
+    .name  { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #012169; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; font-weight: 700; fill: #012169; }
+    .role  { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; fill: #5a6675; }
+    .flow  { stroke: #012169; stroke-width: 2.2; fill: none; marker-end: url(#a); }
+    .okf   { stroke: #0f766e; stroke-width: 2.2; fill: none; marker-end: url(#b); }
+    .nof   { stroke: #a32e22; stroke-width: 2.2; fill: none; marker-end: url(#c); }
+    .okl   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; font-weight: 700; fill: #0f766e; }
+    .nol   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; font-weight: 700; fill: #a32e22; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .code  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#012169"/>
+    </marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <marker id="c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a32e22"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="400" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="30">Planning and executing are two separate steps</text>
+
+  <!-- your node -->
+  <rect class="box" x="30" y="120" width="150" height="76" rx="7"/>
+  <text class="name" x="105" y="150" text-anchor="middle">Your node</text>
+  <text class="role" x="105" y="170" text-anchor="middle">a goal pose or</text>
+  <text class="role" x="105" y="186" text-anchor="middle">joint configuration</text>
+
+  <line class="flow" x1="184" y1="158" x2="234" y2="158"/>
+  <text class="mono" x="209" y="146" text-anchor="middle">plan()</text>
+
+  <!-- planner -->
+  <rect class="mid" x="238" y="112" width="170" height="92" rx="7"/>
+  <text class="name" x="323" y="140" text-anchor="middle">Planner</text>
+  <text class="role" x="323" y="160" text-anchor="middle">searches for a route that</text>
+  <text class="role" x="323" y="176" text-anchor="middle">avoids everything in the</text>
+  <text class="role" x="323" y="192" text-anchor="middle">planning scene</text>
+
+  <!-- two outcomes -->
+  <path class="okf" d="M 412 140 L 452 140 L 452 96 L 492 96"/>
+  <text class="okl" x="452" y="86" text-anchor="middle">found one</text>
+
+  <path class="nof" d="M 412 178 L 452 178 L 452 232 L 492 232"/>
+  <text class="nol" x="452" y="252" text-anchor="middle">found nothing</text>
+
+  <rect class="okbox" x="496" y="66" width="160" height="60" rx="7"/>
+  <text class="name" x="576" y="92"  text-anchor="middle" style="fill:#0f766e">Trajectory</text>
+  <text class="role" x="576" y="112" text-anchor="middle">a proposal, not motion</text>
+
+  <rect class="nobox" x="496" y="202" width="160" height="60" rx="7"/>
+  <text class="mono" x="576" y="228" text-anchor="middle" style="fill:#a32e22">None</text>
+  <text class="role" x="576" y="248" text-anchor="middle">nothing to execute</text>
+
+  <!-- execute -->
+  <line class="okf" x1="660" y1="96" x2="726" y2="96"/>
+  <text class="mono" x="693" y="56" text-anchor="middle" style="fill:#0f766e">execute()</text>
+
+  <rect class="box" x="730" y="66" width="156" height="60" rx="7"/>
+  <text class="name" x="808" y="92"  text-anchor="middle">Controller</text>
+  <text class="role" x="808" y="112" text-anchor="middle">drives the real joints</text>
+
+  <!-- notes -->
+  <line x1="30" y1="292" x2="870" y2="292" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <text class="note" x="30" y="318">A returned trajectory has not moved anything yet. Nothing happens until you execute it, which is why a plan can look fine</text>
+  <text class="note" x="30" y="338">and the arm still sit still, because you planned and never executed.</text>
+
+  <text class="code" x="30" y="370">traj = plan(...)   →   if traj is not None:   →   execute(traj)</text>
+  <text class="note" x="30" y="392">Skip that check and a planning failure becomes a crash inside <tspan style="font-family:'Cascadia Code',Consolas,monospace;font-weight:700">execute()</tspan>, several lines away from the real cause.</text>
+</svg>

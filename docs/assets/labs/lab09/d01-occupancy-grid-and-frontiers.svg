@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 420" role="img" aria-labelledby="t d">
+  <title id="t">Occupancy grid cell values and where the frontiers are</title>
+  <desc id="d">An occupancy grid stores one number per cell: negative one for unknown, zero for free, and one hundred for occupied. A frontier is the boundary between explored and unexplored space. In Lab 9 a frontier cell is an unknown cell that touches at least one free cell; those cells are outlined on the grid. Driving to a frontier is what turns unknown space into known space.</desc>
+
+  <style>
+    .unk    { fill: #b9c2ce; stroke: #ffffff; stroke-width: 1.5; }
+    .free   { fill: #ffffff; stroke: #d3dae4; stroke-width: 1.5; }
+    .occ    { fill: #26313f; stroke: #ffffff; stroke-width: 1.5; }
+    .front  { stroke: #c2410c; stroke-width: 3; fill: none; }
+    .cellv  { font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; fill: #5a6675; }
+    .cellvw { font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; fill: #ffffff; }
+    .hd     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .key    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #26313f; }
+    .mono   { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .robot  { fill: #0f766e; }
+    .rl     { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #0f766e; }
+  </style>
+
+  <rect width="840" height="420" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="34">One number per cell: what the map stores</text>
+
+  <!-- Grid: 10 cols x 7 rows, 36px cells, origin (40,52) -->
+  <g>
+    <!-- rows 0-1 : deep unknown -->
+    <rect class="unk" x="40"  y="52" width="36" height="36"/><rect class="unk" x="76"  y="52" width="36" height="36"/>
+    <rect class="unk" x="112" y="52" width="36" height="36"/><rect class="unk" x="148" y="52" width="36" height="36"/>
+    <rect class="unk" x="184" y="52" width="36" height="36"/><rect class="unk" x="220" y="52" width="36" height="36"/>
+    <rect class="unk" x="256" y="52" width="36" height="36"/><rect class="unk" x="292" y="52" width="36" height="36"/>
+    <rect class="unk" x="328" y="52" width="36" height="36"/><rect class="unk" x="364" y="52" width="36" height="36"/>
+
+    <rect class="unk" x="40"  y="88" width="36" height="36"/><rect class="unk" x="76"  y="88" width="36" height="36"/>
+    <rect class="unk" x="112" y="88" width="36" height="36"/><rect class="unk" x="148" y="88" width="36" height="36"/>
+    <rect class="unk" x="184" y="88" width="36" height="36"/><rect class="unk" x="220" y="88" width="36" height="36"/>
+    <rect class="unk" x="256" y="88" width="36" height="36"/><rect class="unk" x="292" y="88" width="36" height="36"/>
+    <rect class="unk" x="328" y="88" width="36" height="36"/><rect class="unk" x="364" y="88" width="36" height="36"/>
+
+    <!-- row 2 : the frontier band -->
+    <rect class="unk" x="40"  y="124" width="36" height="36"/><rect class="unk" x="76"  y="124" width="36" height="36"/>
+    <rect class="unk" x="112" y="124" width="36" height="36"/><rect class="unk" x="148" y="124" width="36" height="36"/>
+    <rect class="unk" x="184" y="124" width="36" height="36"/><rect class="unk" x="220" y="124" width="36" height="36"/>
+    <rect class="unk" x="256" y="124" width="36" height="36"/><rect class="unk" x="292" y="124" width="36" height="36"/>
+    <rect class="unk" x="328" y="124" width="36" height="36"/><rect class="unk" x="364" y="124" width="36" height="36"/>
+
+    <!-- row 3 -->
+    <rect class="occ"  x="40"  y="160" width="36" height="36"/><rect class="occ"  x="76"  y="160" width="36" height="36"/>
+    <rect class="free" x="112" y="160" width="36" height="36"/><rect class="free" x="148" y="160" width="36" height="36"/>
+    <rect class="free" x="184" y="160" width="36" height="36"/><rect class="free" x="220" y="160" width="36" height="36"/>
+    <rect class="free" x="256" y="160" width="36" height="36"/><rect class="free" x="292" y="160" width="36" height="36"/>
+    <rect class="occ"  x="328" y="160" width="36" height="36"/><rect class="occ"  x="364" y="160" width="36" height="36"/>
+
+    <!-- row 4 -->
+    <rect class="occ"  x="40"  y="196" width="36" height="36"/><rect class="free" x="76"  y="196" width="36" height="36"/>
+    <rect class="free" x="112" y="196" width="36" height="36"/><rect class="free" x="148" y="196" width="36" height="36"/>
+    <rect class="free" x="184" y="196" width="36" height="36"/><rect class="free" x="220" y="196" width="36" height="36"/>
+    <rect class="free" x="256" y="196" width="36" height="36"/><rect class="free" x="292" y="196" width="36" height="36"/>
+    <rect class="free" x="328" y="196" width="36" height="36"/><rect class="occ"  x="364" y="196" width="36" height="36"/>
+
+    <!-- row 5 -->
+    <rect class="occ"  x="40"  y="232" width="36" height="36"/><rect class="free" x="76"  y="232" width="36" height="36"/>
+    <rect class="free" x="112" y="232" width="36" height="36"/><rect class="free" x="148" y="232" width="36" height="36"/>
+    <rect class="free" x="184" y="232" width="36" height="36"/><rect class="free" x="220" y="232" width="36" height="36"/>
+    <rect class="free" x="256" y="232" width="36" height="36"/><rect class="free" x="292" y="232" width="36" height="36"/>
+    <rect class="free" x="328" y="232" width="36" height="36"/><rect class="occ"  x="364" y="232" width="36" height="36"/>
+
+    <!-- row 6 : wall -->
+    <rect class="occ" x="40"  y="268" width="36" height="36"/><rect class="occ" x="76"  y="268" width="36" height="36"/>
+    <rect class="occ" x="112" y="268" width="36" height="36"/><rect class="occ" x="148" y="268" width="36" height="36"/>
+    <rect class="occ" x="184" y="268" width="36" height="36"/><rect class="occ" x="220" y="268" width="36" height="36"/>
+    <rect class="occ" x="256" y="268" width="36" height="36"/><rect class="occ" x="292" y="268" width="36" height="36"/>
+    <rect class="occ" x="328" y="268" width="36" height="36"/><rect class="occ" x="364" y="268" width="36" height="36"/>
+  </g>
+
+  <!-- Frontier cells: unknown, directly above free space -->
+  <rect class="front" x="112" y="124" width="36" height="36"/>
+  <rect class="front" x="148" y="124" width="36" height="36"/>
+  <rect class="front" x="184" y="124" width="36" height="36"/>
+  <rect class="front" x="220" y="124" width="36" height="36"/>
+  <rect class="front" x="256" y="124" width="36" height="36"/>
+  <rect class="front" x="292" y="124" width="36" height="36"/>
+
+  <!-- sample values -->
+  <text class="cellv"  x="58"  y="74"  text-anchor="middle">-1</text>
+  <text class="cellv"  x="202" y="146" text-anchor="middle">-1</text>
+  <text class="cellv"  x="202" y="218" text-anchor="middle">0</text>
+  <text class="cellvw" x="382" y="218" text-anchor="middle">100</text>
+
+  <!-- robot -->
+  <circle class="robot" cx="202" cy="250" r="10"/>
+  <text class="rl" x="220" y="254">robot</text>
+
+  <!-- ============ legend ============ -->
+  <text class="hd" x="440" y="34">Reading the numbers</text>
+
+  <rect class="unk"  x="440" y="52" width="26" height="26"/>
+  <text class="mono" x="478" y="70">-1</text>
+  <text class="key"  x="512" y="70">unknown — never sensed</text>
+
+  <rect class="free" x="440" y="90" width="26" height="26"/>
+  <text class="mono" x="478" y="108">0</text>
+  <text class="key"  x="512" y="108">free — the robot can drive here</text>
+
+  <rect class="occ"  x="440" y="128" width="26" height="26"/>
+  <text class="mono" x="478" y="146">100</text>
+  <text class="key"  x="512" y="146">occupied — an obstacle</text>
+
+  <rect class="front" x="440" y="166" width="26" height="26"/>
+  <text class="key"   x="478" y="184"><tspan style="font-weight:700">frontier</tspan> — the edge of what is known</text>
+
+  <text class="note" x="440" y="228">A frontier cell is an unknown cell with at</text>
+  <text class="note" x="440" y="248">least one free neighbour. Cells buried deep</text>
+  <text class="note" x="440" y="268">in unexplored space do not qualify, because the</text>
+  <text class="note" x="440" y="288">robot has no route to them yet.</text>
+
+  <!-- ============ bottom ============ -->
+  <line x1="40" y1="336" x2="800" y2="336" stroke="#cdd6e4" stroke-width="1.5"/>
+  <text class="note" x="40" y="362">Exploration is a loop: find frontiers, drive to one, let SLAM fill in the new space, and repeat until none remain.</text>
+  <text class="note" x="40" y="390">The grid arrives as a flat list. A cell at column <tspan class="mono">c</tspan>, row <tspan class="mono">r</tspan> is <tspan class="mono">data[r * width + c]</tspan>. There is no second dimension.</text>
+</svg>

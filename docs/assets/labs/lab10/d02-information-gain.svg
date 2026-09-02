@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 440" role="img" aria-labelledby="t d">
+  <title id="t">Why the nearest frontier is not always the best one</title>
+  <desc id="d">Two candidate frontiers are compared. Candidate A is close to the robot but sits at the end of a short dead-end corridor, so reaching it reveals very little new space. Candidate B is further away but opens into a large unexplored room, so it reveals far more. Scoring each candidate by the unknown area it would reveal, divided by the cost of travelling there, picks B and avoids wasting the whole session on dead ends.</desc>
+
+  <style>
+    .unk   { fill: #b9c2ce; }
+    .free  { fill: #ffffff; stroke: #e4e9f0; stroke-width: 1; }
+    .wall  { fill: #26313f; }
+    .fr    { stroke: #0f766e; stroke-width: 3; fill: none; }
+    .gainA { fill: #f0b7a4; opacity: 0.85; }
+    .gainB { fill: #7fcbb0; opacity: 0.85; }
+    .robot { fill: #0f766e; }
+    .pathl { stroke: #012169; stroke-width: 2.2; fill: none; stroke-dasharray: 6 4; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .cand  { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; }
+    .lbl   { font-family: "Segoe UI", Arial, sans-serif; font-size: 11.5px; font-weight: 600; fill: #26313f; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .form  { font-family: "Cascadia Code", Consolas, monospace; font-size: 13px; fill: #012169; font-weight: 700; }
+    .box   { fill: #f8fafc; stroke: #cdd6e4; stroke-width: 1.5; }
+    .win   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 700; fill: #0f766e; }
+    .lose  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 700; fill: #a32e22; }
+  </style>
+
+  <rect width="860" height="440" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="30">Two frontiers, very different value</text>
+
+  <!-- ============ MAP ============ -->
+  <!-- unknown background -->
+  <rect class="unk" x="40" y="48" width="460" height="250"/>
+
+  <!-- explored corridor (free) -->
+  <rect class="free" x="70"  y="180" width="300" height="60"/>
+  <!-- dead-end stub going up-left -->
+  <rect class="free" x="110" y="120" width="52"  height="60"/>
+
+  <!-- walls framing the corridor -->
+  <rect class="wall" x="70"  y="168" width="40" height="12"/>
+  <rect class="wall" x="162" y="168" width="208" height="12"/>
+  <rect class="wall" x="70"  y="240" width="300" height="12"/>
+  <rect class="wall" x="98"  y="120" width="12" height="60"/>
+  <rect class="wall" x="162" y="120" width="12" height="60"/>
+
+  <!-- gain footprints -->
+  <rect class="gainA" x="110" y="96"  width="52"  height="24"/>
+  <rect class="gainB" x="370" y="120" width="120" height="140"/>
+
+  <!-- frontier cells -->
+  <rect class="fr" x="110" y="120" width="52" height="18"/>
+  <rect class="fr" x="358" y="180" width="12" height="60"/>
+
+  <!-- robot -->
+  <circle class="robot" cx="200" cy="210" r="10"/>
+  <text class="lbl" x="200" y="234" text-anchor="middle">robot</text>
+
+  <!-- paths -->
+  <path class="pathl" d="M 200 210 L 136 210 L 136 140"/>
+  <path class="pathl" d="M 200 210 L 356 210"/>
+
+  <text class="cand" x="136" y="88"  text-anchor="middle" style="fill:#a32e22">A</text>
+  <text class="cand" x="430" y="112" text-anchor="middle" style="fill:#0f766e">B</text>
+
+  <text class="lbl" x="136" y="272" text-anchor="middle" style="fill:#a32e22">near</text>
+  <text class="lbl" x="430" y="286" text-anchor="middle" style="fill:#0f766e">far</text>
+
+  <!-- ============ SCORECARD ============ -->
+  <rect class="box" x="530" y="48" width="292" height="118" rx="8"/>
+  <text class="cand" x="552" y="74" style="fill:#a32e22">Candidate A — the near one</text>
+  <text class="note" x="552" y="98">travel cost</text>
+  <text class="mono" x="800" y="98" text-anchor="end">low</text>
+  <text class="note" x="552" y="120">new area revealed</text>
+  <text class="mono" x="800" y="120" text-anchor="end">very small</text>
+  <text class="lose" x="552" y="148">a dead end — the robot comes straight back</text>
+
+  <rect class="box" x="530" y="180" width="292" height="118" rx="8"/>
+  <text class="cand" x="552" y="206" style="fill:#0f766e">Candidate B — the far one</text>
+  <text class="note" x="552" y="230">travel cost</text>
+  <text class="mono" x="800" y="230" text-anchor="end">higher</text>
+  <text class="note" x="552" y="252">new area revealed</text>
+  <text class="mono" x="800" y="252" text-anchor="end">large room</text>
+  <text class="win"  x="552" y="280">wins on score despite the longer drive</text>
+
+  <!-- ============ formula + notes ============ -->
+  <line x1="40" y1="326" x2="820" y2="326" stroke="#cdd6e4" stroke-width="1.5"/>
+
+  <text class="form" x="40" y="356">score  =  information gain  ÷  path cost</text>
+
+  <text class="note" x="40" y="384">Information gain is the count of unknown cells the robot would sense from that frontier; path cost is the A* distance to</text>
+  <text class="note" x="40" y="404">reach it, not the straight line. A nearest-first rule always takes A, then returns and takes the next dead end, and so on.</text>
+
+  <text class="note" x="40" y="430">Log the score of the frontier you chose <tspan style="font-weight:700">and</tspan> of the ones you rejected. Your analysis needs that comparison.</text>
+</svg>

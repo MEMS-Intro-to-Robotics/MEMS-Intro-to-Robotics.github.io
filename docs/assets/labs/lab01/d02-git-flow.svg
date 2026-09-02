@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" role="img" aria-labelledby="t d">
+  <title id="t">How your files travel from the VM to GitHub</title>
+  <desc id="d">Files move through four places. The working tree holds the files you edit. Git add copies a snapshot into the staging area. Git commit records that snapshot in the local repository on the VM. Git push sends it to GitHub, which is the copy that gets graded. Git clone and git pull bring work back the other way. All four commands run on the VM, never inside the Docker container.</desc>
+
+  <style>
+    .box   { fill: #ffffff; stroke: #012169; stroke-width: 2.2; }
+    .boxr  { fill: #eefaf7; stroke: #0f766e; stroke-width: 2.2; }
+    .name  { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .namer { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #0f766e; }
+    .role  { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; fill: #5a6675; }
+    .cmd   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; font-weight: 700; fill: #0f766e; }
+    .flow  { stroke: #0f766e; stroke-width: 2.4; fill: none; marker-end: url(#a); }
+    .back  { stroke: #b45309; stroke-width: 2.2; fill: none; marker-end: url(#b); stroke-dasharray: 6 4; }
+    .backl { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; font-weight: 700; fill: #b45309; }
+    .note  { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .mono  { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700; }
+    .hd    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="340" fill="#ffffff"/>
+
+  <text class="hd" x="40" y="30">Four places your work can be, and the command that moves it</text>
+
+  <!-- boxes -->
+  <rect class="box" x="40" y="88" width="160" height="82" rx="7"/>
+  <text class="name" x="120" y="116" text-anchor="middle">Working tree</text>
+  <text class="role" x="120" y="136" text-anchor="middle">the files you edit</text>
+  <text class="role" x="120" y="152" text-anchor="middle">in ~/workspaces</text>
+
+  <rect class="box" x="270" y="88" width="160" height="82" rx="7"/>
+  <text class="name" x="350" y="116" text-anchor="middle">Staging area</text>
+  <text class="role" x="350" y="136" text-anchor="middle">what will go into</text>
+  <text class="role" x="350" y="152" text-anchor="middle">the next commit</text>
+
+  <rect class="box" x="500" y="88" width="160" height="82" rx="7"/>
+  <text class="name" x="580" y="116" text-anchor="middle">Local repository</text>
+  <text class="role" x="580" y="136" text-anchor="middle">your history, kept</text>
+  <text class="role" x="580" y="152" text-anchor="middle">in the .git folder</text>
+
+  <rect class="boxr" x="730" y="88" width="160" height="82" rx="7"/>
+  <text class="namer" x="810" y="116" text-anchor="middle">GitHub</text>
+  <text class="role"  x="810" y="136" text-anchor="middle">the shared copy,</text>
+  <text class="role"  x="810" y="152" text-anchor="middle">this is what we grade</text>
+
+  <!-- forward flow -->
+  <line class="flow" x1="204" y1="130" x2="264" y2="130"/>
+  <text class="cmd" x="234" y="78" text-anchor="middle">git add</text>
+
+  <line class="flow" x1="434" y1="130" x2="494" y2="130"/>
+  <text class="cmd" x="464" y="78" text-anchor="middle">git commit</text>
+
+  <line class="flow" x1="664" y1="130" x2="724" y2="130"/>
+  <text class="cmd" x="694" y="78" text-anchor="middle">git push</text>
+
+  <!-- return flow -->
+  <path class="back" d="M 810 170 L 810 214 L 120 214 L 120 174"/>
+  <text class="backl" x="465" y="232" text-anchor="middle">git clone · git pull</text>
+
+  <!-- notes -->
+  <line x1="40" y1="262" x2="860" y2="262" stroke="#cdd6e4" stroke-width="1.5"/>
+  <text class="note" x="40" y="288">Run all four on the <tspan style="font-weight:700">VM</tspan>, never inside the Docker container. The container has no GitHub credentials, and files</text>
+  <text class="note" x="40" y="308">it creates end up owned by root. The container sees the same files through the <tspan class="mono">~/workspaces</tspan> mount.</text>
+  <text class="note" x="40" y="332">Work only counts once it reaches GitHub. A commit that was never pushed exists on one VM and nowhere else.</text>
+</svg>
