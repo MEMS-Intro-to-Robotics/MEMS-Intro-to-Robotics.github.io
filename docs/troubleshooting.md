@@ -1,6 +1,27 @@
 # Troubleshooting
 
-This page collects the issues that show up across multiple labs so students, TAs, and adopters do not have to rediscover the same fixes in separate handouts.
+Find the symptom you see, then follow the linked fix. Commands labeled **Host VM
+Terminal** run on your VM desktop; commands labeled **Container Terminal** run
+inside the course Docker container.
+
+## Find your problem
+
+| What you see | Start here |
+| --- | --- |
+| VS Code cannot save, `git add` is denied, or files belong to `root` | [Fix container-created file ownership](#files-created-in-the-container-cannot-be-edited-on-the-host) |
+| A `.sh` script says `Permission denied` | [Check executable permission and ownership](#a-script-fails-with-permission-denied) |
+| No GUI window, a blank FastX desktop, or Docker will not start | [Environment and access](#environment-and-access) |
+| Push, pull, or rebase fails | [Git and repository workflow](#git-and-repository-workflow) |
+| Assignment acceptance fails | [Classroom 50 and submissions](#classroom-50-and-submissions) |
+| ROS commands, packages, topics, or nodes are missing | [ROS 2 basics](#ros-2-basics) |
+| The turtle does not move or a pen command fails | [Turtlesim and shell scripting](#turtlesim-and-shell-scripting) |
+| The arm will not plan, execute, or grip | [MoveIt 2 and Kinova workflows](#moveit-2-and-kinova-workflows) |
+| Gazebo or the simulated drone misbehaves | [Gazebo and Crazyflie simulation](#gazebo-and-crazyflie-simulation) |
+| Flight-log plots or metrics look wrong | [Flight log analysis](#flight-log-analysis) |
+| TurtleBot, mapping, or navigation fails | [TurtleBot, SLAM, and Nav2](#turtlebot-slam-and-nav2) |
+
+Use the site's search for an exact error message. If you need a TA, bring the
+[command, terminal location, and error output](#students-need-a-fast-escalation-path).
 
 ## Environment and access
 
@@ -31,24 +52,45 @@ Try:
 
 ### Files created in the container cannot be edited on the host
 
-The container runs as `root` and mounts `~/workspaces` at `/root/workspaces`. A
-bind mount shares ownership by numeric user ID, so any file created from a
-container terminal is owned by `root` on the VM. Your NetID account cannot write
-to it, and editing it or running `git add` fails with `Permission denied`.
+**Symptoms:** VS Code cannot save a file, `git add` reports `Permission denied`,
+or `ls -l` shows `root` as the owner.
 
-Check the owner, then take the files back:
+The course container runs as `root`. Files it creates under `/root/workspaces`
+appear in the VM's `~/workspaces` with that same ownership. Your VM account may
+be unable to edit them, even though you can see them in VS Code.
+
+**Host VM Terminal — not inside the container:** Open a terminal on your VM
+desktop. Replace `YOUR_REPOSITORY` below with the affected repository's folder
+name. Confirm `pwd` prints that repository before running `chown`.
 
 ```bash
-ls -l <file>
-sudo chown -R "$USER:$USER" ~/workspaces
+cd ~/workspaces/YOUR_REPOSITORY
+pwd
+ls -ld . .git
+ls -l
 ```
 
-If you cloned the repository from inside the container, `.git` is root-owned too
-and every Git command fails the same way. The same command fixes it.
+Then restore ownership of this repository, including its `.git` directory:
 
-Create and edit repository files from the host VM terminal, and use the
-container terminal for `ros2` commands. This applies to every lab that mounts
-`~/workspaces` into the container.
+```bash
+sudo chown -R "$(id -un):$(id -gn)" .
+ls -ld . .git
+git status
+```
+
+**Check:** The owner is now your VM username. Retry saving the file or running
+`git add`. This changes file ownership; it does not delete files or change their
+contents. Running it inside the container would select `root` again.
+
+**Prevent it:** Create and edit files in VS Code on the VM, and clone, commit,
+and push from the host VM terminal. Use the container for ROS commands and
+builds. If a build creates root-owned files that you later need to edit, use
+the same fix on the affected repository.
+
+**Files missing on the VM entirely?** Files created outside the container's
+`/root/workspaces` mount are a different issue. Keep the container running and
+ask a TA to help copy them into the mounted workspace before exiting; `chown`
+cannot recover files deleted with a `--rm` container.
 
 ### `docker run` says the container name is already in use
 
