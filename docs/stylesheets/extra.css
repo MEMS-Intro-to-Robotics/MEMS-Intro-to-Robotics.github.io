@@ -195,3 +195,20 @@ code.equation-placeholder {
     font-size: 1rem;
   }
 }
+.toc-category > summary {
+  cursor: pointer;
+  padding-block: 0.3rem;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.toc-category > summary > .md-nav__link {
+  display: inline-flex;
+  max-width: calc(100% - 1.2rem);
+  margin-top: 0;
+  font-weight: 600;
+  vertical-align: top;
+}
+
+.toc-category > nav {
+  margin-bottom: 0.5rem;
+}

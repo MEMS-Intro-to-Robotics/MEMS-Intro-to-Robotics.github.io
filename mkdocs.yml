@@ -11,6 +11,7 @@ watch:
 
 theme:
   name: material
+  custom_dir: overrides
   font: false
   features:
     - navigation.tabs
@@ -110,6 +111,7 @@ markdown_extensions:
       alternate_style: true
 
 extra_javascript:
+  - javascripts/navigation.js
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
