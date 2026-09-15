@@ -39,22 +39,6 @@ REMOVE_SECTION_IDS = {
     "deliverables", "deliverables-glance", "checklist",
 }
 
-LAB4_APPENDIX_SHARED_REFS = dedent(
-    """
-    <section id="appendix">
-        <h2>Appendix: Shared References</h2>
-        <p>This lab now points to shared reference pages instead of maintaining a lab-specific embedded copy.</p>
-        <ul>
-            <li><strong><a href="../guides/ros2_python_nodes_reference/">Use the ROS 2 Python Nodes Reference</a></strong> for the <code>main()</code> pattern, publishers, subscribers, timers, messages, logging, and common Lab 4 mistakes.</li>
-            <li><strong><a href="../guides/quick_reference/">Use the Quick Reference page</a></strong> for package creation, build/source reminders, ROS 2 CLI checks, Git commands, and Docker commands.</li>
-            <li><strong><a href="../troubleshooting/">Use the Troubleshooting page</a></strong> when package discovery, workspace sourcing, container GUI, or cross-terminal environment issues break the workflow.</li>
-        </ul>
-        <p>Keep the ROS 2 Python nodes reference open while implementing Tasks 2-4. It is now the maintained source of truth for the core <code>rclpy</code> patterns used in this lab.</p>
-        <p><a href="#toc">&uarr; Back to top</a></p>
-    </section>
-    """
-).strip()
-
 LAB5_PRELAB_SHARED_WORKFLOW = dedent(
     """
     <p>Starting with Lab 05, the repeated platform-lab habits live in the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>. Keep that guide open if you need a refresher on the one-container rule, pane roles, build/source habits, or fast debugging checks.</p>
@@ -359,28 +343,6 @@ def require_replace(html: str, old: str, new: str, label: str) -> str:
     return html.replace(old, new, 1)
 
 
-def apply_lab4_shared_references(html: str) -> str:
-    """Replace Lab 4's embedded appendix with the shared reference page."""
-    html = require_replace(
-        html,
-        '<li><a href="#appendix">Appendix: ROS 2 Python API Reference</a></li>',
-        '<li><a href="#appendix">Appendix: Shared References</a></li>',
-        "lab04 toc appendix",
-    )
-    html = require_replace(
-        html,
-        '<li>Utilize the <strong>Appendix section</strong> at the bottom of this document for more information about the ROS 2 functions you will use</li>',
-        '<li><strong><a href="../guides/ros2_python_nodes_reference/">Use the ROS 2 Python Nodes Reference</a></strong> for more information about the ROS 2 functions you will use</li>',
-        "lab04 appendix hint",
-    )
-    html = require_sub(
-        html,
-        r'<section id="appendix">\s*<h2>Appendix: ROS 2 Python API Reference</h2>.*?</section>',
-        LAB4_APPENDIX_SHARED_REFS,
-        "lab04 appendix section",
-    )
-    return html
-
 
 def apply_lab5_shared_references(html: str) -> str:
     """Replace Lab 5's repeated setup prose and giant appendices with shared references."""
@@ -501,9 +463,7 @@ def apply_lab10_shared_workflow(html: str) -> str:
 
 def apply_public_site_dedup(html: str, lab_num: int) -> str:
     """Apply shared-reference rewrites that should survive regeneration."""
-    if lab_num == 4:
-        html = apply_lab4_shared_references(html)
-    elif lab_num == 5:
+    if lab_num == 5:
         html = apply_lab5_shared_references(html)
     elif lab_num == 6:
         html = apply_lab6_shared_workflow(html)
