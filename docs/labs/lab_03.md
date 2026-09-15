@@ -207,6 +207,7 @@ chmod +x turtleletter.sh
             <li>Test the script and adjust these values until the turtle traces the letter.</li>
         </ul>
         <p><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab03/d02-script-timing.svg" alt="A velocity pulse and the sleep that follows it, showing why sleeping longer does not travel further" style="max-width: 100%; height: auto;" /></p>
+        <p><em>Example of a finished letter:</em> the Duke &ldquo;D&rdquo; below was traced from an outline with <code>teleport_absolute</code> calls, so it is more exact than a letter drawn with velocity commands. Your letter only needs to be recognizable.<br /><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab03/s01-turtlesim-duke-d.png" alt="Example turtlesim window showing a white outline of the Duke D drawn by the turtle" width="350" height="350" style="max-width: 100%; height: auto;" /></p>
     </section>
     <section id="part5">
         <h3>Part 5 &mdash; Using Services for State Changes</h3>
