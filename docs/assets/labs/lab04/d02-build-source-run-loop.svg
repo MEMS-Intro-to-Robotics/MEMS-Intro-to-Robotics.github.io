@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" role="img" aria-labelledby="t d">
-  <title id="t">The edit, build, source, run loop and what breaks when a step is skipped</title>
-  <desc id="d">The development cycle is: edit your Python file, run colcon build from the workspace root, source install slash setup dot bash, then ros2 run your node. Skipping the build means your old code runs again. Skipping the source step produces a package not found error. Every new terminal must be sourced again before it can run a node.</desc>
+  <title id="t">The edit, build, source, and run workflow</title>
+  <desc id="d">Edit your Python file, rebuild after adding files or changing package metadata, source install slash setup dot bash in each terminal, then run the node. With symlink install, edits to an existing Python file only require restarting the node. A missing rebuild can hide a new executable, while a terminal that has not sourced the workspace reports that the package is not found.</desc>
 
   <style>
     .step   { fill: #ffffff; stroke: #012169; stroke-width: 2.5; }
@@ -68,14 +68,14 @@
 
   <!-- Return loop -->
   <path class="loop" d="M 789 164 L 789 200 L 117 200 L 117 168"/>
-  <text class="looplb" x="453" y="192" text-anchor="middle">every change starts the cycle again</text>
+  <text class="looplb" x="453" y="192" text-anchor="middle">restart after an edit; rebuild when package structure changes</text>
 
   <!-- Failure callouts -->
   <rect class="warn" x="24" y="234" width="410" height="86" rx="8"/>
-  <text class="warnh" x="44" y="258">Skipped the build?</text>
-  <text class="warnt" x="44" y="279">Your old code runs and nothing seems to change.</text>
-  <text class="warnt" x="44" y="298">No error appears, so nothing points at the build step.</text>
-  <text class="warnt" x="44" y="314" style="font-style:italic">Symptom: edits have no effect.</text>
+  <text class="warnh" x="44" y="258">Added a file or entry point without rebuilding?</text>
+  <text class="warnt" x="44" y="279">ROS 2 cannot discover the new executable.</text>
+  <text class="err" x="44" y="298">No executable found</text>
+  <text class="warnt" x="44" y="314" style="font-style:italic">Rebuild from the workspace root, then source again.</text>
 
   <rect class="warn" x="466" y="234" width="410" height="86" rx="8"/>
   <text class="warnh" x="486" y="258">Skipped the source?</text>

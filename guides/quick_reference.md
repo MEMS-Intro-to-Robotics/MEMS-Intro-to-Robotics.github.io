@@ -106,7 +106,8 @@ git commit -m "meaningful message"
 git push origin main
 ```
 
-Each lab's GitHub Classroom link creates your `<assignment-repo>` under the course organization.
+Classroom 50 creates each lab's `<assignment-repo>` under the course
+organization. Use the `gh student accept` command from the lab manual.
 
 **Branching**
 
@@ -149,7 +150,7 @@ git add <file>
 git rebase --continue
 ```
 
-**Throw away local work and match GitLab exactly**
+**Throw away local work and match the remote exactly**
 
 ```bash
 git fetch origin
@@ -302,7 +303,7 @@ Re-source `install/setup.bash` in every new terminal.
 - `ros2` sees nothing: restart the daemon, confirm nodes are running, and confirm `ROS_DOMAIN_ID` matches.
 - A script will not run: add execute permission with `chmod +x`.
 - You are in the wrong shell: make sure you are typing in the container terminal you launched.
-- `git push` is denied: verify the remote uses SSH and your SSH key is added to GitLab.
+- `git push` is denied: verify the remote uses SSH and your SSH key is added to GitHub.
 - Paths are confusing: check `pwd`, `PATH`, and `PYTHONPATH`.
 
 ## Quality-of-life tips

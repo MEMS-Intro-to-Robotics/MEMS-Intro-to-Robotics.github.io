@@ -229,10 +229,11 @@ commit and push from a host VM terminal.
 ### Build artifacts were committed by mistake
 
 `build/`, `install/`, and `log/` were committed because `.gitignore` was missing
-or added after the first commit. From the host:
+or added after the first commit. For a repository whose workspace is named
+`ros2_ws`, run these commands from the repository root on the host:
 
 ```bash
-git rm -r --cached build/ install/ log/
+git rm -r --cached ros2_ws/build/ ros2_ws/install/ ros2_ws/log/
 git commit -m "Remove build artifacts"
 git push
 ```

@@ -2,7 +2,21 @@
 
 Use this page when you are writing beginner-to-intermediate ROS 2 nodes in Python with `rclpy`.
 
-This guide is intentionally focused on the patterns students usually need first: node setup, publishers, subscribers, timers, messages, logging, and common package/build mistakes.
+This guide covers the patterns students usually need first: node setup,
+publishers, subscribers, timers, messages, logging, and common package and
+build mistakes.
+
+## How a node runs
+
+A node usually creates its publishers, subscriptions, and timers in its
+constructor and stores them on `self`. These objects remain available for as
+long as the node is running.
+
+After construction, `rclpy.spin(node)` waits for work. ROS calls a timer
+callback when its period elapses and calls a subscription callback when a
+message arrives. A timer callback takes no message argument; a subscription
+callback receives the incoming message. Calling a publisher's `publish()`
+method sends a typed message to its topic.
 
 ## Main function pattern
 
@@ -118,10 +132,11 @@ self.get_logger().info(f"Value is: {my_var}")
 
 ## Helpful cleanup
 
-If you accidentally committed build artifacts:
+If you accidentally committed build artifacts in a repository whose workspace
+is named `ros2_ws`, run these commands from the repository root:
 
 ```bash
-git rm -r --cached build/ install/ log/
+git rm -r --cached ros2_ws/build/ ros2_ws/install/ ros2_ws/log/
 git commit -m "Remove build artifacts"
 git push
 ```

@@ -84,5 +84,5 @@
   <!-- notes -->
   <line x1="40" y1="344" x2="840" y2="344" stroke="#cdd6e4" stroke-width="1.5"/>
   <text class="note" x="40" y="370">Committing <tspan class="mono">build/</tspan>, <tspan class="mono">install/</tspan>, or <tspan class="mono">log/</tspan> is the most common submission mistake in this course. They are machine-specific,</text>
-  <text class="note" x="40" y="390">they are large, and the <tspan class="mono">.gitignore</tspan> in your starter already excludes them, so do not add them back with <tspan class="mono">git add -A</tspan>.</text>
+  <text class="note" x="40" y="390">they are large, and the starter's <tspan class="mono">.gitignore</tspan> excludes them. Do not remove those rules or force-add the generated directories.</text>
 </svg>

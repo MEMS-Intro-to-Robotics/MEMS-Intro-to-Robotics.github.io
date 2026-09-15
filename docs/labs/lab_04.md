@@ -43,6 +43,7 @@ title: "Lab 04: ROS 2 Python Nodes"
             </ol>
         </li>
     </ul>
+    <p><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab04/d01-pubsub-pipeline.svg" alt="Node A publishes to topic A-to-B, Node B subscribes and republishes to topic B-to-C, and Node C plus a topic-echo terminal receive the result" width="880" height="300" style="max-width: 100%; height: auto;" /></p>
     <p>The pipeline follows a common pattern in robotics: sensors produce data, processing nodes interpret it, and actuators respond.</p>
     <h3>1.2 Background</h3>
     <p><strong>From Scripts to Python</strong></p>
@@ -135,6 +136,7 @@ cd intro-to-robotics-fall-2026-lab-04-YOUR_GITHUB_USERNAME</code></pre>
             <p><strong>Location:</strong> Host VM Terminal, from inside your cloned repository</p>
             <pre><code class="language-bash">mkdir -p ros2_ws/src</code></pre>
             <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>Note:</strong> <code>src/</code> is where your packages live. The <strong>workspace root</strong> is <code>ros2_ws</code>. Do not build from <code>src/</code>; always build from the workspace root. The starter&rsquo;s <code>.gitignore</code> keeps the generated <code>build/</code>, <code>install/</code>, and <code>log/</code> directories out of Git.</blockquote>
+            <p><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab04/d03-workspace-anatomy.svg" alt="ROS 2 workspace showing source packages under src and the generated build, install, and log directories" width="880" height="400" style="max-width: 100%; height: auto;" /></p>
         </li>
         <li><strong>Start the course container.</strong> This is the standard course <code>docker run</code> command with the container name changed to <code>lab04</code>:
             <p><strong>Location:</strong> Host VM Terminal</p>
@@ -207,6 +209,7 @@ git push origin main</code></pre>
     <h2>5. Lab Procedure</h2>
     <h3 id="workflow">The Core ROS 2 Development Workflow</h3>
     <p>After adding a node or changing package metadata, edit, build, and source as follows. With <code>--symlink-install</code>, edits to existing Python files only require restarting the node.</p>
+    <p><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab04/d02-build-source-run-loop.svg" alt="Edit, build, source, and run workflow with the failures caused by missing a required rebuild or failing to source a terminal" width="900" height="400" style="max-width: 100%; height: auto;" /></p>
     <ol>
         <li><strong>Edit code</strong> on your VM in VS Code. Modify your Python files (e.g., <code>node_a.py</code>) in your package&rsquo;s source folder.</li>
         <li><strong>Build the workspace</strong> in the container, from the workspace root (not <code>src/</code>):
