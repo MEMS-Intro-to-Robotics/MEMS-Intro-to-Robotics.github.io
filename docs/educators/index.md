@@ -34,4 +34,10 @@ hide:
 
     [:octicons-arrow-right-24: Lab Catalog](../lab-catalog.md)
 
+- **ASEE 2026 Workshop**
+
+    The faculty workshop on hardware integration in introductory robotics: guided Jupyter notebooks for the Kinova Gen3 Lite that also run as a simulator on a laptop, plus an instructor run guide and a package for running it at your institution.
+
+    [:octicons-arrow-right-24: ASEE 2026 Workshop](../asee2026/index.md)
+
 </div>
