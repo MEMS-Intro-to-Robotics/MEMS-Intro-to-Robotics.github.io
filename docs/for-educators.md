@@ -7,11 +7,12 @@ This site publishes the public-facing lab manuals, setup guides, and technical r
 
 ## Start here
 
-If you are evaluating this material for adoption, these three pages will get you oriented fastest:
+If you are evaluating this material for adoption, these four pages will get you oriented fastest:
 
 - [Educator Adoption Guide](educator-adoption.md) for reuse paths, staffing assumptions, and what to replace first
 - [Lab Catalog](lab-catalog.md) for a lab-by-lab view of scope, stack, and portability
 - [Troubleshooting](troubleshooting.md) for the operational issues that show up repeatedly across labs
+- [ASEE 2026 Workshop](asee2026/index.md) for a self-contained Kinova Gen3 Lite activity with a laptop simulator path and an adoption package
 
 ## What transfers cleanly
 
