@@ -39,61 +39,6 @@ REMOVE_SECTION_IDS = {
     "deliverables", "deliverables-glance", "checklist",
 }
 
-LAB5_PRELAB_SHARED_WORKFLOW = dedent(
-    """
-    <p>Starting with Lab 05, the repeated platform-lab habits live in the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>. Keep that guide open if you need a refresher on the one-container rule, pane roles, build/source habits, or fast debugging checks.</p>
-    <h3>Step 1: Pull the Docker Image</h3>
-    <p>On your <strong>host machine</strong>, pull the Kinova image for this lab.</p>
-    <pre><code>docker pull gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:kinova-jazzy-latest</code></pre>
-    <h3>Step 2: Start the ROS 2 Container</h3>
-    <p>On your host machine, allow GUI forwarding and start the single container you will use for the whole lab.</p>
-    <pre><code>xhost +local:docker</code></pre>
-    <pre><code>docker run --rm -it \\
-      --net=host \\
-      -e DISPLAY=$DISPLAY \\
-      -v /tmp/.X11-unix:/tmp/.X11-unix \\
-      -v ~/workspaces:/workspaces \\
-      --name ros2_lab \\
-      gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:kinova-jazzy-latest bash</code></pre>
-    <p>Once your prompt changes (for example, to <code>root@hostname:/#</code>), you are inside the container.</p>
-    <h3>Step 3: Launch Your Command Center (Terminator)</h3>
-    <p>Inside the container, launch Terminator so you can keep the simulator, MoveIt, and your development pane alive side by side.</p>
-    <pre><code>terminator &amp;</code></pre>
-    <p>Use the first three panes as follows: <strong>Pane A</strong> for Gazebo, <strong>Pane B</strong> for MoveIt/RViz, and <strong>Pane C</strong> for your build/run workflow.</p>
-    """
-).strip()
-
-LAB5_MOVEIT_STEP = dedent(
-    """
-    <h3>Step 5: Open a New Terminal Pane and Launch MoveIt</h3>
-    <p>Open a second pane in Terminator (<code>Ctrl+Shift+O</code> or <code>Ctrl+Shift+E</code>). In that new pane, source ROS and launch MoveIt:</p>
-    <ol>
-        <li>
-            <pre><code>source /opt/ros/jazzy/setup.bash</code></pre>
-        </li>
-        <li>
-            <pre><code>ros2 launch kinova_gen3_lite_moveit_config sim.launch.py \\
-      use_sim_time:=true</code></pre>
-        </li>
-    </ol>
-    <p>An RViz window should open. Keep Pane A and Pane B running while you work through the rest of the lab.</p>
-    """
-).strip()
-
-LAB5_SHARED_REFERENCES = dedent(
-    """
-    <h1>Shared References</h1>
-    <p>This lab now points to shared reference pages instead of embedding large appendices directly in the handout.</p>
-    <ul>
-        <li><strong><a href="../guides/pymoveit2_api_guide/">Use the <code>pymoveit2</code> API guide</a></strong> for the node/executor pattern, gripper interface, collision objects, Cartesian planning, and quick API signatures.</li>
-        <li><strong><a href="../guides/kinova_gen3_lite_moveit2_guide/">Use the Kinova Gen3 Lite + MoveIt 2 guide</a></strong> for planning groups, controller bringup, RViz checks, and controller troubleshooting.</li>
-        <li><strong><a href="../guides/quick_reference/">Use the Quick Reference page</a></strong> for the ROS 2 CLI, build/source reminders, package layout, and common Docker commands.</li>
-        <li><strong><a href="../troubleshooting/">Use the Troubleshooting page</a></strong> when package discovery, workspace sourcing, MoveIt, controllers, or container GUI issues block progress.</li>
-    </ul>
-    <p>For this lab in particular, keep the Kinova and <code>pymoveit2</code> guides open while implementing Milestones 3 and 4. They are the maintained source of truth for controller checks, gripper wiring, and planning-scene inspection.</p>
-    """
-).strip()
-
 LAB6_PRELAB_SHARED_WORKFLOW = dedent(
     """
     <p>From this point in the course onward, the repeated Docker, panes, build, and debugging habits live in the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>. This section only lists the Lab 06-specific commands and checks.</p>
@@ -344,41 +289,6 @@ def require_replace(html: str, old: str, new: str, label: str) -> str:
 
 
 
-def apply_lab5_shared_references(html: str) -> str:
-    """Replace Lab 5's repeated setup prose and giant appendices with shared references."""
-    html = require_sub(
-        html,
-        r'<p>This section walks you through preparing your environment\..*?(?=<h3>Step 4: Launch the Kinova Simulation in Gazebo</h3>)',
-        LAB5_PRELAB_SHARED_WORKFLOW + "\n",
-        "lab05 shared prelab",
-    )
-    html = require_sub(
-        html,
-        r'<h3>Step 5: Open a New Terminal Pane and Launch MoveIt</h3>.*?(?=<h3>Step 6: Final Checks and Familiarization</h3>)',
-        LAB5_MOVEIT_STEP + "\n",
-        "lab05 moveit step",
-    )
-    html = require_replace(
-        html,
-        '<li><strong>Read Appendix A:</strong> Skim the appendix on controlling the gripper to prepare for using it in the lab.</li>',
-        '<li><strong>Skim the shared references:</strong> Review the gripper and controller sections in the public <code>pymoveit2</code> and Kinova guides before starting the milestones.</li>',
-        "lab05 appendix reminder",
-    )
-    html = require_replace(
-        html,
-        '# TODO: Open/close the gripper using self.gripper (Appendix A).',
-        '# TODO: Open/close the gripper using self.gripper (see shared pymoveit2 guide).',
-        "lab05 gripper comment",
-    )
-    html = require_sub(
-        html,
-        r'<h1>Appendix A &mdash; Reference for <code>pymoveit2</code> \(conceptual \+ API guide\)</h1>.*\Z',
-        LAB5_SHARED_REFERENCES,
-        "lab05 shared references block",
-    )
-    return html
-
-
 def apply_lab6_shared_workflow(html: str) -> str:
     """Replace Lab 6's repeated setup tutorial with the shared workflow pointer."""
     html = require_sub(
@@ -463,9 +373,7 @@ def apply_lab10_shared_workflow(html: str) -> str:
 
 def apply_public_site_dedup(html: str, lab_num: int) -> str:
     """Apply shared-reference rewrites that should survive regeneration."""
-    if lab_num == 5:
-        html = apply_lab5_shared_references(html)
-    elif lab_num == 6:
+    if lab_num == 6:
         html = apply_lab6_shared_workflow(html)
     elif lab_num == 7:
         html = apply_lab7_shared_workflow(html)
