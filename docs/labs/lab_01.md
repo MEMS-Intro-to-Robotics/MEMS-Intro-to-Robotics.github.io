@@ -202,8 +202,8 @@ pytest --version</code></pre>
         </li>
         <li>Launch the session. On first run, if prompted, choose the <strong>default XFCE panel layout</strong>.<br /><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab01/10-xfce-panel-layout.png" alt="XFCE panel layout" width="277" height="262" /></li>
     </ol>
-    <p>📸 <strong>Screenshot Requirement:</strong> Take a screenshot showing your VM desktop running through FastX. <strong>Save it as <code>vm_desktop.png</code></strong>. You will create your Lab 1 repository and its <code>docs/</code> folder in Part 2, and move this file into <code>docs/</code> then.</p>
-    <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>How to take screenshots (this applies to every 📸 in this lab):</strong> use one of the following methods. The steps for moving the file depend on whether you save it on the VM or your laptop.
+    <p><strong>Screenshot:</strong> Take a screenshot showing your VM desktop running through FastX. <strong>Save it as <code>vm_desktop.png</code></strong>. You will create your Lab 1 repository and its <code>docs/</code> folder in Part 2, and move this file into <code>docs/</code> then.</p>
+    <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>How to take screenshots (this applies to every screenshot in this lab):</strong> use one of the following methods. The steps for moving the file depend on whether you save it on the VM or your laptop.
         <ul>
             <li><strong>On the VM (recommended):</strong> inside the FastX desktop, use Applications &rarr; Accessories &rarr; Screenshot and save to the <code>Pictures</code> folder. The file is then on the VM, where the <code>cp ~/Pictures/...</code> commands in Part 2 expect it.</li>
             <li><strong>On your laptop:</strong> your laptop&rsquo;s screenshot tool also works, but the file is saved on your laptop, so the VM&rsquo;s <code>cp</code> commands cannot access it. Once your repository exists (Step 2.3), upload it through the GitHub website: open your repository, open the <code>docs/</code> folder, and use Add file &rarr; Upload files. This creates a commit on GitHub that is not yet on the VM. Run <code>git pull</code> on the VM before your next commit.</li>
@@ -266,7 +266,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 x64</code></pre>
         </div>
         <blockquote style="border-left: 4px solid #d9534f; padding: 1em; background-color: #f8d7da; border-radius: 4px;"><strong>Stop:</strong> If <code>docker</code> commands fail with a permissions error, you likely need to <strong>reboot your VM once</strong> after running the setup script. Run <code>sudo reboot</code> in your VM&rsquo;s terminal to restart.</blockquote>
-        <p>📸 <strong>Screenshot Requirement:</strong> Capture your VM desktop with the terminal open, showing the version checks above. <strong>Save it as <code>version_check.png</code></strong>. You will move it into your repo&rsquo;s <code>docs/</code> folder in Part 2.</p>
+        <p><strong>Screenshot:</strong> Capture your VM desktop with the terminal open, showing the version checks above. <strong>Save it as <code>version_check.png</code></strong>. You will move it into your repo&rsquo;s <code>docs/</code> folder in Part 2.</p>
     </section>
     <section id="part2">
         <h3>Part 2 &mdash; Git and GitHub Setup</h3>
@@ -305,7 +305,7 @@ ssh-add ~/.ssh/id_ed25519</code></pre>
             </li>
         </ol>
         <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>Note:</strong> You may also add your <strong>laptop&rsquo;s</strong> SSH key to GitHub if you want to work directly from your laptop. The VM key is still required for course ROS 2 development.</blockquote>
-        <p>📸 <strong>Screenshot Requirement:</strong> Capture the terminal output confirming that you can connect to GitHub (the <code>ssh -T git@github.com</code> success message; do not include your key contents). <strong>Save it as <code>ssh_github_test.png</code></strong>; you will move it into <code>docs/</code> in the next step.</p>
+        <p><strong>Screenshot:</strong> Capture the terminal output confirming that you can connect to GitHub (the <code>ssh -T git@github.com</code> success message; do not include your key contents). <strong>Save it as <code>ssh_github_test.png</code></strong>; you will move it into <code>docs/</code> in the next step.</p>
         <h4>Step 2.3: Accept the Lab 1 Assignment with Classroom 50 and Clone Your Repository</h4>
         <ol>
             <li><strong>Install or verify the Classroom 50 student command:</strong>
@@ -441,7 +441,7 @@ git push origin main</code></pre>
         <p>Next, check that ROS 2 commands work properly by listing nodes:</p>
         <pre><code class="language-bash">ros2 node list</code></pre>
         <p>If no nodes are running yet, the command returns an empty list, which is expected.</p>
-        <p>📸 <strong>Screenshot Requirement:</strong> Capture the output of both commands (<code>echo $ROS_DISTRO</code> and <code>ros2 node list</code>) in your terminal. <strong>Save it as <code>docs/ros2_check.png</code></strong> in your Lab 1 repository.</p>
+        <p><strong>Screenshot:</strong> Capture the output of both commands (<code>echo $ROS_DISTRO</code> and <code>ros2 node list</code>) in your terminal. <strong>Save it as <code>docs/ros2_check.png</code></strong> in your Lab 1 repository.</p>
         <h4>Step 3.5: Run a Talker/Listener Demo (test Python and C++)</h4>
         <ol>
             <li>Inside the container, launch a multi-pane terminal:
@@ -457,7 +457,7 @@ git push origin main</code></pre>
             </li>
         </ol>
         <p><strong>Checkpoint:</strong> The listener should print the string messages published by the talker. This confirms that both C++ and Python ROS 2 nodes work correctly.</p>
-        <p>📸 <strong>Screenshot Requirement:</strong> Capture both panes in the same window, with the listener actively printing messages. <strong>Save it as <code>docs/talker_listener.png</code></strong> in your Lab 1 repository.</p>
+        <p><strong>Screenshot:</strong> Capture both panes in the same window, with the listener actively printing messages. <strong>Save it as <code>docs/talker_listener.png</code></strong> in your Lab 1 repository.</p>
         <h4>Step 3.6: Exit the Docker Container</h4>
         <p>Once you have verified the demo, close the <code>terminator</code> window, then type <code>exit</code> in the terminal where you ran <code>docker run</code>. Because of <code>--rm</code>, this destroys the container. Your screenshots are in the mounted <code>~/workspaces</code> folder and stay on the VM.</p>
     </section>
@@ -714,7 +714,18 @@ git log --oneline --graph --decorate --all -n 12</code></pre>
 </section>
 <section id="analysis">
     <h2>6. Analysis and Discussion</h2>
-    <p>Record your graded Git analysis in <code>git_recovery.md</code> using evidence from your repository. You should also be able to answer the following questions:</p>
+    <p><strong>Where the answers go:</strong> this lab has no separate analysis write-up and no
+    Gradescope-only questions. Every written answer goes in <code>git_recovery.md</code>, on the
+    prompt lines given in Step 5.4. Write each answer once. Your PDF contains the analysis because
+    you paste the rendered record into it, so do not answer anything a second time in the PDF.</p>
+    <p>Graders read the record for predictions made before each Git state, evidence from your own
+    run, a correct diagnosis of what the evidence showed, and why the recovery command you chose was
+    the safe one. All four belong under the <code>## Case 1</code>, <code>## Case 2</code>, and
+    <code>## Final Verification</code> headings that are already in Step 5.4.</p>
+    <h3>6.1 Self-check (not submitted, not graded)</h3>
+    <p>These are for your own understanding. Do not answer them in
+    <code>git_recovery.md</code> or in your PDF; nothing here is worth points. Later labs assume you
+    can answer them, so come back to this list if a Docker or Git step stops making sense.</p>
     <ul>
         <li>What is the difference between a Docker <strong>image</strong> and a <strong>container</strong>?</li>
         <li>Why do files placed in <code>~/workspaces</code> survive when the container exits, while files elsewhere in the container do not?</li>

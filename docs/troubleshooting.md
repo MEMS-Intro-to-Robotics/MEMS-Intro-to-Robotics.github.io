@@ -426,6 +426,24 @@ ros2 control list_controllers
 ros2 control list_hardware_interfaces
 ```
 
+### A planning failure reports `Error code: 99999`
+
+Every failed planning attempt logs this number, whatever the reason for the
+failure. It is a placeholder MoveIt uses when it has no more specific code, so
+it tells you nothing about what went wrong and there is nothing to look up.
+Read the lines above it instead: they name the goal that failed, and the
+planning scene at the time is what to check.
+
+### A run ends with `terminate called without an active exception`
+
+Sometimes followed by `[ros2run]: Aborted`. If the milestone output above it is
+complete, the work finished and this came from the shutdown afterwards, when a
+background thread outlived the node. Nothing is lost and the screenshot and log
+are still valid evidence.
+
+If the output above it is *not* complete, the run really did stop early. Treat
+the last line of real output as where it got to.
+
 ### Cartesian path fraction is very low
 
 Try:

@@ -274,13 +274,39 @@ git push origin main</code></pre>
 </section>
 <section id="analysis">
     <h2>6. Analysis and Discussion</h2>
-    <p>Your analysis is the completed <code>ros2_cli_record.md</code>. A strong record lets another person reconstruct what you observed and why your commands fit the task. It must:</p>
-    <ul>
-        <li>compare your velocity prediction with the observed motion;</li>
-        <li>interpret the direction of communication shown in your graph;</li>
-        <li>explain why motion used a topic, spawning used a service, and background configuration used parameters; and</li>
-        <li>describe one actual mismatch and diagnosis, or one likely mismatch and the first CLI command you would use to inspect it.</li>
-    </ul>
+    <p><strong>Where the answers go:</strong> this lab has no separate analysis write-up and no
+    Gradescope-only questions. Every written answer goes in <code>ros2_cli_record.md</code>, on the
+    prompt lines that are already in the file. Write each answer once. Your PDF contains the analysis
+    because you paste the rendered record into it, so do not answer anything a second time in the PDF.</p>
+    <p>A strong record lets another person reconstruct what you observed and why your commands fit the
+    task. Graders read it for four things, and each one is an existing prompt line in the template:</p>
+    <table style="border-collapse: collapse; width: 100%; border: 1px solid #ccc; margin-top: 1em;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ccc; padding: 8px;">What graders look for</th>
+                <th style="border: 1px solid #ccc; padding: 8px;">Prompt line in <code>ros2_cli_record.md</code></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 8px;">Your velocity prediction compared with the observed motion</td>
+                <td style="border: 1px solid #ccc; padding: 8px;"><code>Prediction compared with observation:</code> (under <code>## Validation</code>)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 8px;">The direction of communication shown in your graph</td>
+                <td style="border: 1px solid #ccc; padding: 8px;"><code>Graph interpretation:</code> (under <code>## Validation</code>)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 8px;">Why motion used a topic, spawning used a service, and background configuration used parameters</td>
+                <td style="border: 1px solid #ccc; padding: 8px;"><code>Why a topic, service, and parameter were appropriate for their respective jobs:</code> (under <code>## Validation</code>)</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 8px;">One actual mismatch and diagnosis, or one likely mismatch and the first CLI command you would use to inspect it</td>
+                <td style="border: 1px solid #ccc; padding: 8px;">The prompt under <code>## Recovery</code></td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Answer in your own words, using the names, values, and output from your own run.</p>
     <p><a href="#toc">&uarr; Back to top</a></p>
 </section>
 <section id="troubleshooting">
