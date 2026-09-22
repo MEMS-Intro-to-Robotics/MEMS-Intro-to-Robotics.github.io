@@ -92,6 +92,26 @@ the same fix on the affected repository.
 ask a TA to help copy them into the mounted workspace before exiting; `chown`
 cannot recover files deleted with a `--rm` container.
 
+### A pasted command reports its own flags as `command not found`
+
+You pasted a command that spans several lines, and it arrived broken, so the
+first line ran on its own and every later line ran as a separate command:
+
+```text
+docker: 'docker run' requires at least 1 argument
+bash: --name: command not found
+bash: --net=host: command not found
+bash: ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest: command not found
+```
+
+The lines of such a command are joined by a backslash at the end of each line,
+and that backslash only works when the line break follows it immediately. If a
+space slips in between, the command ends there instead.
+
+Retype it as a single line, with one space where each line break was, and leave
+out the backslashes. Pasting the same broken text again gives the same result,
+so there is no point repeating it.
+
 ### `docker run` says the container name is already in use
 
 A container from an earlier session is still running or still being cleaned up.
