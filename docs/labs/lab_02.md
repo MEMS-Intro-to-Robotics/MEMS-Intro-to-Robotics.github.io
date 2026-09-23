@@ -65,7 +65,7 @@ title: "Lab 02: ROS 2 CLI Fundamentals"
     <div class="alert alert-info" style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Complete Before Lab</strong>
         <p>Accept and clone the assignment, pull the course image, and verify the starting state before arriving at lab.</p>
     </div>
-    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Important:</strong> VMs power off automatically 4 hours after the reservation starts, destroying the running container and everything not saved in <code>~/workspaces</code>. This lab can fill a session, so commit and push whenever you finish a part, and renew your reservation before starting the independent investigation if your session is running low.</div>
+    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Important:</strong> VMs power off automatically 4 hours after the reservation starts. That stops the container and discards anything you wrote inside it outside <code>~/workspaces</code>; files on the VM itself stay where they are. This lab can fill a session, so commit and push whenever you finish a part, and renew your reservation before starting the independent investigation if your session is running low.</div>
     <ol>
         <li><strong>Verify Docker and GitHub access.</strong>
             <p><strong>Location:</strong> Host VM Terminal</p>

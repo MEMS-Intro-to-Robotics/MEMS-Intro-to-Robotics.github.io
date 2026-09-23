@@ -61,7 +61,7 @@ title: "Lab 05: Motion Planning with MoveIt 2"
     <div class="alert alert-info" style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Complete Before Lab</strong>
         <p>Accept and clone the assignment, pull the Kinova image, and create, build, and push your package before arriving at lab. The Kinova image is large, so start the pull early. During lab you will check this setup, bring up the simulation, and work on the milestones.</p>
     </div>
-    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>VM lifetime:</strong> VMs power off automatically 4 hours after the reservation starts. Files outside <code>~/workspaces</code> are not retained. Keep your work in that folder and commit and push whenever you finish a milestone.</div>
+    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>VM lifetime:</strong> VMs power off automatically 4 hours after the reservation starts. That stops the container and discards anything you wrote inside it outside <code>~/workspaces</code>; files on the VM itself stay where they are. Keep your work in that folder, and commit and push whenever you finish a milestone.</div>
     <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>Where to do what</strong>
         <ul>
             <li><strong>Edit code on your VM (host)</strong> in <strong>VS Code</strong>.</li>

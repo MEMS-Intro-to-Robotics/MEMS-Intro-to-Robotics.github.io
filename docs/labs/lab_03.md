@@ -64,7 +64,7 @@ title: "Lab 03: Shell Scripting for Robot Control"
     <div class="alert alert-info" style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Complete Before Lab</strong>
         <p>Accept and clone the assignment and pull the course image before arriving at lab. Lab time starts with the container launch in Part 1.</p>
     </div>
-    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Important:</strong> VMs power off automatically 4 hours after the reservation starts. Files outside <code>~/workspaces</code> may be lost when the VM shuts down, so keep your work in that folder and commit and push regularly.</div>
+    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Important:</strong> VMs power off automatically 4 hours after the reservation starts. That stops the container and discards anything you wrote inside it outside <code>~/workspaces</code>; files on the VM itself stay where they are. Keep your work in that folder, and commit and push regularly: until you push, it exists only on the VM.</div>
     <ol>
         <li><strong>Verify Docker and GitHub access.</strong>
             <p><strong>Location:</strong> Host VM Terminal</p>

@@ -91,7 +91,7 @@ title: "Lab 04: ROS 2 Python Nodes"
     <div class="alert alert-info" style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Complete Before Lab</strong>
         <p>Accept and clone the assignment, pull the course image, and create and build the empty package before arriving at lab. During lab, you will check this setup, launch the container, and write the nodes.</p>
     </div>
-    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Important:</strong> VMs power off automatically 4 hours after the reservation starts, destroying the running container and everything not saved in <code>~/workspaces</code>. Keep your work in that folder and commit and push whenever you finish a part.</div>
+    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Important:</strong> VMs power off automatically 4 hours after the reservation starts. That stops the container and discards anything you wrote inside it outside <code>~/workspaces</code>; files on the VM itself stay where they are. Keep your work in that folder, and commit and push whenever you finish a part.</div>
     <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>Where to do what</strong>
         <ul>
             <li><strong>Edit code on your VM (host)</strong> in <strong>VS Code</strong>. Do <strong>not</strong> run VS Code inside Docker; it isn&rsquo;t installed there.</li>
