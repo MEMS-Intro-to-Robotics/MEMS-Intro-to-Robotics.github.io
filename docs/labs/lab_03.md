@@ -116,14 +116,7 @@ cd intro-to-robotics-fall-2026-lab-03-YOUR_GITHUB_USERNAME</code></pre>
         <p>Start the standard course container. This is the same command shape as Labs 1 and 2, with the container name changed to <code>lab03</code>:</p>
         <p><strong>Location:</strong> Host VM Terminal</p>
         <pre><code class="language-bash">xhost +local:docker
-docker run --rm -it \
-  --name lab03 \
-  --net=host \
-  -e DISPLAY=$DISPLAY \
-  -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v ~/workspaces:/root/workspaces \
-  ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
+docker run --rm -it --name lab03 --net=host -e DISPLAY=$DISPLAY -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ~/workspaces:/root/workspaces ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
         <ul>
             <li><code>--name lab03</code> sets the name used by the <code>docker exec</code> command in Step 1.2.</li>
             <li><code>-v ~/workspaces:/root/workspaces</code> makes your VM&rsquo;s <code>~/workspaces</code> folder available inside the container at <code>/root/workspaces</code>.</li>
@@ -177,18 +170,15 @@ docker run --rm -it \
 set -euo pipefail
 
 # Send a forward velocity pulse (turtlesim times out after about 1 second)
-ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist \
-"{linear: {x: 2.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}" --once
+ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 2.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}" --once
 sleep 1
 
 # Send a turning velocity pulse
-ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist \
-"{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.8}}" --once
+ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.8}}" --once
 sleep 1
 
 # Stop the turtle
-ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist \
-"{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}" --once</code></pre>
+ros2 topic pub /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}" --once</code></pre>
         <h4>Step 3.2: Make it executable &amp; run it</h4>
         <p><strong>Location:</strong> Container Terminal (Terminal 2). Stop the teleop node from Step 2.3 with <code>Ctrl+C</code> first. To open an additional container shell, run <code>docker exec -it lab03 bash</code> from a <strong>Host VM Terminal</strong>.</p>
         <pre><code class="language-bash">cd ~/workspaces/intro-to-robotics-fall-2026-lab-03-YOUR_GITHUB_USERNAME/scripts

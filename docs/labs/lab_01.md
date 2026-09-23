@@ -413,14 +413,7 @@ git push origin main</code></pre>
         <h4>Step 3.4: Run the Container (mount your workspace)</h4>
         <p>Start an interactive container with your <code>~/workspaces</code> folder mounted and X11 passthrough so graphical applications can launch. This is the <strong>standard course <code>docker run</code> command</strong>. You will use this same shape in every lab, changing only the <code>--name</code> and the image tag:</p>
         <p><strong>Location:</strong> Host VM Terminal</p>
-        <pre><code class="language-bash">docker run --rm -it \
-  --name lab01 \
-  --net=host \
-  -e DISPLAY=$DISPLAY \
-  -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v ~/workspaces:/root/workspaces \
-  ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
+        <pre><code class="language-bash">docker run --rm -it --name lab01 --net=host -e DISPLAY=$DISPLAY -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ~/workspaces:/root/workspaces ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
         <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong><code>docker run</code> options:</strong>
             <ul>
                 <li><code>--rm</code>: Automatically removes the container when you exit.</li>

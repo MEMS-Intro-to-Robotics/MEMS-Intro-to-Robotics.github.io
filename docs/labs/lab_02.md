@@ -129,14 +129,7 @@ docker image inspect ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-j
             </li>
             <li><strong>Run the Course Container:</strong><br />This is the standard course <code>docker run</code> command from Lab 1 with the container name changed to <code>lab02</code>. It mounts your whole <code>workspaces</code> folder so that all of your repositories are available inside the container.
                 <p><strong>Location:</strong> Host VM Terminal</p>
-                <pre><code class="language-bash">docker run --rm -it \
-  --name lab02 \
-  --net=host \
-  -e DISPLAY=$DISPLAY \
-  -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v ~/workspaces:/root/workspaces \
-  ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
+                <pre><code class="language-bash">docker run --rm -it --name lab02 --net=host -e DISPLAY=$DISPLAY -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ~/workspaces:/root/workspaces ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
                 <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;">Inside the container, your VM&rsquo;s <code>~/workspaces</code> directory appears at <code>/root/workspaces</code>. The container runs as the <code>root</code> user, so <code>~/workspaces</code> <em>inside the container</em> is that same place, and the file paths stay the same across labs.</blockquote>
                 <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>Discovery range:</strong> The <code>-e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST</code> flag keeps your ROS 2 traffic on your own VM. On the shared campus network you could otherwise see, and control, other students&rsquo; turtles. The <code>docker run</code> command sets it every time, so you do not need to edit any <code>.bashrc</code>.</blockquote>
                 <blockquote style="border-left: 4px solid #d9534f; padding: 1em; background-color: #f8d7da; border-radius: 4px;"><strong>Warning:</strong> Because of <code>--rm</code>, the container is destroyed the moment you exit the original shell, along with any terminals attached via <code>docker exec</code>. Keep your files in <code>~/workspaces</code>, which lives on the VM and is not affected.</blockquote>

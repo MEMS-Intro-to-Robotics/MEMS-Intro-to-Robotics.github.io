@@ -141,14 +141,7 @@ cd intro-to-robotics-fall-2026-lab-04-YOUR_GITHUB_USERNAME</code></pre>
         <li><strong>Start the course container.</strong> This is the standard course <code>docker run</code> command with the container name changed to <code>lab04</code>:
             <p><strong>Location:</strong> Host VM Terminal</p>
             <pre><code class="language-bash">xhost +local:docker
-docker run --rm -it \
-  --name lab04 \
-  --net=host \
-  -e DISPLAY=$DISPLAY \
-  -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v ~/workspaces:/root/workspaces \
-  ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
+docker run --rm -it --name lab04 --net=host -e DISPLAY=$DISPLAY -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ~/workspaces:/root/workspaces ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
             <blockquote style="border-left: 4px solid #d9534f; padding: 1em; background-color: #f8d7da; border-radius: 4px;"><strong>Warning:</strong> The <code>--rm</code> option deletes the container when you exit the original shell and closes terminals attached with <code>docker exec</code>. Files in the mounted <code>~/workspaces</code> folder remain on the VM.</blockquote>
         </li>
         <li><strong>Create the Python package.</strong>
@@ -244,14 +237,7 @@ docker image inspect ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-j
         <h4>Step 2.1: Start the named container</h4>
         <p><strong>Location:</strong> Host VM Terminal</p>
         <pre><code class="language-bash">xhost +local:docker
-docker run --rm -it \
-  --name lab04 \
-  --net=host \
-  -e DISPLAY=$DISPLAY \
-  -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v ~/workspaces:/root/workspaces \
-  ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
+docker run --rm -it --name lab04 --net=host -e DISPLAY=$DISPLAY -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v ~/workspaces:/root/workspaces ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:base-jazzy-latest</code></pre>
         <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Keep this shell open:</strong> With <code>--rm</code>, exiting the original shell deletes the container and ends its attached <code>docker exec</code> sessions.</div>
         <h4>Step 2.2: Open additional terminals</h4>
         <p>This lab needs up to four container shells at once. Open each one with:</p>
