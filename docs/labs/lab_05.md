@@ -80,9 +80,9 @@ ssh -T git@github.com</code></pre>
         <li><strong>Make room for the image.</strong> Your VM has a 25 GB system disk, and the images from Labs 1&ndash;4 leave too little space for this one. Check what is free:
             <p><strong>Location:</strong> Host VM Terminal</p>
             <pre><code class="language-bash">df -h /</code></pre>
-            <p>The image and the workspace build together need about 11 GB. If <code>Avail</code> is smaller than that, remove the images you are no longer using:</p>
+            <p>The image and the workspace build together need about 11 GB. If <code>Avail</code> is smaller than that, remove unused Docker data:</p>
             <pre><code class="language-bash">docker system prune -a --volumes -f</code></pre>
-            <p>This deletes every image not currently in use, including the one from Labs 2&ndash;4. That is fine: nothing in this lab needs it, and <code>docker pull</code> fetches it again if you ever do. Check <code>df -h /</code> again before continuing; a cleared VM has about 12 GB free at this point.</p>
+            <p>This deletes stopped containers, unused images and networks, build cache, and unused Docker volumes. It does not delete files in <code>~/workspaces</code>. Make sure you do not need data stored only in a stopped container or Docker volume before running it. The image from Labs 2&ndash;4 will be removed if it is unused; you can download it again later with <code>docker pull</code>. Check <code>df -h /</code> again before continuing; a cleared VM has about 12 GB free at this point.</p>
         </li>
         <li><strong>Pull the Kinova course image.</strong> This is a different image from Labs 2&ndash;4, and it is large, so start it early.
             <p><strong>Location:</strong> Host VM Terminal</p>
@@ -281,7 +281,7 @@ Error: According to the loaded plugin descriptions the class gz_ros2_control/GzS
         <p><strong>Requirements for <code>run_milestone_2</code>:</strong></p>
         <ul>
             <li>Start from the arm&rsquo;s current pose. Read the end-effector pose once and build both targets from it.</li>
-            <li>Segment 1: at least 0.05 m along one axis of <code>base_link</code>. Segment 2: at least 0.05 m along a different axis, starting where segment 1 ended. Keep the gripper&rsquo;s orientation unchanged.</li>
+            <li>Segment 1: at least 0.20 m along one axis of <code>base_link</code>. Segment 2: at least 0.10 m along a different axis, starting where segment 1 ended. Keep the gripper&rsquo;s orientation unchanged. If the planner refuses a segment of that length from your retract pose, shorten it until it plans, and say in your PDF what length you used.</li>
             <li>Plan each segment with <code>cartesian=True</code>. If the planner returns <code>None</code>, log which segment failed and stop, without executing anything.</li>
             <li>Draw both segments with the pen.</li>
         </ul>
@@ -302,10 +302,10 @@ Error: According to the loaded plugin descriptions the class gz_ros2_control/GzS
         </details>
         <details>
             <summary>Hint 3: Seeing the second segment</summary>
-            <p>The pen traces <code>end_effector_link</code>, which sits inside the gripper. A segment that runs along the wrist axis ends up inside the gripper model, where no camera angle shows it clearly while the arm is parked at the end of it. Two ways round it: choose a second axis that moves the gripper sideways rather than along the wrist, or take the screenshot after the arm has moved away from that corner.</p>
+            <p>The pen traces <code>end_effector_link</code>, which sits inside the gripper. A segment along the wrist axis can be hidden by the gripper model while the arm is parked at its endpoint. Choose a second axis that moves the gripper sideways, or take the screenshot after the arm has moved away from that corner.</p>
         </details>
         <p><strong>Checkpoint:</strong> RViz shows two straight pen segments meeting at a corner. Run milestone 2 after milestone 1 (<code>motion_planner 1 2</code>) so it starts from your retract pose.</p>
-        <p>Compare the new segments with the milestone 1 line in the same window. The milestone 1 line curves, because a joint-space plan moves every joint at once and the gripper follows whatever path that produces. A Cartesian segment is straight. If your segments curve the way the milestone 1 line does, the plan was not a Cartesian one: check that <code>cartesian=True</code> reached the <code>plan()</code> call. The terminal output is the same either way, so this comparison is the only thing that tells you.</p>
+        <p>Compare the new segments with the milestone 1 line in the same window. The milestone 1 line curves because a joint-space plan moves the joints without constraining the gripper to a straight path. A Cartesian segment is straight. At the lengths this milestone asks for, a joint-space plan of the same move misses the straight line by about 18 mm over 0.20 m, which is visible next to a Cartesian one. If your new segments curve, check that the <code>plan()</code> call received <code>cartesian=True</code>; the terminal output does not distinguish the two cases.</p>
         <p><strong>Screenshot:</strong> RViz showing both straight segments. Save it as <code>docs/m2_cartesian_path.png</code>.</p>
         <p><em>Example (yours shows your own pose, path, and NetID):</em><br /><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab05/s02-m2-cartesian.png" alt="RViz after milestone 2: two straight pen segments meeting at a corner" style="max-width: 100%; height: auto;" /></p>
     </section>
@@ -374,7 +374,7 @@ time.sleep(1.0)</code></pre>
         <ul>
             <li>Run a motion from a start to a goal with no obstacle, with the pen down in one color.</li>
             <li>Add a collision box that blocks the path that motion took. Run the same motion again, from the same start to the same goal, in a second pen color.</li>
-            <li>Remove the box at the end so the scene is clean for the next run, and give yourself time to take the screenshot first: log a line saying the box is about to go and wait several seconds, or remove it on a separate run.</li>
+            <li>Keep the box visible long enough to take the screenshot, then remove it so the next run starts with a clean scene. Before removing it, either log a message and wait several seconds or pause and remove it on a separate run.</li>
             <li>Log, for each of the two motions: whether it succeeded, how many planning attempts it needed, and how long the motion took (time it with <code>time.time()</code> around the call).</li>
         </ul>
         <p><strong>Design justification</strong> (in your PDF, a short paragraph):</p>
@@ -386,7 +386,7 @@ time.sleep(1.0)</code></pre>
         <p>Change the pen color between the two motions with <code>self.pen.set_color(red, green, blue)</code>, each value from 0 to 1, for example <code>self.pen.set_color(0.9, 0.1, 0.1)</code> for red. The new color takes effect at the next <code>self.pen.down()</code>.</p>
         <details>
             <summary>Hint 1: Where the box has to go</summary>
-            <p>Draw the no-obstacle path first and look at it, then put the box across the middle of it. The line is not the whole story: the pen traces <code>end_effector_link</code> at the base of the gripper, and the fingers reach about 0.1 m further, so a box can block the path while sitting a few centimeters off the line.</p>
+            <p>Draw the no-obstacle path first, then place the box across the middle of it. The pen traces <code>end_effector_link</code> at the base of the gripper, while the fingers extend about 0.1 m farther. A box can therefore block the gripper while sitting a few centimeters from the pen line.</p>
         </details>
         <details>
             <summary>Hint 2: Sizing it</summary>
