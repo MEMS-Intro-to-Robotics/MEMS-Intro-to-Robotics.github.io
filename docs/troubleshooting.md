@@ -470,15 +470,29 @@ ros2 action info /PATH/TO/gripper_cmd
 
 ### Controllers fail to load, or spawners time out
 
-Usually a startup race, or a leftover Gazebo process holding simulation
-resources. Stop the launch, check for stragglers, and relaunch.
+The launch terminal repeats `Failed to acquire lock in 20 seconds` or
+`Could not contact service /controller_manager/list_controllers`. The spawners
+cannot reach the controller manager, which runs inside Gazebo. Scroll up in the
+launch terminal for a line showing that Gazebo exited, such as:
+
+```
+[INFO] [gazebo-8]: process has finished cleanly
+```
+
+The number after `gazebo-` can differ. If that line is there, Gazebo has exited.
+The word "cleanly" does not mean the window opened successfully. Check the lines
+above it for a crash or OpenGL error. If you find one, follow
+[Gazebo renders a black window, or crashes with an OpenGL error](#gazebo-renders-a-black-window-or-crashes-with-an-opengl-error).
+
+If Gazebo is still running, a startup race or another Gazebo process may be
+interfering. Stop the launch, check for other Gazebo processes, and relaunch.
 
 ```bash
 pgrep -f "gz sim"
 pkill -f "gz sim"
 ```
 
-Only one Gazebo instance should ever run.
+Before relaunching, make sure no other Gazebo instance is running.
 
 ### `gz service` reset commands fail with service not found
 
