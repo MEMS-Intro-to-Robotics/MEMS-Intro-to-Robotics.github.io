@@ -39,72 +39,6 @@ REMOVE_SECTION_IDS = {
     "deliverables", "deliverables-glance", "checklist",
 }
 
-LAB6_PRELAB_SHARED_WORKFLOW = dedent(
-    """
-    <p>From this point in the course onward, the repeated Docker, panes, build, and debugging habits live in the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>. This section only lists the Lab 06-specific commands and checks.</p>
-    <h2>3.1 Update Your Course Repository</h2>
-    <p>On your host VM, make sure your local course repo is current.</p>
-    <pre><code class="language-bash"># Navigate to your main robotics workspace
-    cd ~/workspaces/[netid]_robotics_fall2025
-
-    # Pull the latest changes from the main branch
-    git pull
-    </code></pre>
-    <h2>3.2 Pull the Docker Image</h2>
-    <p>Pull the Kinova image used for this lab.</p>
-    <pre><code class="language-bash">docker pull gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:kinova-jazzy-latest</code></pre>
-    <h2>3.3 Optional: Enable GPU Acceleration (Run Once Per VM)</h2>
-    <p>If Gazebo or RViz performance is poor, run the GPU setup script once on your host VM.</p>
-    <pre><code class="language-bash">cd ~
-    curl -L "https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/gpu_install.sh" -o gpu_install.sh
-    chmod +x gpu_install.sh
-    ./gpu_install.sh
-    </code></pre>
-    <p>If the script fails because you're not in the <code>docker</code> group, run this command, then log out and log back into your VM for the change to take effect:</p>
-    <pre><code class="language-bash">sudo usermod -aG docker "$USER"
-    </code></pre>
-    <p>If you don't have a GPU, you can omit the <code>--gpus all</code> flag later, but you may need to enable software rendering if you see OpenGL errors by running <code>export LIBGL_ALWAYS_SOFTWARE=1</code> inside the container.</p>
-    <h2>3.4 Start the ROS 2 Container</h2>
-    <p>On your host VM, allow GUI forwarding and start the single container for this lab.</p>
-    <pre><code class="language-bash">xhost +local:docker
-
-    docker run --rm -it \\
-      --net=host \\
-      -e DISPLAY=$DISPLAY \\
-      -v /tmp/.X11-unix:/tmp/.X11-unix \\
-      -v ~/workspaces:/workspaces \\
-      --gpus all \\
-      --name ros2_lab06 \\
-      gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:kinova-jazzy-latest \\
-      bash</code></pre>
-    <h2>3.5 Launch Terminator and Create the Lab 6 Workspace</h2>
-    <p>Inside the container, launch Terminator and create the directory structure for this lab.</p>
-    <pre><code class="language-bash">terminator &amp;
-
-    # In a pane inside the container
-    # The [netid]_robotics_fall2025 folder should already exist
-    cd /workspaces/[netid]_robotics_fall2025
-    mkdir -p lab06/docs lab06/ros2_ws/src
-    </code></pre>
-    <h2>3.6 Recommended Pane Layout</h2>
-    <ul>
-        <li><strong>Pane A</strong>: Gazebo simulation for the Kinova Gen3 Lite.</li>
-        <li><strong>Pane B</strong>: MoveIt and RViz for motion planning.</li>
-        <li><strong>Pane C</strong>: Your development environment for building and running your Python node.</li>
-        <li><strong>Pane D</strong>: Scripts for spawning objects into Gazebo.</li>
-    </ul>
-    <h2>3.7 Ready for Lab Checklist</h2>
-    <p>You are ready to begin the <strong>Lab Procedure</strong> when you can say "yes" to all of the following:</p>
-    <ul>
-        <li>I have successfully run <code>git pull</code> in my course repository on the <strong>host</strong>.</li>
-        <li>I have started <strong>one</strong> container and it is named <code>ros2_lab06</code>.</li>
-        <li>I have launched <strong>Terminator inside the container</strong> and can open multiple panes.</li>
-        <li>My Lab 6 directory structure exists at <code>/workspaces/[netid]_robotics_fall2025/lab06/</code>.</li>
-    </ul>
-    <hr />
-    """
-).strip()
-
 LAB7_PRELAB_SHARED_WORKFLOW = dedent(
     """
     <p>You will work entirely in <strong>simulation</strong> inside the provided Docker container. This pre-lab ensures your environment is correctly configured. The main steps are to (1) update your local course repository, (2) pull the latest Docker image, (3) launch the simulator, and (4) verify that all tools and ROS 2 topics are functioning correctly before you begin the lab procedure.</p>
@@ -289,17 +223,6 @@ def require_replace(html: str, old: str, new: str, label: str) -> str:
 
 
 
-def apply_lab6_shared_workflow(html: str) -> str:
-    """Replace Lab 6's repeated setup tutorial with the shared workflow pointer."""
-    html = require_sub(
-        html,
-        r'<p>This section guides you through setting up the exact environment needed for the lab\..*?(?=<h1>5 Lab Procedure</h1>)',
-        LAB6_PRELAB_SHARED_WORKFLOW + "\n",
-        "lab06 shared prelab",
-    )
-    return html
-
-
 def apply_lab7_shared_workflow(html: str) -> str:
     """Replace Lab 7's repeated setup tutorial with the shared workflow pointer."""
     html = require_sub(
@@ -373,9 +296,7 @@ def apply_lab10_shared_workflow(html: str) -> str:
 
 def apply_public_site_dedup(html: str, lab_num: int) -> str:
     """Apply shared-reference rewrites that should survive regeneration."""
-    if lab_num == 6:
-        html = apply_lab6_shared_workflow(html)
-    elif lab_num == 7:
+    if lab_num == 7:
         html = apply_lab7_shared_workflow(html)
     elif lab_num == 9:
         html = apply_lab9_shared_workflow(html)
@@ -463,8 +384,9 @@ def clean_lab(html: str, lab_num: int) -> str:
     html = redact_secrets(html)
     html = replace_canvas_images(html)
 
-    # 1. Remove instructor headers
+    # 1. Remove instructor headers, and HTML comments (staff TODO notes)
     html = remove_header_block(html)
+    html = re.sub(r'<!--.*?-->[ \t]*\n?', '', html, flags=re.DOTALL)
 
     # Lab 7 has a different header format
     if lab_num == 7:
