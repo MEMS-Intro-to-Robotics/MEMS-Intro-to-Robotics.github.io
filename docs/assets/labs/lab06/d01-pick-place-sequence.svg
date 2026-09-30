@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-labelledby="t d">
-  <title id="t">The pick and place sequence, and where the planning scene changes</title>
-  <desc id="d">The canonical pick and place cycle has eight steps: approach above the block, descend, close the gripper, attach the block to the robot in the planning scene, lift, move to the place location, descend and open the gripper, then detach the block and retreat. The attach and detach steps change the planning scene rather than moving the arm; they tell the motion planner that the block is now part of the robot, or is again part of the world.</desc>
+  <title id="t">Pick and place sequence and planning scene updates</title>
+  <desc id="d">A pick and place cycle has eight steps: approach above the block, descend, close the gripper, attach the block to the gripper in the planning scene, lift, move above the place location, descend and open the gripper, then detach the block and retreat. Attach and detach update the planning scene without moving the arm. MoveIt plans the attached block with the gripper; after detachment, the block is a world object at the place location.</desc>
 
   <style>
     .mv     { fill: #ffffff; stroke: #012169; stroke-width: 2; }
@@ -47,7 +47,7 @@
     <rect class="sc" x="666" y="48" width="210" height="72" rx="7"/>
     <text class="idx" x="680" y="66">04</text>
     <text class="nt"  x="771" y="84"  text-anchor="middle">Attach</text>
-    <text class="s"   x="771" y="104" text-anchor="middle">block becomes part of the robot</text>
+    <text class="s"   x="771" y="104" text-anchor="middle">block attached to the gripper</text>
   </g>
 
   <line class="flow" x1="210" y1="84" x2="234" y2="84"/>
@@ -80,7 +80,7 @@
     <rect class="sc" x="666" y="196" width="210" height="72" rx="7"/>
     <text class="idx" x="680" y="214">08</text>
     <text class="nt"  x="771" y="232" text-anchor="middle">Detach and retreat</text>
-    <text class="s"   x="771" y="252" text-anchor="middle">block returns to the world</text>
+    <text class="s"   x="771" y="252" text-anchor="middle">block becomes a world object</text>
   </g>
 
   <line class="flow" x1="210" y1="232" x2="234" y2="232"/>
@@ -94,9 +94,8 @@
   <rect class="gr" x="164" y="314" width="20" height="14" rx="3"/>
   <text class="key" x="192" y="326">gripper action</text>
   <rect class="sc" x="316" y="314" width="20" height="14" rx="3"/>
-  <text class="key" x="344" y="326">planning scene change — the arm does not move</text>
+  <text class="key" x="344" y="326">planning scene update (no arm motion)</text>
 
-  <text class="note" x="24" y="364">Steps 04 and 08 are bookkeeping, not motion. Attaching tells the planner the block travels with the gripper, so it plans</text>
-  <text class="note" x="24" y="384">around the block instead of colliding with it. Skip the attach and the planner will drive the held block through the table.</text>
-  <text class="note" x="24" y="404">Skip the detach and the block follows the arm forever, even after you let go.</text>
+  <text class="note" x="24" y="364">Steps 04 and 08 update the planning scene without moving the arm. MoveIt plans the attached block&#8217;s path</text>
+  <text class="note" x="24" y="384">with the gripper and checks it against world objects. Detaching adds the block to the world at its released position.</text>
 </svg>

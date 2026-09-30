@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" role="img" aria-labelledby="t d">
-  <title id="t">What attaching and detaching change in the planning scene</title>
-  <desc id="d">The planner keeps two sets of objects: the robot, and the world. Before the grasp the block is in the world, so the planner treats touching it as a collision. Attaching moves the block from the world set into the robot set, so it now travels with the gripper and touching it is no longer a collision, while the planner still keeps it clear of the table. Detaching returns it to the world at its new location.</desc>
+  <title id="t">Attached and world objects in the planning scene</title>
+  <desc id="d">MoveIt's planning scene tracks world objects and objects attached to the robot. Before the grasp, block_1 is a world object. Attaching it to the gripper lets MoveIt plan its path with the gripper. The gripper may touch the attached block, while MoveIt still checks it against the table and other world objects. Detaching returns block_1 to the world at its released position.</desc>
 
   <style>
     .panel { fill: #f8fafc; stroke: #cdd6e4; stroke-width: 1.5; }
@@ -93,9 +93,9 @@
   <!-- notes -->
   <line x1="24" y1="336" x2="876" y2="336" stroke="#cdd6e4" stroke-width="1.5"/>
 
-  <text class="note" x="24" y="362">Attaching does not move the arm. It moves the block from one list to the other, and that changes what counts as a collision:</text>
-  <text class="note" x="24" y="382">the gripper may now touch the block, but the block must still stay clear of the table and everything else.</text>
+  <text class="note" x="24" y="362">Attaching does not move the arm. It changes block_1 from a world object to an object attached to the gripper:</text>
+  <text class="note" x="24" y="382">the gripper may touch the block, while MoveIt checks it against the table and other world objects.</text>
 
-  <text class="note" x="24" y="412">Forget the attach and the planner thinks the gripper is empty, and it will sweep the held block through the table.</text>
-  <text class="note" x="24" y="432">Forget the detach and the block stays welded to the gripper for the rest of the run, even after you open it.</text>
+  <text class="note" x="24" y="412">Detaching returns block_1 to the world at its released position. The planning scene then lists it as a world object</text>
+  <text class="note" x="24" y="432">and no longer as an object attached to the gripper.</text>
 </svg>
