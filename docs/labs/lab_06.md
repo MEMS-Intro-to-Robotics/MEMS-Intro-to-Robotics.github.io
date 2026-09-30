@@ -49,7 +49,8 @@ title: "Lab 06: Pick-and-Place Manipulation"
     <p><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab06/d03-attach-detach.svg" alt="Before the grasp the block is in the world; after attach it is part of the robot; after detach it is back in the world" style="max-width: 100%; height: auto;" /></p>
     <p><strong>Gazebo and the planning scene.</strong> Gazebo simulates block positions. MoveIt plans from its planning scene, which your code updates. The finger position provides a grasp check: the fingers stop early on a block and close fully on an empty grasp. Milestone 4 uses that reading.</p>
     <p><strong>The station.</strong> As at the lab benches, the arm stands on a quick mount bolted to an aluminum plate on the table, and three 50 mm blocks sit in a row in front of it: red <code>block_1</code>, blue <code>block_2</code>, and yellow <code>block_3</code>. The tower is built on the blue block where it sits.</p>
-        <p><a href="#toc">&uarr; Back to top</a></p>
+    <p><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab06/d02-block-layout.svg" alt="Top view: the three blocks in a row at x = 0.44 m, block_1 red at y = -0.168, block_2 blue at y = 0.012 and the tower base, block_3 yellow at y = 0.192. Side view: the tabletop at z = -0.0627 m, GRASP_HEIGHT 0.119 m and APPROACH_HEIGHT 0.274 m as heights of end_effector_link" style="max-width: 100%; height: auto;" /></p>
+    <p><a href="#toc">&uarr; Back to top</a></p>
 </section>
 <section id="objectives">
     <h2>2. Learning Objectives</h2>
