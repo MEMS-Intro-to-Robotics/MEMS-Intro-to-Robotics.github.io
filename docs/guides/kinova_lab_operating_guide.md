@@ -10,7 +10,7 @@ This guide covers the complete procedure for running code on the Kinova Gen3 Lit
 - [ ] Kinova Gen3 Lite arm (powered on)
 - [ ] USB cable connecting robot to lab computer
 - [ ] E-stop device plugged into wall power and connected to robot
-- [ ] Lab computer with Docker installed and Kinova image built
+- [ ] Lab computer with Docker installed and the course Kinova image pulled (`docker pull ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:kinova-jazzy-latest`)
 - [ ] Network configured so lab computer can reach `192.168.1.10`
 
 ---
@@ -57,30 +57,29 @@ The Kinova arm has a built-in web interface for direct control and diagnostics.
 
 ## Step 3: Launch Docker Container
 
-Open a terminal on the lab computer and run:
+On the lab computer, open a terminal and run the course command:
 
 ```bash
-docker run -it --rm \
+xhost +local:docker
+docker run --rm -it \
+  --name kinova \
   --net=host \
-  --privileged \
-  --device=/dev/ttyACM0 \
   --gpus all \
-  -e NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility \
   -e DISPLAY=$DISPLAY \
-  -e QT_X11_NO_MITSHM=1 \
-  -e QT_QPA_PLATFORM=xcb \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-  -v ~/workspaces:/root/workspaces/ \
-  gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:kinova-jazzy-latest
+  -e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+  -v ~/workspaces:/root/workspaces \
+  ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:kinova-jazzy-latest
 ```
 
 **Key flags:**
 
 | Flag | Purpose |
 |------|---------|
-| `--privileged` | Required for USB device access |
-| `--network host` | Allows container to reach robot at `192.168.1.10` |
-| `-v ~/workspaces:...` | Mount your code into the container |
+| `--net=host` | Uses the host network so the container can reach the robot at `192.168.1.10` |
+| `--gpus all` | Makes GPUs available to the container for RViz. If `docker run` reports `could not select device driver`, rerun the command without this flag. |
+| `-e ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST` | Limits ROS 2 discovery to this computer |
+| `-v ~/workspaces:/root/workspaces` | Mounts the lab computer's `~/workspaces` directory at `/root/workspaces` in the container |
 
 ---
 
