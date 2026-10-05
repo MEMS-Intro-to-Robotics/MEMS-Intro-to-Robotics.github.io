@@ -248,14 +248,15 @@ time.sleep(0.5)   # let the planning scene update</code></pre>
     </section>
     <section id="part6">
         <h3>Part 6: Optional, Run on the Real Arm</h3>
-        <p>Optional and not graded, at a lab station with a TA present. The station matches the simulation (same mount, plate, heights, and block positions), so your code runs unchanged.</p>
-                <blockquote style="border-left: 4px solid #d9534f; padding: 1em; background-color: #f8d7da; border-radius: 4px;"><strong>Safety:</strong> only your team at your station. One operator; everyone else stands back. Hands, bodies, and loose items stay out of the workspace while the arm is powered. Find the emergency stop before the first motion and keep a hand near it. Run one milestone at a time; stop at anything unexpected.</blockquote>
+        <p>This activity is optional and ungraded. Run it at a lab station with a TA present. The station matches the simulation (same mount, plate, heights, and block positions), so your code runs unchanged.</p>
+                <blockquote style="border-left: 4px solid #d9534f; padding: 1em; background-color: #f8d7da; border-radius: 4px;"><strong>Safety:</strong> Only your team may be at your station. Have one operator while everyone else stands back. Keep hands, bodies, and loose items out of the workspace while the arm is powered. Find the emergency stop before the first motion and keep a hand near it. Run one milestone at a time; stop at anything unexpected.</blockquote>
         <ol>
             <li>On the lab PC, clone or pull your repository and start the container with the pre-lab command. Do not start the simulation launch or the grasp watcher.</li>
             <li><code>ping -c 2 ROBOT_IP</code> with the IP posted at the station. If it fails, tell a TA.</li>
-            <li>In two container terminals: <code>ros2 launch kortex_bringup gen3_lite.launch.py robot_ip:=ROBOT_IP gripper:=gen3_lite_2f launch_rviz:=false</code> and <code>ros2 launch kinova_gen3_lite_moveit_config robot.launch.py robot_ip:=ROBOT_IP launch_driver:=false</code>.</li>
+            <li>In the Kinova web app at <code>http://ROBOT_IP/</code>, move the arm to <strong>Home</strong>. The built-in Retract pose puts joint 3 just past MoveIt&rsquo;s limit, so MoveIt cannot plan from that pose.</li>
+            <li>In one container terminal: <code>ros2 launch kinova_gen3_lite_moveit_config robot.launch.py robot_ip:=ROBOT_IP</code>. This one launch starts the driver, the controllers, MoveIt, and RViz. Do not start a second driver with <code>kortex_bringup</code> or <code>kinova-driver</code>; with two drivers running, the controllers fail.</li>
             <li>Place the blocks on the marked positions and run <code>blocks reset</code> (it updates only the planning scene when there is no Gazebo). Run milestone 1, watching the whole approach. Then milestone 2 or 3.</li>
-            <li>Shut down: check that RViz shows nothing attached, stop both launches, follow the station&rsquo;s power-down procedure, and push from the host.</li>
+            <li>Shut down: check that RViz shows nothing attached, stop the launch, follow the station&rsquo;s power-down procedure, and push from the host.</li>
         </ol>
     </section>
     <p><a href="#toc">&uarr; Back to top</a></p>
