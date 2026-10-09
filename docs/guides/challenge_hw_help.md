@@ -22,7 +22,7 @@ The starter repositories supply these files:
 | File | Homework | What it does |
 |---|---|---|
 | `display.launch.py` | 1 and 2 | Shows a URDF or xacro file in RViz with a slider for each joint. |
-| `fix_moveit_config.py` | 2 | Corrects two errors in the package the MoveIt Setup Assistant generates. |
+| `fix_moveit_config.py` | 2 | Corrects known errors in the package the MoveIt Setup Assistant generates. |
 | `gz_sim.launch.py` | 2 | Starts Gazebo with your robot, a world, and your robot's controllers. |
 | `moveit_sim.launch.py` | 2 | Starts MoveIt and RViz for the robot running in Gazebo. |
 | `task_world.sdf` | 2 | A starter Gazebo world with a table and a block. |
@@ -86,9 +86,19 @@ Then edit the generated `urdf/<robot>.xacro`:
     </joint>
     ```
 
-- **Add `tool0` (optional).** A fixed link at the tool flange gives the Setup
-  Assistant's chain and your task script a clear end point. Without it, end the
-  chain at your last link.
+- **Add `tool0` (required in Homework 1).** A fixed link at the tool flange gives
+  the Setup Assistant's chain and your task script a clear end point. Add it after
+  your last link, with `xyz` set to the flange's position in that link's frame:
+
+    ```xml
+    <link name="tool0"/>
+    <joint name="tool_fixed" type="fixed">
+      <parent link="link6_1"/>
+      <child link="tool0"/>
+      <origin xyz="0 0 0.02" rpy="0 0 0"/>
+    </joint>
+    ```
+
 - **Check the inertias.** The exporter rounds every inertia value to six decimal
   places in kg·m². A very small link can come out with zeros; enlarge or replace
   those values.
