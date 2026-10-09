@@ -53,6 +53,7 @@ nav:
       - Lab 08 — Real Drone Control: labs/lab_08.md
       - Lab 09 — SLAM Exploration: labs/lab_09.md
       - Lab 10 — Real TurtleBot 4: labs/lab_10.md
+      - Challenge Homework Help: guides/challenge_hw_help.md
   - Starter Code:
       - starter-code/index.md
       - Lab 06 Files: lab06_files/README.md
