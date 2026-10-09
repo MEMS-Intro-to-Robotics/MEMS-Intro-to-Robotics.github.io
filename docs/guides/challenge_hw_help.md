@@ -1,10 +1,9 @@
 # Challenge Homework Help
 
 This page provides example screenshots, setup notes, and troubleshooting guidance
-for Robotics Challenge Homeworks 1 and 2. Consult it while working through the
-assignments.
+for Robotics Challenge Homeworks 1 and 2.
 
-Everything here was tested in the Kinova course image
+Use the Kinova course image
 (`ghcr.io/mems-intro-to-robotics/mems-robotics-toolkit:kinova-jazzy-latest`), the
 same image as Labs 5 and 6.
 
@@ -45,14 +44,65 @@ docker run --rm -it --name chw --net=host --gpus all -e DISPLAY=$DISPLAY -e ROS_
 
 Open more terminals with `docker exec -it chw bash`. Keep your workspace at
 `ros2_ws/` in your repository, build it with `colcon build --symlink-install`, and
-source `install/setup.bash` in every terminal that runs your code. Git runs on the
-VM, not in the container.
+source `install/setup.bash` in every terminal that runs your code. Run Git on the
+VM.
 
 ## Homework 1: CAD, URDF, and RViz
 
-### Package layout
+### Generating the URDF from Fusion
 
-A description package is an `ament_cmake` package that installs its folders:
+Staff tested the
+[Fusion 360 URDF exporter for ROS 2](https://github.com/runtimerobotics/fusion360-urdf-ros2)
+on an example arm in the course image on 2026-10-09; its output worked in RViz,
+the Setup Assistant, and Gazebo after the edits below. Install it as its README
+describes. Exporters for other CAD programs exist, and any of them is allowed.
+
+Set up the Fusion design before exporting:
+
+- Make one component per link, all directly under the top level of the design.
+- Name the base component `base_link`.
+- Connect the links with Revolute joints, and set both rotation limits on every
+  joint. The exporter stops with an error when a limit is missing.
+- Assign a material to every component so the exporter calculates masses and
+  inertias from those materials.
+
+When the exporter asks whether you use Gazebo Harmonic, answer **Yes**. It writes
+an `ament_python` package named after the first word of the design's name, with
+`_description` added, and names each link after its Fusion component (`link1:1`
+becomes `link1_1`). Copy that package into `ros2_ws/src/` and build it.
+
+Then edit the generated `urdf/<robot>.xacro`:
+
+- **Add a `world` link (required).** Without it the base is free to move in
+  Gazebo. In the staff test, the arm tipped over when it reached out, while the
+  measured joint positions still matched the commands. Add this just before the
+  `base_link` link:
+
+    ```xml
+    <link name="world"/>
+    <joint name="world_fixed" type="fixed">
+      <parent link="world"/>
+      <child link="base_link"/>
+    </joint>
+    ```
+
+- **Add `tool0` (optional).** A fixed link at the tool flange gives the Setup
+  Assistant's chain and your task script a clear end point. Without it, end the
+  chain at your last link.
+- **Check the inertias.** The exporter rounds every inertia value to six decimal
+  places in kg·m². A very small link can come out with zeros; enlarge or replace
+  those values.
+- **Joint speed.** The exporter sets every joint's velocity limit to 100 rad/s.
+  MoveIt slows motions to a tenth of the limit by default; lower the limit in the
+  URDF if the arm still moves too fast.
+
+The URDF file is `<robot>.xacro`, so pass that path to `display.launch.py` and
+the Setup Assistant. Its mesh paths start with `file://$(find ...)`, which
+`xacro` fills in; every course tool reads the URDF through `xacro`.
+
+### Writing the package by hand
+
+Use an `ament_cmake` description package with this layout and install its folders:
 
 ```text
 ros2_ws/src/<robot>_description/
@@ -69,22 +119,23 @@ In `CMakeLists.txt`, after `find_package(ament_cmake REQUIRED)`:
 install(DIRECTORY urdf meshes DESTINATION share/${PROJECT_NAME})
 ```
 
-Refer to meshes as `package://<robot>_description/meshes/<link>.stl`. That path only
-resolves after the package is built and `install/setup.bash` is sourced. If RViz
-reports `Could not load resource [package://...]`, one of those two steps is missing.
+Refer to meshes as `package://<robot>_description/meshes/<link>.stl`. Build the package and source
+`install/setup.bash` so ROS can locate its installed resources. If RViz
+reports `Could not load resource [package://...]`, check the build, the sourced
+environment, and the mesh path.
 
 ### Exporting meshes from CAD
 
 - **Units.** STL files have no units. If your CAD tool exports in millimeters, ROS
   interprets the values as meters, so the mesh appears 1000 times too large. Export in
   meters or add `scale="0.001 0.001 0.001"` to each `<mesh>` element.
-- **Origins.** A link's mesh is drawn at that link's frame, which sits at the joint
-  that drives the link. In CAD, place each part so its origin is on its joint axis
-  before you export it. An origin elsewhere can make the link appear offset.
+- **Origins.** A mesh's pose is defined relative to its link frame. Export each
+  part with an origin and orientation that match the link frame, or account for
+  the difference with the URDF visual origin.
 - **Mass properties.** CAD tools report each part's mass, center of mass, and
   inertia tensor once you assign a material. Use those numbers in `<inertial>`, and
   convert them to kilograms, meters, and kg·m². Make sure the inertia is about the
-  center of mass, expressed in the link frame.
+  center of mass, expressed in the inertial frame defined in the URDF.
 
 ### Checking and displaying the URDF
 
@@ -93,16 +144,18 @@ check_urdf <(xacro ros2_ws/src/<robot>_description/urdf/<robot>.urdf.xacro)
 ros2 launch display.launch.py model:=ros2_ws/src/<robot>_description/urdf/<robot>.urdf.xacro
 ```
 
-`check_urdf` prints the tree of links. Your arm should appear as one chain from
+`check_urdf` prints the tree of links. Check that the arm's links form a chain from
 `world` to `tool0`. `display.launch.py` opens RViz and a window of joint sliders;
 **Randomize** moves every joint at once.
 
-![RViz with a test arm and the joint slider window](../assets/challenge_hw/display.png)
+![RViz with an example arm and the joint slider window](../assets/challenge_hw/display.png)
 
-*A test arm built from cylinders with an STL base, shown by `display.launch.py`.*
+*An example arm built from cylinders and round flanges, shown by `display.launch.py`
+and posed with the sliders.*
 
-If RViz shows `Frame [world] does not exist`, your root link is not named `world`.
-Rename it, or pass `fixed_frame:=<your root link>`.
+If RViz shows `Frame [world] does not exist`, check that the robot's transforms
+are being published. If the root link is not named `world`, rename it or pass
+`fixed_frame:=<your root link>`.
 
 ## Homework 2: MoveIt and Gazebo
 
@@ -112,10 +165,9 @@ Rename it, or pass `fixed_frame:=<your root link>`.
 ros2 launch moveit_setup_assistant setup_assistant.launch.py
 ```
 
-- **Load the URDF with Browse. Do not type in the path field.** The Setup Assistant
-  tries to load the path after every keystroke, and it crashes as soon as the text
-  is a folder, such as the first `/`. Pick the `.urdf.xacro` file from your
-  `src/` folder in the Browse dialog.
+- **Load the URDF with Browse.** Typing a partial path, such as `/`, can
+  trigger a crash in the course version of the Setup Assistant. Pick the
+  `.urdf.xacro` file from your `src/` folder in the Browse dialog.
 - **Planning group.** Add a group with a KDL kinematics solver, then
   **Add Kin. Chain** from your base link to `tool0`.
 - **Robot poses.** Add at least one named pose, such as `home`, for your task to
@@ -124,22 +176,27 @@ ros2 launch moveit_setup_assistant setup_assistant.launch.py
   position and velocity state). On both the **ROS 2 Controllers** and the
   **MoveIt Controllers** pages, use the Auto Add button.
 - **Configuration files.** Fill in Author Information first, then generate into
-  `ros2_ws/src/<robot>_moveit_config`. A warning about incomplete steps (end
-  effectors, virtual joints) is expected; continue.
+  `ros2_ws/src/<robot>_moveit_config`. Warnings about end effectors or virtual joints
+  can be left unresolved if your robot configuration does not need them.
 
-![Planning group defined as a kinematic chain](../assets/challenge_hw/setup_assistant.png)
+![Planning group arm defined as a kinematic chain from base_link to tool0](../assets/challenge_hw/setup_assistant.png)
 
 ### Fix the generated package
 
-The Setup Assistant in ROS 2 Jazzy generates two files that stop MoveIt from working:
+Check for these configuration problems in packages generated by the
+Setup Assistant in ROS 2 Jazzy:
 
-- `joint_limits.yaml` switches acceleration limits off. Planning then fails with
+- `joint_limits.yaml` may have acceleration limits disabled. Planning can fail with
   `No acceleration limit was defined for joint ...`, which pymoveit2 reports as
   `Error code: 99999`.
-- `moveit_controllers.yaml` leaves out the controller's action namespace. MoveIt
-  then logs `Returned 0 controllers in list`, and plans never execute.
+- `moveit_controllers.yaml` may omit the controller's action namespace. MoveIt
+  can then log `Returned 0 controllers in list` and fail to execute plans.
+- `joint_limits.yaml` copies whole-number limits from the URDF as whole numbers,
+  for example `max_velocity: 100` from the Fusion exporter's `velocity="100"`.
+  MoveIt then stops at startup with `expected [double] got [integer]`, and every
+  plan fails.
 
-`fix_moveit_config.py` corrects both. Run it after regenerating the package,
+`fix_moveit_config.py` corrects all three. Run it after regenerating the package,
 then rebuild:
 
 ```bash
@@ -167,19 +224,22 @@ controller and `joint_state_broadcaster` as `active`.
 Stop `demo.launch.py` before you start Gazebo. It runs its own controllers for the
 same joints.
 
-![The test arm in the starter world](../assets/challenge_hw/gazebo.png)
+![The example arm touching a target on the table in Gazebo](../assets/challenge_hw/gazebo.png)
+![The same moment in RViz, with the table and post as green planning-scene boxes](../assets/challenge_hw/planning_scene.png)
 
-*The test arm in `task_world.sdf`. The table is only in Gazebo, not in MoveIt's
-planning scene, so MoveIt does not avoid it.*
+*An example task: the arm touches targets on the table and goes around the red
+post. MoveIt does not read Gazebo's world, so the task script adds the table and
+post to the planning scene (green in RViz) before it plans.*
 
 ### Your world
 
-Copy `task_world.sdf` and edit it. Objects with `<static>true</static>` never
-move, which suits tables and fixtures. The three `<plugin>` lines at the top are
+Copy `task_world.sdf` and edit it. Objects with `<static>true</static>` stay fixed
+under physics simulation, which suits tables and fixtures. The three `<plugin>` lines at the top are
 the systems Gazebo loads by default. Gazebo uses its defaults only when a world
 lists no plugins, so if you add a plugin of your own, keep those three beside it.
 
-Objects in the world file exist only in Gazebo. To make MoveIt plan around them,
+Gazebo world objects are not automatically added to MoveIt's planning scene.
+To make MoveIt plan around them,
 add matching boxes to the planning scene from your script with
 `add_collision_box`, as in Lab 5 milestone 3.
 
@@ -190,12 +250,14 @@ effector (`tool0`), and group name. The
 [pymoveit2 API guide](pymoveit2_api_guide.md) covers the calls.
 
 - Start the script after the MoveIt terminal prints
-  `Ready to take commands for planning group`. A script that starts earlier gets
-  `Service 'plan_kinematic_path' is not yet available` and no plan.
+  `Ready to take commands for planning group`. A script that requests a plan before the service is ready can report
+  `Service 'plan_kinematic_path' is not yet available` and fail to plan.
 - The planner is randomized, so retry a failed plan a few times before giving up,
   as `move_to_joints()` did in Lab 5.
-- Check each move from the measured joint positions on `/joint_states`, not from
-  the return value of `execute()`.
+- Check that each move reached its goal using the measured joint positions on
+  `/joint_states`; the return value of `execute()` alone does not confirm arrival. In a staff run of the example task,
+  `execute()` reported success while the arm was stopped 74 mm short of its goal
+  in Gazebo.
 
 ### Grasping in Gazebo
 
@@ -206,16 +268,18 @@ Tasks without grasping are also acceptable.
 
 ## Troubleshooting
 
-| Symptom | Cause and fix |
+| Symptom | Possible cause and checks |
 |---|---|
 | Setup Assistant closes while you type the URDF path | Known crash; use Browse. |
 | `No acceleration limit was defined for joint` | Run `fix_moveit_config.py`, rebuild. |
 | `Returned 0 controllers in list`, plans never move the arm | Run `fix_moveit_config.py`, rebuild. |
+| `move_group` stops at startup with `expected [double] got [integer]` | Run `fix_moveit_config.py`, rebuild. |
+| The whole arm tips over in Gazebo | The URDF has no `world` link fixed to `base_link`; add one (see "Generating the URDF from Fusion"). |
 | `Could not load resource [package://...]` | Build the description package and source `install/setup.bash`; check that `CMakeLists.txt` installs `meshes`. |
-| Robot is huge in RViz or Gazebo | Meshes exported in millimeters; add `scale="0.001 0.001 0.001"`. |
-| Links float away from their joints | Mesh origins are not at the joint axes; fix the origins in CAD and export again. |
-| Arm collapses or shakes in Gazebo | Check each link's mass and inertia: no zeros, and values that match the part's size. |
-| The arm passes through an object | The object is not in MoveIt's planning scene; add it with `add_collision_box`. |
+| Robot is huge in RViz or Gazebo | If meshes were exported in millimeters, add `scale="0.001 0.001 0.001"`. |
+| Links float away from their joints | Check mesh origins and URDF visual transforms; correct the CAD export or the URDF transform. |
+| Arm collapses or shakes in Gazebo | Check each moving link's mass and inertia: positive mass and a physically valid inertia tensor consistent with the part's size and mass. Off-diagonal inertia terms can be zero. |
+| The arm passes through an object | Check the object's representation and pose in MoveIt's planning scene; add a missing object with `add_collision_box`. |
 
 For container, build, and MoveIt problems that recur across labs, see
 [Troubleshooting](../troubleshooting.md).
