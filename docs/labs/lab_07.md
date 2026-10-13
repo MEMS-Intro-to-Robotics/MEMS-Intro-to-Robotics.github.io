@@ -48,7 +48,7 @@ title: "Lab 07: Crazyflie PID Tuning"
     <pre><code>command = kp &times; error  +  ki &times; (error added up over time)  +  kd &times; (rate of change of error)</code></pre>
     <p>The command is limited to 0.707 m/s on each axis. The drone&rsquo;s flight controller turns the command into motion and holds the height on its own, so height has no gains for you to tune.</p>
     <p><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab07/d01-pid-control-loop.svg" alt="The control loop: the goal position minus the measured position gives the error; the proportional, integral, and derivative terms are summed into a velocity command with a limit of 0.707 meters per second; the drone moves; the measured position is fed back" style="max-width: 100%; height: auto;" /></p>
-    <p><strong>The numbers you will read.</strong> A step test moves the goal 0.6 m at once and holds it for 6 s. Four numbers describe the response: <strong>rise time</strong> (from 10% to 90% of the step), <strong>overshoot</strong> (how far past the goal, as a percentage of the step), <strong>settling time</strong> (when the drone last enters a band of 5 cm around the goal and stays there), and <strong>steady-state error</strong> (the magnitude of the mean position error over the last second of the hold).</p>
+    <p><strong>The numbers you will read.</strong> A step test moves the goal 0.6 m at once and holds it for 6 s. Four numbers describe the response: <strong>rise time</strong> (from 10% to 90% of the step), <strong>overshoot</strong> (how far past the goal, as a percentage of the step), <strong>settling time</strong> (when the drone last enters a band of 5 cm around the goal and stays there), and <strong>steady-state error</strong> (the magnitude of the mean position error over the last second of the hold). The table puts a <code>*</code> after that number when the drone was still moving during the last second. The response had not reached a steady state in that case, and the number is its error when the hold ended.</p>
     <p><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab08/d01-metrics-on-step-response.svg" alt="Two step responses. One crosses the goal: its overshoot is the peak beyond the goal and its settling time is when it stays within 5 centimeters. One never crosses the goal: its overshoot is zero and it still has a settling time" style="max-width: 100%; height: auto;" /></p>
     <p>The figure also shows RMS error, which Lab 8 uses and this lab does not.</p>
     <p><strong>What each fault looks like.</strong></p>
@@ -136,12 +136,12 @@ docker run --rm -it --name lab07 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
         <h4>Step 1.2: Terminal 2, your flights</h4>
         <p>Terminal 2 stays in the repository root, the folder that holds <code>gains.yaml</code>. Every command in Parts 2 to 6 runs there. Check the starting gains:</p>
         <pre><code class="language-bash">python3 check_gains.py</code></pre>
-        <p><strong>Checkpoint:</strong> <code>gains.yaml looks right.</code> followed by <code>kp = 0.4  ki = 0  kd = 0</code> for x and for y.</p>
+        <p><strong>Checkpoint:</strong> <code>gains.yaml looks right.</code> followed by <code>kp = 1  ki = 0  kd = 0</code> for x and for y.</p>
     </section>
     <section id="part2">
         <h3>Part 2: Milestone 1, A Baseline Step Test (Worked Example)</h3>
         <p><strong>Goal:</strong> predict the response with the starting gains, fly a step test, and compare the measurements with your prediction.</p>
-        <p><strong>Predict first.</strong> With <code>kp = 0.4</code> and the other gains zero, the command is 0.4 m/s for each meter of error. For a 0.6 m step, write down the speed commanded at the start, the speed commanded when half the distance is left, and whether you expect the drone to be within 5 cm of the goal after 6 s.</p>
+        <p><strong>Predict first.</strong> With <code>kp = 1.0</code> and the other gains zero, the command is 1.0 m/s for each meter of error. For a 0.6 m step, write down the speed commanded at the start, the speed commanded when half the distance is left, and how many seconds you expect the drone to take to come within 5 cm of the goal.</p>
         <details>
             <summary>Hint 1: A model for the last part</summary>
             <p>If the drone moved at exactly the commanded speed, the error would shrink as 0.6 &times; e<sup>&minus;kp &times; t</sup> meters, with t in seconds.</p>
@@ -151,7 +151,7 @@ docker run --rm -it --name lab07 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
         <p><strong>Checkpoint:</strong> the drone takes off, moves 0.6 m along x and back, then along y and back, and lands. The terminal lists five waypoints. Near the end, just above the lines saying the two processes have finished, it prints:</p>
         <div style="background-color: #f8f9fa; border-left: 4px solid #005a9c; padding: 1em; margin-top: 1em; border-radius: 4px;">
             <pre style="margin: 0; font-family: monospace; font-size: 0.9em;"><code>[mission-2] Saved runs/step_01.csv (660 samples)
-[mission-2]   gains: pid_x.kp=0.4  pid_x.ki=0  pid_x.kd=0  pid_y.kp=0.4  pid_y.ki=0  pid_y.kd=0</code></pre>
+[mission-2]   gains: pid_x.kp=1  pid_x.ki=0  pid_x.kd=0  pid_y.kp=1  pid_y.ki=0  pid_y.kd=0</code></pre>
         </div>
         <details>
             <summary>Why? What one flight does</summary>
@@ -163,11 +163,12 @@ docker run --rm -it --name lab07 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
         <div style="background-color: #f8f9fa; border-left: 4px solid #005a9c; padding: 1em; margin-top: 1em; border-radius: 4px;">
             <pre style="margin: 0; font-family: monospace; font-size: 0.9em;"><code>Step tests (band = 5 cm)
 run           axis       kp     ki     kd  draft   rise s  overshoot %  settle s  ss error cm
-step_01       x         0.4      0      0      0        -          0.0         -         14.8
-step_01       y         0.4      0      0      0        -          0.0         -         14.8</code></pre>
+step_01       x           1      0      0      0     3.50          0.0      4.25          2.1*
+step_01       y           1      0      0      0     3.50          0.0      4.25          2.1*
+* still moving when the hold ended: not yet a steady-state error</code></pre>
         </div>
-        <p>A dash means the run does not contain that number. Here the drone never reached 90% of the step, so there is no rise time, and it never stayed within the band, so there is no settling time. Open <code>runs/step_01.png</code> in VS Code and compare it with your prediction.</p>
-        <p><em>Example (your numbers should match these closely):</em><br /><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab07/s02-baseline-step.png" alt="The baseline step test: x and y against time with the goal as a dashed line and a 5 centimeter band. Each response climbs slowly toward the goal and is still about 15 centimeters short when the goal moves back" style="max-width: 100%; height: auto;" /></p>
+        <p>Each row is the average of that axis&rsquo;s two steps. The settling time is the number to compare with your prediction. After 6 s the drone was 2.1 cm from the goal and still moving toward it, which is what the <code>*</code> reports. In later tables a dash means the run does not contain that number: a response that never reaches 90% of the step has no rise time. Open <code>runs/step_01.png</code> in VS Code to see the response.</p>
+        <p><em>Example (your numbers should match these closely):</em><br /><img src="https://mems-intro-to-robotics.github.io/assets/labs/lab07/s02-baseline-step.png" alt="The baseline step test: x and y against time with the goal as a dashed line and a 5 centimeter band. Each response rises toward the goal over about 4 seconds and is about 2 centimeters short when the goal moves back" style="max-width: 100%; height: auto;" /></p>
         <p><strong>For your PDF:</strong> your prediction, the table, the plot, and one or two sentences on where the prediction and the measurement agree or differ.</p>
     </section>
     <section id="part3">
