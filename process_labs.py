@@ -39,62 +39,6 @@ REMOVE_SECTION_IDS = {
     "deliverables", "deliverables-glance", "checklist",
 }
 
-LAB7_PRELAB_SHARED_WORKFLOW = dedent(
-    """
-    <p>You will work entirely in <strong>simulation</strong> inside the provided Docker container. This pre-lab ensures your environment is correctly configured. The main steps are to (1) update your local course repository, (2) pull the latest Docker image, (3) launch the simulator, and (4) verify that all tools and ROS 2 topics are functioning correctly before you begin the lab procedure.</p>
-    <p>The repeated post-Lab-4 workflow now lives in the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>. Use that page for the one-environment rule, pane roles, build/source habits, and fast debugging checks. This pre-lab keeps only the Crazyflie-specific commands.</p>
-    <h2>Step 1: Setup the Host Environment</h2>
-    <p>Run these commands on your host VM.</p>
-    <h3>3.1 Update Your Course Repository</h3>
-    <p>Ensure you have the latest lab files by pulling the latest changes from the course repository.</p>
-    <pre><code class="language-bash">cd ~/workspaces/[netid]_robotics_fall2025
-    git pull
-    </code></pre>
-    <h3>3.2 Pull the Docker Image</h3>
-    <p>Pull the Crazyflie image for this lab.</p>
-    <pre><code class="language-bash">docker pull gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:crazyflie-jazzy-latest
-    </code></pre>
-    <h3>3.3 Configure GUI (X11) Forwarding</h3>
-    <p>Allow Docker to open Gazebo windows on your host display.</p>
-    <pre><code class="language-bash"># This command allows local clients (like Docker containers) to open windows on your host.
-    xhost +local:
-    </code></pre>
-    <h2>Step 2: Launch and Verify the Container</h2>
-    <h3>3.4 Start the Lab Container</h3>
-    <p>Start one persistent container named <code>lab07</code>. Use the GPU option if available. If you need another shell later, reuse this same container with <code>docker start -ai lab07</code> or <code>docker exec -it lab07 bash</code>.</p>
-    <h4>Option A: With NVIDIA GPU Acceleration (Recommended)</h4>
-    <pre><code class="language-bash"># --name lab07:       Assigns a reusable name to the container.
-    # --gpus all:         Grants the container access to the host's NVIDIA GPUs.
-    # --network host:     Allows the container to share the host's network (for ROS 2).
-    # -e DISPLAY=$DISPLAY: Passes the host's display variable for GUI forwarding.
-    # -v [host]:[guest]:  Mounts your local workspace folder into the container. You can change this to wherever you want your files mounted
-
-    docker run -it --name lab07 --gpus all \\
-      --network host \\
-      -e DISPLAY=$DISPLAY \\<br />  -e GZ_SIM_RESOURCE_PATH=/opt/cf_lab_ws/simulation_ws/crazyflie-simulation \\<br />  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \\
-      -v ~/workspaces:/root/workspaces/ \\
-      gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:crazyflie-jazzy-latest
-    </code></pre>
-    <h4>Option B: With CPU-Based Software Rendering</h4>
-    <pre><code class="language-bash">docker run -it --name lab07 \\
-      --network host \\
-      -e DISPLAY=$DISPLAY \\<br /> &nbsp;-e GZ_SIM_RESOURCE_PATH=/opt/cf_lab_ws/simulation_ws/crazyflie-simulation \\<br /> &nbsp;-v /tmp/.X11-unix:/tmp/.X11-unix:ro \\
-      -v ~/workspaces:/root/workspaces \\
-      gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:crazyflie-jazzy-latest
-    </code></pre>
-    <p><strong>To re-enter your container later:</strong> If you exit the container, you can resume your session without losing any data using <code>docker start -ai lab07</code>.</p>
-    <h3>3.5 Perform Initial Environment Checks</h3>
-    <p>Once inside the container, run these quick checks to confirm the environment is set up.</p>
-    <pre><code class="language-bash"># Check that the ROS 2 distribution is set correctly
-    echo "ROS_DISTRO=$ROS_DISTRO"
-    # Expected output: jazzy
-
-    # Verify that key Python libraries are installed
-    python3 -c "import matplotlib, numpy; print('Matplotlib/Numpy OK')"
-    </code></pre>
-    """
-).strip()
-
 LAB9_SETUP_SHARED_WORKFLOW = dedent(
     """
     <section id="setup">
@@ -133,16 +77,6 @@ LAB9_SETUP_SHARED_WORKFLOW = dedent(
 def remove_header_block(html: str) -> str:
     """Remove <header>...</header> blocks."""
     return re.sub(r'<header>\s*.*?</header>\s*', '', html, flags=re.DOTALL)
-
-
-def remove_lab7_course_info(html: str) -> str:
-    """Remove the course info paragraph from lab 7's format."""
-    # Pattern: <div class="lab-manual-container"> followed by <p>Course: ECE 383...
-    pattern = (
-        r'(<div class="lab-manual-container">)\s*'
-        r'<p>Course:.*?</p>\s*'
-    )
-    return re.sub(pattern, r'\1\n', html, flags=re.DOTALL)
 
 
 def remove_sections_by_id(html: str) -> str:
@@ -184,8 +118,6 @@ def remove_toc_links(html: str) -> str:
     patterns = [
         r'\s*<li><a href="#deliverables[^"]*">[^<]*</a></li>',
         r'\s*<li><a href="#checklist">[^<]*</a></li>',
-        # Also from sec-4 style TOC (lab 7 deliverables)
-        r'\s*<li><a href="#sec-4">4\. Deliverables</a></li>',
     ]
     for pattern in patterns:
         html = re.sub(pattern, '', html)
@@ -221,23 +153,6 @@ def require_replace(html: str, old: str, new: str, label: str) -> str:
         raise ValueError(f"{label}: expected snippet not found")
     return html.replace(old, new, 1)
 
-
-
-def apply_lab7_shared_workflow(html: str) -> str:
-    """Replace Lab 7's repeated setup tutorial with the shared workflow pointer."""
-    html = require_sub(
-        html,
-        r'<p>You will work entirely in <strong>simulation</strong> inside the provided Docker container\..*?(?=<h2>Step 3: Launch and Verify the Simulation</h2>)',
-        LAB7_PRELAB_SHARED_WORKFLOW + "\n",
-        "lab07 shared prelab",
-    )
-    html = require_replace(
-        html,
-        '<p>For the following steps, you may want to open a second terminal into the same running container (e.g., using <code>tmux</code>, splitting your terminal, or running <code>docker exec -it lab07 bash</code> from your host) so you can leave the simulation running while you run verification commands.</p>',
-        '<p>Leave the simulator running in one shell and use another shell in the same container for checks or later launch commands.</p>',
-        "lab07 simulation shell note",
-    )
-    return html
 
 
 def apply_lab9_shared_workflow(html: str) -> str:
@@ -296,9 +211,7 @@ def apply_lab10_shared_workflow(html: str) -> str:
 
 def apply_public_site_dedup(html: str, lab_num: int) -> str:
     """Apply shared-reference rewrites that should survive regeneration."""
-    if lab_num == 7:
-        html = apply_lab7_shared_workflow(html)
-    elif lab_num == 9:
+    if lab_num == 9:
         html = apply_lab9_shared_workflow(html)
     elif lab_num == 10:
         html = apply_lab10_shared_workflow(html)
@@ -388,10 +301,6 @@ def clean_lab(html: str, lab_num: int) -> str:
     html = remove_header_block(html)
     html = re.sub(r'<!--.*?-->[ \t]*\n?', '', html, flags=re.DOTALL)
 
-    # Lab 7 has a different header format
-    if lab_num == 7:
-        html = remove_lab7_course_info(html)
-
     # 2. Remove section-based deliverables/checklists
     html = remove_sections_by_id(html)
 
@@ -399,10 +308,6 @@ def clean_lab(html: str, lab_num: int) -> str:
     if lab_num in (5, 6):
         html = remove_h1_deliverables_sections(html)
         html = remove_h3_deliverables_checklist(html)
-
-    # Lab 7 uses h1 id="sec-4" for deliverables
-    if lab_num == 7:
-        html = remove_h1_deliverables_sections(html)
 
     # 4. Remove grading rubrics
     html = remove_grading_rubric(html)

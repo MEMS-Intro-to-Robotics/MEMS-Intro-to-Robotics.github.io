@@ -511,55 +511,122 @@ also removed or re-added planning-scene objects.
 
 ## Gazebo and Crazyflie simulation
 
-### The simulation cannot find `model.sdf`
+These entries are for Lab 07. Terminal 1 is the container shell running
+`sim.launch.py`; Terminal 2 is the one in the repository root, where flights are
+started.
 
-`GZ_SIM_RESOURCE_PATH` is unset or wrong in the launch terminal. The course
-`docker run` command sets it; if you started the container another way, set it
-manually before relaunching.
+### `Package 'lab07_crazyflie' not found`
 
-### Gazebo renders a black window, or crashes with an OpenGL error
-
-GPU rendering is unavailable. In the launch terminal:
+The terminal has not sourced your workspace, or the package has not been built.
+From the repository root, in the container:
 
 ```bash
+source ros2_ws/install/setup.bash
+```
+
+If that file does not exist, see the next entry.
+
+### `ros2_ws/install/setup.bash: No such file or directory`
+
+The setup file is missing from this repository. Check that you are in the intended repository, then run the build line from the
+lab's pre-lab (step 4) in a container terminal, then the "prepare" line from
+Part 1 again. If the build line itself says `No such file or directory`, the
+repository is not in `~/workspaces`: `ls ~/workspaces` shows what is there.
+
+### The Gazebo window is black, or the launch stops with an OpenGL error
+
+GPU rendering may be unavailable or misconfigured in that shell. In Terminal 1, stop the launch
+with `Ctrl+C`, run these four lines, and start the launch again:
+
+```bash
+unset __NV_PRIME_RENDER_OFFLOAD __GLX_VENDOR_LIBRARY_NAME
 export LIBGL_ALWAYS_SOFTWARE=1
+export MESA_GL_VERSION_OVERRIDE=3.3
+export GALLIUM_DRIVER=llvmpipe
 ```
 
-Longer term, use the CPU variant of the `docker run` command, or drop
-`--gpus all`.
+If no window opens at all, see
+[GUI apps do not open from the container](#gui-apps-do-not-open-from-the-container).
 
-### The drone does not move at all
+The lab can also be done without the window. `ros2 launch lab07_crazyflie
+sim.launch.py gui:=false` runs the same simulation, and flights are recorded
+and measured the same way.
 
-Check that both the controller and the goal publisher are running. Gains
-default to `0.0`, so a controller launched without its gain arguments commands
-nothing. Confirm goals and commands are flowing:
+### A flight prints `Waiting for the simulation`
+
+The mission has not started. Check that `sim.launch.py` is running in
+Terminal 1 and inspect its output for errors. The flight proceeds once the
+simulation clock, required services, and drone position are available.
+
+### `A flight is already running in this container`
+
+A second flight was started while one was still flying. Wait for the first to
+finish, or stop it with `Ctrl+C` in its terminal, then start the new one. The
+first flight is not affected.
+
+### `A simulation was already running in this container`
+
+`sim.launch.py` was started while another copy was running. The new one stopped
+the old one and took its place, so the terminal that held the old one shows it
+shutting down. Keep the new one running and carry on.
+
+### `Cannot find .../gains.yaml`
+
+Terminal 2 is not in the repository root. `fly.launch.py` reads `gains.yaml`
+from the folder it is run from. `cd` to the folder that holds `gains.yaml` and
+run the launch again.
+
+### `gains.yaml is not laid out the way the controller reads it`
+
+The launch could not read the expected parameter mapping. Possible causes
+include a tab, a missing colon, wrong indentation, or a changed header line. From the repository root:
 
 ```bash
-ros2 topic echo /goal_pose --once
-ros2 topic echo /crazyflie/cmd_vel --once
+python3 check_gains.py
 ```
 
-### The drone drifts or moves in the wrong direction
+It lists the problems it detects. Fix them in order and run it again.
 
-The TF chain from `map` to the drone base frame is wrong or stale.
+### A change to `gains.yaml` has no effect
 
-```bash
-ros2 run tf2_ros tf2_echo map crazyflie/base_footprint
-```
+Check three things, in this order:
 
-If the translation does not track the drone, restart the controller node, which
-bridges odometry into TF.
+1. The file is saved. VS Code shows a dot on the tab of a file with unsaved
+   changes.
+2. The flight printed the gains you expect. Every flight starts with a
+   `Gains at startup` block; compare it with the file.
+3. Terminal 2 is in the repository you are editing. `pwd` prints the folder.
 
-### The drone chatters or twitches at a waypoint
+If all three checks pass and the table values remain unchanged, record the
+gains and measurements. The gain may have little effect in the tested range
+or the change may be smaller than the table's displayed precision.
 
-Gains are too aggressive and the controller is fighting the arrival deadband.
-Reduce the proportional gain slightly, or increase the derivative gain for more
-damping.
+### The drone crashed, flipped over, or left the arena
 
-### The simulation runs but no odometry appears
+A flight in which the drone ends up on the floor prints
+`The drone is on the floor: it has crashed`, and its rows in the table end with
+`crashed`. The flight still runs to its end and is saved. Start the next
+flight: every flight begins by putting the drone back at the origin, upright.
 
-The simulation is paused, or the launch did not fully start. Press play in the
-Gazebo GUI, then check `ros2 topic list | grep odom`.
+### `check_gains.py` says a gain must be between 0.0 and a limit
+
+The limits (`kp` 10, `ki` 5, `kd` 2) apply to the gains you submit. A flight
+with a larger value still runs, so an experiment may use one. Bring the gains
+within the limits before the final course run.
+
+### `Waypoint N not reached in 15 s`
+
+The drone did not reach the waypoint tolerance before the timeout. It may have
+hit a hoop or a wall, oscillated, or moved too slowly. Inspect that run's plot
+in `runs/` and use your step-test measurements to decide whether to change
+`kp` or `kd`.
+
+### A flight takes much longer than the times in its table
+
+Times in the tables are simulation time. When the VM draws Gazebo on the CPU,
+the simulation can run slower than real time, so a 30 s step test takes longer
+than 30 s on the wall clock. The table reports elapsed simulation time. Running the simulation
+with `gui:=false` removes the drawing load.
 
 ## Flight log analysis
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" role="img" aria-labelledby="t d">
   <title id="t">The PID control loop as wired in the Crazyflie lab</title>
-  <desc id="d">The goal position is compared with the measured position to produce an error. The error feeds three parallel terms: proportional gain times error, integral gain times accumulated error, and derivative gain times the rate of change of error. Their sum is the commanded velocity published on cmd underscore vel. The drone dynamics respond, odometry measures the new position, and that measurement is fed back to the comparison point. You tune the three gains; everything else is fixed.</desc>
+  <desc id="d">The goal position is compared with the measured position to produce an error. The error feeds three parallel terms: proportional gain times error, integral gain times accumulated error, and derivative gain times the rate of change of error. Their sum is the velocity command, limited to 0.707 meters per second. The drone and its flight controller respond, the new position is measured, and that measurement is fed back to the comparison point. You tune the three gains for x and the three for y; everything else is fixed.</desc>
 
   <style>
     .blk    { fill: #ffffff; stroke: #012169; stroke-width: 2.2; }
@@ -30,7 +30,7 @@
   <!-- Goal -->
   <rect class="blk" x="20" y="132" width="112" height="56" rx="6"/>
   <text class="n" x="76" y="156" text-anchor="middle">Goal</text>
-  <text class="s" x="76" y="174" text-anchor="middle">x, y, z setpoint</text>
+  <text class="s" x="76" y="174" text-anchor="middle">x or y position</text>
 
   <!-- Error junction -->
   <line class="flow" x1="132" y1="160" x2="148" y2="160"/>
@@ -71,18 +71,20 @@
 
   <!-- Command out -->
   <line class="flow" x1="480" y1="160" x2="546" y2="160"/>
-  <text class="sig"  x="513" y="150" text-anchor="middle">/cmd_vel</text>
+  <text class="sig"  x="513" y="150" text-anchor="middle">velocity</text>
+  <text class="s"    x="513" y="178" text-anchor="middle">limit</text>
+  <text class="s"    x="513" y="192" text-anchor="middle">0.707 m/s</text>
 
   <rect class="plant" x="550" y="126" width="160" height="68" rx="6"/>
-  <text class="n" x="630" y="152" text-anchor="middle">Drone dynamics</text>
-  <text class="s" x="630" y="170" text-anchor="middle">Gazebo simulation</text>
-  <text class="s" x="630" y="186" text-anchor="middle">mass, drag, thrust</text>
+  <text class="n" x="630" y="152" text-anchor="middle">Drone</text>
+  <text class="s" x="630" y="170" text-anchor="middle">flight controller,</text>
+  <text class="s" x="630" y="186" text-anchor="middle">motors, and airframe</text>
 
   <line class="flow" x1="710" y1="160" x2="774" y2="160"/>
 
   <rect class="plant" x="778" y="126" width="102" height="68" rx="6"/>
-  <text class="n" x="829" y="156" text-anchor="middle">Odometry</text>
-  <text class="s" x="829" y="176" text-anchor="middle">measured pose</text>
+  <text class="n" x="829" y="156" text-anchor="middle">Position</text>
+  <text class="s" x="829" y="176" text-anchor="middle">measured</text>
 
   <!-- Feedback path -->
   <path class="fb" d="M 829 194 L 829 300 L 170 300 L 170 182"/>
@@ -90,6 +92,6 @@
 
   <line x1="20" y1="330" x2="880" y2="330" stroke="#cdd6e4" stroke-width="1.5"/>
   <rect class="tune" x="20" y="346" width="20" height="14" rx="3"/>
-  <text class="note" x="48" y="358">These three gains are the only thing you change. Tune one axis at a time, and change one gain at a time.</text>
-  <text class="note" x="20" y="384">Each axis (x, y, and z) has its own independent set of gains, so there are nine numbers in total.</text>
+  <text class="note" x="48" y="358">These three gains are the only thing you change, in gains.yaml. Change one gain at a time.</text>
+  <text class="note" x="20" y="384">x and y each have their own set of gains, so there are six numbers. The flight controller holds the height.</text>
 </svg>

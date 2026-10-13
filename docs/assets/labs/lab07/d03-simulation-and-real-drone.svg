@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" role="img" aria-labelledby="t d">
+  <title id="t">What is the same in the simulation and on the real drone</title>
+  <desc id="d">The mission node sends goals to the goal controller, which reads your gains.yaml and sends a velocity command with a height to hold. Those two nodes and the gains file are the same in Lab 7 and Lab 8. In Lab 7 the command goes to the hover bridge and the Gazebo simulation, which return the simulated position. In Lab 8 the command goes to the firmware of a real Crazyflie, and the lab's positioning system returns the measured position.</desc>
+
+  <style>
+    .blk    { fill: #ffffff; stroke: #012169; stroke-width: 2.2; }
+    .tune   { fill: #eefaf7; stroke: #0f766e; stroke-width: 2.2; }
+    .sim    { fill: #f4f7fc; stroke: #012169; stroke-width: 2.2; }
+    .real   { fill: #fff7ed; stroke: #b45309; stroke-width: 2.2; }
+    .group  { fill: none; stroke: #cdd6e4; stroke-width: 1.5; stroke-dasharray: 6 5; }
+    .n      { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #012169; }
+    .nt     { font-family: "Cascadia Code", Consolas, monospace; font-size: 13px; font-weight: 700; fill: #0f766e; }
+    .s      { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; fill: #5a6675; }
+    .sig    { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; fill: #0f766e; font-weight: 700; }
+    .lab    { font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #5a6675; }
+    .flow   { stroke: #012169; stroke-width: 2.2; fill: none; marker-end: url(#a); }
+    .fb     { stroke: #b45309; stroke-width: 2.2; fill: none; marker-end: url(#b); }
+    .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#012169"/>
+    </marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="360" fill="#ffffff"/>
+
+  <!-- Shared part -->
+  <rect class="group" x="14" y="58" width="452" height="230" rx="8"/>
+  <text class="lab" x="26" y="48">The same in Lab 7 and Lab 8</text>
+
+  <rect class="blk" x="34" y="134" width="130" height="68" rx="6"/>
+  <text class="n" x="99" y="162" text-anchor="middle">Mission</text>
+  <text class="s" x="99" y="180" text-anchor="middle">waypoints, recording</text>
+
+  <line class="flow" x1="164" y1="168" x2="246" y2="168"/>
+  <text class="sig" x="205" y="158" text-anchor="middle">goal</text>
+
+  <rect class="tune" x="250" y="134" width="190" height="68" rx="6"/>
+  <text class="n" x="345" y="158" text-anchor="middle">Goal controller</text>
+  <text class="nt" x="345" y="178" text-anchor="middle">gains.yaml</text>
+  <text class="s" x="345" y="194" text-anchor="middle">PID for x and y, 10 times a second</text>
+
+  <!-- Command fan-out -->
+  <path class="flow" d="M 440 156 L 520 156 L 520 100 L 566 100"/>
+  <path class="flow" d="M 440 180 L 520 180 L 520 240 L 566 240"/>
+  <text class="sig" x="482" y="146" text-anchor="middle">velocity,</text>
+  <text class="sig" x="482" y="200" text-anchor="middle">height</text>
+
+  <!-- Lab 7 -->
+  <text class="lab" x="570" y="48">Lab 7: simulation</text>
+  <rect class="sim" x="570" y="66" width="150" height="68" rx="6"/>
+  <text class="n" x="645" y="94" text-anchor="middle">Hover bridge</text>
+  <text class="s" x="645" y="112" text-anchor="middle">holds the height</text>
+  <line class="flow" x1="720" y1="100" x2="746" y2="100"/>
+  <rect class="sim" x="750" y="66" width="130" height="68" rx="6"/>
+  <text class="n" x="815" y="94" text-anchor="middle">Gazebo</text>
+  <text class="s" x="815" y="112" text-anchor="middle">simulated Crazyflie</text>
+
+  <!-- Lab 8 -->
+  <text class="lab" x="570" y="196">Lab 8: real drone</text>
+  <rect class="real" x="570" y="206" width="150" height="68" rx="6"/>
+  <text class="n" x="645" y="234" text-anchor="middle">Firmware</text>
+  <text class="s" x="645" y="252" text-anchor="middle">holds the height</text>
+  <line class="flow" x1="720" y1="240" x2="746" y2="240"/>
+  <rect class="real" x="750" y="206" width="130" height="68" rx="6"/>
+  <text class="n" x="815" y="234" text-anchor="middle">Crazyflie</text>
+  <text class="s" x="815" y="252" text-anchor="middle">and positioning system</text>
+
+  <!-- Feedback -->
+  <path class="fb" d="M 815 134 L 815 160 L 892 160 L 892 316 L 345 316 L 345 204"/>
+  <path class="fb" d="M 815 274 L 815 316"/>
+  <text class="sig" x="610" y="308" text-anchor="middle" style="fill:#b45309">measured position</text>
+
+  <text class="note" x="20" y="346">The simulated drone approximates the real one. Expect the numbers you measure in Lab 8 to differ from the ones you measure here.</text>
+</svg>
