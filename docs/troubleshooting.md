@@ -482,7 +482,7 @@ launch terminal for a line showing that Gazebo exited, such as:
 The number after `gazebo-` can differ. If that line is there, Gazebo has exited.
 The word "cleanly" does not mean the window opened successfully. Check the lines
 above it for a crash or OpenGL error. If you find one, follow
-[Gazebo renders a black window, or crashes with an OpenGL error](#gazebo-renders-a-black-window-or-crashes-with-an-opengl-error).
+[The Gazebo window is black, or the launch stops with an OpenGL error](#the-gazebo-window-is-black-or-the-launch-stops-with-an-opengl-error).
 
 If Gazebo is still running, a startup race or another Gazebo process may be
 interfering. Stop the launch, check for other Gazebo processes, and relaunch.
@@ -603,10 +603,17 @@ or the change may be smaller than the table's displayed precision.
 
 ### The drone crashed, flipped over, or left the arena
 
-A flight in which the drone ends up on the floor prints
-`The drone is on the floor: it has crashed`, and its rows in the table end with
-`crashed`. The flight still runs to its end and is saved. Start the next
-flight: every flight begins by putting the drone back at the origin, upright.
+When the drone ends up on the floor, the message
+`The drone is on the floor: it has crashed` appears, and the flight's rows in the
+table end with `crashed`. The flight ends 2 s later and is saved; on the course, the
+waypoints left count as not reached. Start the next flight: every flight begins
+by putting the drone back at the origin, upright.
+
+### `runs/NAME.csv already exists`
+
+A flight with `run:=NAME` does not replace an earlier recording with that name.
+To fly it again, delete the old recording with the `rm` command the message
+prints, then repeat the flight.
 
 ### `check_gains.py` says a gain must be between 0.0 and a limit
 

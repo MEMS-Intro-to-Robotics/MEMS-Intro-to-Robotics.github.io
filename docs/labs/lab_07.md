@@ -177,7 +177,7 @@ step_01       y           1      0      0      0     3.50          0.0      4.25
         <p>To change a gain, edit <code>gains.yaml</code>, save it, and fly the step test again. Keep the x and y gains equal and keep <code>ki</code> and <code>kd</code> at <code>0.0</code> in this milestone; milestone 5 lifts both restrictions.</p>
         <p><strong>Contract:</strong> choose different values of <code>kp</code> and fly at least five step tests that together show:</p>
         <ul>
-            <li>(a) the smallest <code>kp</code>, to one significant figure, above which doubling it changes the rise time by less than 0.05 s;</li>
+            <li>(a) the smallest <code>kp</code>, to one significant figure, above which doubling it changes the rise time by less than 0.1 s;</li>
             <li>(b) a <code>kp</code> whose overshoot is more than 3%;</li>
             <li>(c) a <code>kp</code> that never settles.</li>
         </ul>
@@ -219,7 +219,7 @@ step_01       y           1      0      0      0     3.50          0.0      4.25
         <p>Adding <code>draft:=0.15</code> to a flight adds a steady world-frame velocity command of 0.15 m/s along both +x and +y. For this milestone set <code>kp</code> to <code>3.0</code> and <code>kd</code> to <code>0.0</code> on both axes.</p>
         <p><strong>Predict first.</strong> With <code>ki = 0</code>, a steady position requires the controller&rsquo;s command to cancel the draft. Predict the distance from the goal at that position.</p>
         <pre><code class="language-bash">ros2 launch lab07_crazyflie fly.launch.py course:=step draft:=0.15</code></pre>
-        <p><strong>Contract:</strong> in the draft, fly one step test with <code>ki = 0.0</code> and at least two with different non-zero values of <code>ki</code>. For each, record the steady-state error and the overshoot. Then open the plot of one run with <code>ki</code> (its <code>runs/step_NN.png</code>) and compare two parts of the x trace: while y steps and the x goal stays where it is, and just after x steps.</p>
+        <p><strong>Contract:</strong> in the draft, fly one step test with <code>ki = 0.0</code> and at least two with different non-zero values of <code>ki</code>. For each, record the steady-state error and the overshoot. The table measures each axis only after that axis&rsquo;s own step; with <code>ki</code>, those numbers describe the response to a changed goal. Then open the plot of one run with <code>ki</code> (its <code>runs/step_NN.png</code>) and compare two parts of the x trace: while y steps and the x goal stays where it is, and just after x steps.</p>
         <details>
             <summary>Hint 1: Choosing values</summary>
             <p>Start with a <code>ki</code> near half of <code>kp</code>, then try a value several times smaller or larger. You may test both if needed.</p>
@@ -246,7 +246,8 @@ step_01       y           1      0      0      0     3.50          0.0      4.25
             <li><code>python3 check_gains.py</code> prints <code>gains.yaml looks right.</code> The submission limits are <code>kp</code> 10, <code>ki</code> 5, and <code>kd</code> 2, because the submitted file is used on a real drone.</li>
         </ul>
         <blockquote style="border-left: 4px solid #005a9c; padding: 1em; background-color: #d9edf7; border-radius: 4px;"><strong>Recovery ladder:</strong> <code>Waypoint N not reached in 15 s</code> means the drone did not reach the waypoint tolerance before the timeout; collision or oscillation may be the cause. Open that run&rsquo;s plot in <code>runs/</code> and inspect the motion near the skipped waypoint. Use your measurements from milestones 2 to 4 to decide which gain to change. After two attempts without a complete course, ask a TA and show the plot.</blockquote>
-        <p><strong>Checkpoint:</strong> the <code>final</code> row of the course table shows your gains, a time of 45 s or less, and <code>0</code> under <code>not reached</code>. Copy its plot for your report:</p>
+        <p><strong>Checkpoint:</strong> the <code>final</code> row of the course table shows your gains, a time of 45 s or less, and <code>0</code> under <code>not reached</code>. Measure the final run to generate its plot, then copy the plot for your report:</p>
+        <pre><code class="language-bash">ros2 run lab07_crazyflie analyze</code></pre>
         <pre><code class="language-bash">cp runs/final.png docs/course_final.png</code></pre>
         <p><strong>Design justification</strong> (a short paragraph in your PDF): the gains you chose; one set you rejected, with its numbers from the course table; how far your gains are from the ones that failed; and what you gave up for that margin. Include the course table and <code>docs/course_final.png</code>.</p>
             </section>
@@ -265,7 +266,7 @@ step_01       y           1      0      0      0     3.50          0.0      4.25
     </ul>
     <h3>Question 3: Course time and gains</h3>
     <ul>
-        <li>From your course table: how much did the course time change between your working sets of gains, and why so little or so much? What ended the run for the gains that failed?</li>
+        <li>From your course table: how much did the course time change between your working sets of gains, and what explains the difference? Two flights with the same gains can differ by up to about 1 s, so compare a smaller difference with that spread, and use the off-path column as well. What ended the run for the gains that failed?</li>
     </ul>
     <h3>Question 4: Prediction for Lab 8</h3>
     <ul>
