@@ -17,6 +17,7 @@ inside the course Docker container.
 | The turtle does not move or a pen command fails | [Turtlesim and shell scripting](#turtlesim-and-shell-scripting) |
 | The arm will not plan, execute, or grip | [MoveIt 2 and Kinova workflows](#moveit-2-and-kinova-workflows) |
 | Gazebo or the simulated drone misbehaves | [Gazebo and Crazyflie simulation](#gazebo-and-crazyflie-simulation) |
+| Gazebo shows things from another lab | [Stop leftover containers](#gazebo-shows-a-robot-a-world-or-objects-from-another-lab) |
 | Flight-log plots or metrics look wrong | [Flight log analysis](#flight-log-analysis) |
 | TurtleBot, mapping, or navigation fails | [TurtleBot, SLAM, and Nav2](#turtlebot-slam-and-nav2) |
 
@@ -174,6 +175,46 @@ docker system prune -a --volumes -f
 ```
 
 This removes all unused images, so you will re-pull for other labs.
+
+### Gazebo shows a robot, a world, or objects from another lab
+
+A container from an earlier session is probably still running. Closing a
+terminal window may leave its container running, and
+`docker system prune` does not remove a running container. The containers
+share the VM's network, so Gazebo in your lab's container can discover
+a Gazebo instance from an earlier session. On the
+VM:
+
+```bash
+docker ps
+```
+
+If it lists more than one container, stop them all, then start your lab's
+container again with the course `docker run` command:
+
+```bash
+docker stop $(docker ps -q)
+```
+
+If `docker ps` lists only your lab's container, show a TA the output of these
+commands before restarting anything to help diagnose the cause:
+
+```bash
+uptime
+```
+
+```bash
+pgrep -af "gz sim"
+```
+
+Then, inside the container:
+
+```bash
+gz service -l | grep -E "^/world/[^/]+/create$"
+```
+
+Each line it prints is one Gazebo world your container can reach. Restarting
+the VM with `sudo reboot` may clear the problem.
 
 ## Git and repository workflow
 
