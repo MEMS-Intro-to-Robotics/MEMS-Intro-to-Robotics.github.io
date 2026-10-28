@@ -33,7 +33,7 @@ title: "Lab 08: Real Hardware Drone Control"
     <p>Course staff fly the <code>gains.yaml</code> from your Lab 7 repository on a real Crazyflie 2.1 through a fixed waypoint course. You receive the recording of that flight and the recording of a baseline flight that staff flew over the same course. You measure both flights, compare them, and check the predictions you made in Lab 7 Question 4.</p>
     <div class="alert alert-info" style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>The lab at a glance</strong>
         <table style="border-collapse: collapse; width: 100%; margin-top: 0.5em;">
-            <tr><td style="padding: 4px 8px;"><strong>Pre-lab</strong></td><td style="padding: 4px 8px;">Record the gains that will fly, accept and clone Lab 8, and check the analysis tools.</td></tr>
+            <tr><td style="padding: 4px 8px;"><strong>Pre-lab</strong></td><td style="padding: 4px 8px;">Check the gains that will fly, accept and clone Lab 8, and check the analysis tools.</td></tr>
             <tr><td style="padding: 4px 8px;"><strong>Part 1</strong></td><td style="padding: 4px 8px;">Staff fly your gains. You receive your run folder and the baseline folder.</td></tr>
             <tr><td style="padding: 4px 8px;"><strong>Part 2</strong></td><td style="padding: 4px 8px;">Load the recording and filter the position.</td></tr>
             <tr><td style="padding: 4px 8px;"><strong>Part 3</strong></td><td style="padding: 4px 8px;">Split the flight into one leg per waypoint.</td></tr>
@@ -94,18 +94,8 @@ title: "Lab 08: Real Hardware Drone Control"
     <div class="alert alert-info" style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Complete Before Lab.</strong> Complete this section on your own time before your flight.</div>
     <p>VMs power off 4 hours after the reservation starts; keep your work in <code>~/workspaces</code>. Git runs on the VM, Python runs in the container, and you edit in VS Code on the VM, as in Lab 7.</p>
     <ol>
-        <li><strong>Record the gains that will fly.</strong> Before the flight sessions, staff copy the latest <code>gains.yaml</code> from your Lab 7 repository, and that copy is what flies. You may still change it: run <code>python3 check_gains.py</code> as in Lab 7 and push the change before the sessions. Lab 7 is graded from your repository as it was at its due date, so a later change does not affect your Lab 7 grade. Once your file is final, open it on GitHub, copy the six values into the table below, and fill in the flown <code>kp</code> (your <code>kp</code> divided by 1.9). If you have no Lab 7 repository, staff fly the Lab 7 starting gains (<code>kp</code> 1.0, <code>ki</code> 0, <code>kd</code> 0 on x and y); use those in the table.
-                        
-            <table style="border-collapse: collapse; margin-top: 0.5em; border: 1px solid #ccc;">
-                <thead>
-                    <tr style="background-color: #f2f2f2;"><th style="border: 1px solid #ccc; padding: 6px;">Axis</th><th style="border: 1px solid #ccc; padding: 6px;">kp (submitted)</th><th style="border: 1px solid #ccc; padding: 6px;">kp (flown, &divide; 1.9)</th><th style="border: 1px solid #ccc; padding: 6px;">ki</th><th style="border: 1px solid #ccc; padding: 6px;">kd</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td style="border: 1px solid #ccc; padding: 6px;"><strong>x</strong></td><td style="border: 1px solid #ccc; padding: 6px;">&nbsp;</td><td style="border: 1px solid #ccc; padding: 6px;">&nbsp;</td><td style="border: 1px solid #ccc; padding: 6px;">&nbsp;</td><td style="border: 1px solid #ccc; padding: 6px;">&nbsp;</td></tr>
-                    <tr><td style="border: 1px solid #ccc; padding: 6px;"><strong>y</strong></td><td style="border: 1px solid #ccc; padding: 6px;">&nbsp;</td><td style="border: 1px solid #ccc; padding: 6px;">&nbsp;</td><td style="border: 1px solid #ccc; padding: 6px;">&nbsp;</td><td style="border: 1px solid #ccc; padding: 6px;">&nbsp;</td></tr>
-                </tbody>
-            </table>
-        </li>
+        <li><strong>Check the gains that will fly.</strong> Before the flight sessions, staff copy the latest <code>gains.yaml</code> from your Lab 7 repository, and that copy is what flies. You may still change it: run <code>python3 check_gains.py</code> as in Lab 7 and push the change before the sessions. Lab 7 is graded from your repository as it was at its due date, so a later change does not affect your Lab 7 grade. You do not send your gains to anyone. After the flight, <code>pid_flown.yaml</code> in your run folder shows the values that flew, with each <code>kp</code> divided by 1.9. If you have no Lab 7 repository, staff fly the Lab 7 starting gains (<code>kp</code> 1.0, <code>ki</code> 0, <code>kd</code> 0 on x and y).
+                                </li>
         <li><strong>Find your Lab 7 Question 4 answer</strong> (your two predictions for the real drone) and the table and plot of your Lab 7 step test with gains closest to your final ones. Question 1 uses both.</li>
         <li><strong>Accept Lab 8 and clone it.</strong>
             <p><strong>Location:</strong> Host VM Terminal</p>
@@ -128,7 +118,6 @@ docker run --rm -it --name lab08 --net=host -e DISPLAY=$DISPLAY -e ROS_AUTOMATIC
     </ol>
     <p><strong>Ready for lab when:</strong></p>
     <ul>
-        <li>[ ] The gains table above is filled in.</li>
         <li>[ ] Your Lab 8 repository is cloned into <code>~/workspaces</code>.</li>
         <li>[ ] <code>python3 -c "import numpy, pandas, scipy, matplotlib, yaml; print('ok')"</code> prints <code>ok</code> in the container.</li>
     </ul>
@@ -143,7 +132,7 @@ docker run --rm -it --name lab08 --net=host -e DISPLAY=$DISPLAY -e ROS_AUTOMATIC
         <h4>Step 1.1: What happens at the flight</h4>
         <ol>
             <li>The TA places the drone on the origin mark facing +x and starts the flight script with your <code>gains.yaml</code>.</li>
-            <li>The script prints a table of your submitted gains and the gains it will fly. Check it against your pre-lab table.</li>
+            <li>The script prints a table of your submitted gains and the gains it will fly. Check that it matches the <code>gains.yaml</code> in your Lab 7 repository.</li>
             <li>The script checks the battery and reads the drone&rsquo;s position from the Lighthouse. It prevents takeoff if the battery is low or the measured position is too far from the origin.</li>
             <li>When everyone is outside the flight area, the TA confirms. The drone takes off to 0.3 m, flies the course, and lands.</li>
         </ol>
