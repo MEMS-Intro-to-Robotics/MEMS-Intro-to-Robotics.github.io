@@ -80,7 +80,7 @@ PID control and hardware validation with the Crazyflie 2.1 nano-drone.
 
 - **Lab 08 — Real Drone Control**
 
-    Deploy your tuned controller to a physical Crazyflie drone.
+    Analyze a real Crazyflie flight of your Lab 7 gains against a staff baseline.
 
     [:octicons-arrow-right-24: Lab 08](lab_08.md)
 
