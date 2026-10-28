@@ -678,55 +678,78 @@ with `gui:=false` removes the drawing load.
 
 ## Flight log analysis
 
-### `pd.read_csv` fails, or columns load as strings
+These entries cover the Lab 8 run folder (`trajectory_log.csv`, `launch.log`,
+`course_waypoints.yaml`) and the starter's `analysis/lab08_analysis.py`.
 
-Padded column names or comment lines in the log. Read with
-`skipinitialspace=True`, and print `df.columns` and `df.dtypes` before anything
-else so you know what you actually loaded.
+### `data/` holds only `.gitkeep`
 
-### Timestamps are not uniform
+Course staff add your run folder and the baseline folder to your repository
+after your lab section. To download them to your clone, go to your
+repository root on the VM and run `git pull`. If it prints `Already up to date.`
+and the folders are still missing, staff may not have added them yet; ask a TA if
+they are missing the day after your section.
 
-Logging rates are approximate, so never assume a fixed sample interval. Compute
-metrics from the actual time column, or resample onto a uniform grid by
-interpolation first.
+### `git push` is rejected with `fetch first`
 
-### NaN gaps or frozen position values mid-flight
+This can happen when course staff add files to your repository after your last pull. Run
+`git pull --no-edit`, then push again.
 
-Brief tracking dropouts. Interpolate gaps of a few samples, exclude longer gaps
-from metric windows, and say so in your methods. Check the run's metadata file
-for logged tracking issues.
+### `No such file or directory` when the script starts
 
-### Filtering makes the step response look slower
+Check that the `--run` folder name matches your folder in `data/`. The folder
+is named after your GitHub username. Run `ls data` from the repository root
+and copy the folder name exactly.
 
-A wide moving average smears step edges, and a causally applied Butterworth adds
-phase lag. Use a smaller window or a median filter, apply Butterworth zero-phase
-with `scipy.signal.filtfilt`, and always sanity-check metrics against the raw
-signal.
+### `split_legs` stops with `matches no remaining waypoint`
 
-### Segmentation produces hundreds of tiny segments
+A goal in `trajectory_log.csv` does not match the waypoints in
+`course_waypoints.yaml` from that point on. This can happen if the files in
+`data/` were edited. Restore them with `git checkout -- data` on the VM. Do not
+edit anything in `data/`; filtering and any other changes belong in your script.
 
-During path-following the goal changes every sample, so a rule of "new segment
-on any goal change" fires continuously. Merge contiguous runs of goal changes
-into one path segment and start step segments only on isolated, large goal
-jumps. A minimum segment duration also works.
+### 12 segments, not 13
 
-### Overshoot is huge on a segment the vehicle never reached
+The goal moves on as soon as the drone is within 5 cm of a waypoint. If the
+drone was already within 5 cm of waypoint 1 when recording started, the
+recording begins with waypoint 2, as it does in the baseline.
 
-The metric is reporting peak error rather than post-crossing error. Overshoot is
-defined only after the first goal crossing; if the position never crosses the
-goal, overshoot is zero.
+### Timestamps are not uniform, or rows repeat
 
-### Settling time is never found for some segments
+Rows are written about 20 times a second, and the position is updated about 10
+times a second, so about half the rows repeat the previous position. Compute
+every time from the `time_s` column rather than from the row count. A jump in
+`time_s` larger than about 0.1 s means rows are missing; exclude that stretch
+from the metric it affects and say so in your methods.
 
-The vehicle never stayed inside the tolerance band before the next goal
-arrived, which is common with aggressive gains on hardware. Report the segment
-as not settled and discuss it. That is a legitimate result, not a number to
-force.
+### Filtering makes the response look slower
+
+A wide moving average can make the response appear slower, and a Butterworth
+filter applied in one direction delays the response. Use a window of 3 to 5 rows, or apply the
+Butterworth filter with `scipy.signal.filtfilt` and a sample rate of 20 Hz.
+Compute one metric with and without the filter to check the effect.
+
+### Overshoot is 0 on every leg, or huge on one
+
+Overshoot is measured past the waypoint along the leg's direction of travel, so
+a leg in the -x or -y direction needs its position and waypoint multiplied by
+-1 first. It is measured over the leg's window, which runs to 2 s after the next
+goal change, because the goal moves on before the drone stops. A huge value
+usually means the window ran into a later leg, or the wrong axis was used.
+
+### The course time cannot be found in `launch.log`
+
+The time on each line is the third bracketed field, for example
+`[trajectory_publisher-2] [INFO] [1792536265.128681509]`. The course time is the
+time on the first line containing `Advancing.` after the `Goal #13/` line, minus
+the time on the `Goal #2/` line. Search without the number after the slash: the
+baseline's log counts its goals out of 39 and has no `All waypoints completed`
+line.
 
 ### Your metrics disagree with the baseline everywhere
 
-The two flights are being aligned by absolute time. They did not start at the
-same instant. Align by goal-change times and match segments by label or order.
+If you matched the two flights by `time_s`, match them by waypoint number
+instead. The flights started at different moments and their legs took
+different times.
 
 ## TurtleBot, SLAM, and Nav2
 
