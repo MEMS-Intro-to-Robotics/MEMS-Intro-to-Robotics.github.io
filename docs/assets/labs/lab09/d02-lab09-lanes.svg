@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550" role="img" aria-labelledby="t d">
+  <title id="t">The four Lab 9 lanes, top view</title>
+  <desc id="d">Top view of the Lab 9 world, drawn to scale with x pointing up the page. The robot starts each lane at x equals 0 facing plus x. Lane D, at y equals 1.5 metres, has a red marker painted on the floor from x equals 1.2 to 1.5 metres. Lane A, at y equals 0, has an orange box 8 centimetres tall from x equals 1.2 to 1.5 metres. Lane B, at y equals minus 1.5 metres, has a pit, a 0.5 metre gap in the floor from x equals 1.2 to 1.7 metres. Lane C, at y equals minus 3 metres, has a wall 0.5 metres tall whose face is at x equals 1.5 metres.</desc>
+
+  <style>
+    .hd     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .lane   { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .ly     { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; fill: #5a6675; }
+    .lbl    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #26313f; }
+    .st     { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 700; fill: #0f766e; }
+    .tick   { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; fill: #5a6675; }
+    .tickh  { font-family: "Cascadia Code", Consolas, monospace; font-size: 11px; font-weight: 700; fill: #0f766e; }
+    .num    { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; font-weight: 700; fill: #26313f; }
+    .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
+    .ax     { stroke: #26313f; stroke-width: 1.6; }
+    .start  { stroke: #0f766e; stroke-width: 1.6; stroke-dasharray: 7 4; }
+    .zero   { stroke: #9aa4b2; stroke-width: 1; stroke-dasharray: 2 3; }
+    .path   { stroke: #012169; stroke-width: 1.6; stroke-dasharray: 2 4; fill: none; marker-end: url(#fw); }
+    .robot  { fill: #ffffff; stroke: #012169; stroke-width: 2.2; }
+    .dim    { stroke: #5a6675; stroke-width: 1.2; }
+  </style>
+  <defs>
+    <marker id="fw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#012169"/>
+    </marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6675"/>
+    </marker>
+    <marker id="fr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#26313f"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="550" fill="#ffffff"/>
+
+  <!-- Scale: 130 px per metre. Screen x = 470 - 130 (y + 0.75); screen y = 430 - 130 x. -->
+  <text class="hd" x="30" y="30">The four lanes, top view (to scale)</text>
+
+  <!-- lane headings -->
+  <text class="lane" x="177.5" y="64" text-anchor="middle">Lane D</text>
+  <text class="ly"   x="177.5" y="81" text-anchor="middle">y = 1.5 m</text>
+  <text class="lbl"  x="177.5" y="104" text-anchor="middle">red marker on the floor</text>
+  <text class="st"   x="177.5" y="122" text-anchor="middle">starts at x = 1.2 m</text>
+
+  <text class="lane" x="372.5" y="64" text-anchor="middle">Lane A</text>
+  <text class="ly"   x="372.5" y="81" text-anchor="middle">y = 0</text>
+  <text class="lbl"  x="372.5" y="104" text-anchor="middle">orange box, 8 cm tall</text>
+  <text class="st"   x="372.5" y="122" text-anchor="middle">starts at x = 1.2 m</text>
+
+  <text class="lane" x="567.5" y="64" text-anchor="middle">Lane B</text>
+  <text class="ly"   x="567.5" y="81" text-anchor="middle">y = −1.5 m</text>
+  <text class="lbl"  x="567.5" y="104" text-anchor="middle">pit: a 0.5 m gap in the floor</text>
+  <text class="st"   x="567.5" y="122" text-anchor="middle">starts at x = 1.2 m</text>
+
+  <text class="lane" x="762.5" y="64" text-anchor="middle">Lane C</text>
+  <text class="ly"   x="762.5" y="81" text-anchor="middle">y = −3 m</text>
+  <text class="lbl"  x="762.5" y="104" text-anchor="middle">wall, 0.5 m tall</text>
+  <text class="st"   x="762.5" y="122" text-anchor="middle">starts at x = 1.5 m</text>
+
+  <!-- floor (y = 2.25 m edge at the left; continues past the right and top) -->
+  <rect x="80" y="152" width="800" height="330" fill="#ece5d6"/>
+
+  <!-- x ruler -->
+  <line class="ax" x1="60" y1="482" x2="60" y2="152"/>
+  <text class="tick" x="60" y="144" text-anchor="middle">x (m)</text>
+  <line class="ax" x1="54" y1="430" x2="60" y2="430"/><text class="tick" x="50" y="434" text-anchor="end">0</text>
+  <line class="ax" x1="54" y1="365" x2="60" y2="365"/><text class="tick" x="50" y="369" text-anchor="end">0.5</text>
+  <line class="ax" x1="54" y1="300" x2="60" y2="300"/><text class="tick" x="50" y="304" text-anchor="end">1.0</text>
+  <line class="ax" x1="54" y1="274" x2="60" y2="274"/><text class="tickh" x="50" y="278" text-anchor="end">1.2</text>
+  <line class="ax" x1="54" y1="235" x2="60" y2="235"/><text class="tickh" x="50" y="239" text-anchor="end">1.5</text>
+  <line class="ax" x1="54" y1="170" x2="60" y2="170"/><text class="tick" x="50" y="174" text-anchor="end">2.0</text>
+
+  <!-- x = 0 guide -->
+  <line class="zero" x1="60" y1="430" x2="880" y2="430"/>
+
+  <!-- hazards -->
+  <!-- Lane D marker: x 1.2 to 1.5, y 1.2 to 1.8 -->
+  <rect x="138.5" y="235" width="78" height="39" fill="#d91a1a" stroke="#8f2020" stroke-width="1.2"/>
+  <!-- Lane A box: x 1.2 to 1.5, y -0.2 to 0.2 -->
+  <rect x="346.5" y="235" width="52" height="39" fill="#e6801a" stroke="#9a5410" stroke-width="1.5"/>
+  <!-- Lane B pit: x 1.2 to 1.7, y -0.75 to -2.25 -->
+  <rect x="470" y="209" width="195" height="65" fill="#33363d"/>
+  <!-- Lane C wall: x 1.5 to 1.6, y -2.4 to -3.6 -->
+  <rect x="684.5" y="222" width="156" height="13" fill="#9999b3" stroke="#5c5c78" stroke-width="1.2"/>
+
+  <!-- hazard start lines -->
+  <line class="start" x1="60" y1="274" x2="880" y2="274"/>
+  <line class="start" x1="60" y1="235" x2="880" y2="235"/>
+
+  <!-- pit length -->
+  <line class="dim" x1="458" y1="274" x2="458" y2="209" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <text class="num" x="452" y="256" text-anchor="end">0.5 m</text>
+
+  <!-- robot at each lane start, radius 0.17 m, driving along +x -->
+  <g>
+    <line class="path" x1="177.5" y1="404" x2="177.5" y2="280"/>
+    <circle class="robot" cx="177.5" cy="430" r="22.1"/>
+    <path d="M 177.5 413 L 185 427 L 170 427 Z" fill="#012169"/>
+
+    <line class="path" x1="372.5" y1="404" x2="372.5" y2="280"/>
+    <circle class="robot" cx="372.5" cy="430" r="22.1"/>
+    <path d="M 372.5 413 L 380 427 L 365 427 Z" fill="#012169"/>
+
+    <line class="path" x1="567.5" y1="404" x2="567.5" y2="280"/>
+    <circle class="robot" cx="567.5" cy="430" r="22.1"/>
+    <path d="M 567.5 413 L 575 427 L 560 427 Z" fill="#012169"/>
+
+    <line class="path" x1="762.5" y1="404" x2="762.5" y2="241"/>
+    <circle class="robot" cx="762.5" cy="430" r="22.1"/>
+    <path d="M 762.5 413 L 770 427 L 755 427 Z" fill="#012169"/>
+  </g>
+  <text class="lbl" x="177.5" y="472" text-anchor="middle">start, x = 0</text>
+  <text class="lbl" x="372.5" y="472" text-anchor="middle">start, x = 0</text>
+  <text class="lbl" x="567.5" y="472" text-anchor="middle">start, x = 0</text>
+  <text class="lbl" x="762.5" y="472" text-anchor="middle">start, x = 0</text>
+
+  <!-- frame -->
+  <line x1="850" y1="530" x2="850" y2="496" stroke="#26313f" stroke-width="1.8" marker-end="url(#fr)"/>
+  <line x1="850" y1="530" x2="816" y2="530" stroke="#26313f" stroke-width="1.8" marker-end="url(#fr)"/>
+  <text class="tick" x="858" y="502">+x</text>
+  <text class="tick" x="806" y="534" text-anchor="end">+y</text>
+
+  <!-- notes -->
+  <line x1="30" y1="494" x2="780" y2="494" stroke="#cdd6e4" stroke-width="1.5"/>
+  <text class="note" x="30" y="516">There is one robot; <tspan style="font-family: 'Cascadia Code', Consolas, monospace; font-size: 12px; fill: #012169; font-weight: 700;">lane_test</tspan> moves it to the start of the lane you name. It is drawn at each start here.</text>
+  <text class="note" x="30" y="538">The dashed lines mark where the hazards start. The robot's front edge is 0.17 m ahead of its center.</text>
+</svg>

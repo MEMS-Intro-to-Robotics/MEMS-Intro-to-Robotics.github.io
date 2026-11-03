@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" role="img" aria-labelledby="t d">
+  <title id="t">Height of the point a depth pixel sees</title>
+  <desc id="d">Side view, to scale. The camera is 0.244 metres above the floor and looks straight ahead. One pixel's ray reaches the floor at a depth d of 0.50 metres; that point is 0.244 metres below the camera, so its height is 0. Another pixel's ray reaches the face of the 8 centimetre box at a depth d of 0.70 metres; that point is 0.204 metres below the camera, so its height is 0.04 metres. The height formula is camera_height minus (v minus cy) times d divided by fy, where v is the pixel's row counted from the top of the image, cy is the center row, fy is the focal length in pixels, and d is the depth reading measured straight ahead along the camera axis.</desc>
+
+  <style>
+    .hd     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
+    .lbl    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; fill: #26313f; }
+    .cam    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #012169; }
+    .num    { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; font-weight: 700; fill: #26313f; }
+    .fl     { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; font-weight: 700; fill: #0f766e; }
+    .bx     { font-family: "Cascadia Code", Consolas, monospace; font-size: 11.5px; font-weight: 700; fill: #a32e22; }
+    .form   { font-family: "Cascadia Code", Consolas, monospace; font-size: 15px; font-weight: 700; fill: #012169; }
+    .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #3d4756; }
+    .mono   { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; font-weight: 700; fill: #012169; }
+    .axis   { stroke: #012169; stroke-width: 1.6; stroke-dasharray: 7 4; }
+    .rfl    { stroke: #0f766e; stroke-width: 2.2; }
+    .rbx    { stroke: #a32e22; stroke-width: 2.2; }
+    .dim    { stroke: #5a6675; stroke-width: 1.2; }
+    .ext    { stroke: #9aa4b2; stroke-width: 1; }
+    .body   { fill: #eef1f5; stroke: #b8c0cc; stroke-width: 1.2; }
+    .box    { fill: #e6801a; stroke: #9a5410; stroke-width: 1.5; }
+  </style>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6675"/>
+    </marker>
+    <marker id="at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a32e22"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="520" fill="#ffffff"/>
+
+  <!-- Scale: 700 px per metre. Floor at y = 300; camera at x = 170, y = 300 - 0.244 * 700 = 129.2.
+       Floor hit at d = 0.50 m (x 520); box face at d = 0.70 m (x 660), hit 0.04 m up (y 272). -->
+  <text class="hd" x="30" y="32">Height of the point a depth pixel sees (side view, to scale)</text>
+
+  <!-- robot body, faint, for context: x from -0.17 to 0.17 m, camera at -0.06 m -->
+  <rect class="body" x="93" y="230" width="238" height="68" rx="14"/>
+  <text class="lbl" x="212" y="270" text-anchor="middle" style="fill:#8d97a5">robot</text>
+  <rect x="164" y="141" width="8" height="89" fill="#d9dde3"/>
+
+  <!-- floor -->
+  <rect x="20" y="300" width="870" height="12" fill="#ece5d6"/>
+  <line x1="20" y1="300" x2="890" y2="300" stroke="#9a8f78" stroke-width="1.5"/>
+
+  <!-- box, 8 cm tall, front face at d = 0.70 m -->
+  <rect class="box" x="660" y="244" width="210" height="56"/>
+  <text class="lbl" x="765" y="276" text-anchor="middle">box, 8 cm tall</text>
+
+  <!-- camera -->
+  <rect x="140" y="119" width="30" height="21" rx="3" fill="#012169"/>
+  <circle cx="170" cy="129.2" r="3.2" fill="#ffffff" stroke="#012169" stroke-width="1.2"/>
+  <text class="cam" x="155" y="109" text-anchor="middle">camera</text>
+
+  <!-- camera axis -->
+  <line class="axis" x1="174" y1="129.2" x2="880" y2="129.2"/>
+  <text class="cam" x="880" y="121" text-anchor="end">camera axis, straight ahead</text>
+
+  <!-- camera_height -->
+  <line class="ext" x1="118" y1="129.2" x2="138" y2="129.2"/>
+  <line class="dim" x1="124" y1="129.2" x2="124" y2="300" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <text class="mono" x="116" y="205" text-anchor="end">camera_height</text>
+  <text class="num" x="116" y="221" text-anchor="end">0.244 m</text>
+
+  <!-- rays -->
+  <line class="rfl" x1="170" y1="129.2" x2="520" y2="300"/>
+  <circle cx="520" cy="300" r="4.5" fill="#0f766e"/>
+  <line class="rbx" x1="170" y1="129.2" x2="660" y2="272"/>
+  <circle cx="660" cy="272" r="4.5" fill="#a32e22"/>
+
+  <!-- how far below the camera each point is -->
+  <line class="dim" x1="520" y1="129.2" x2="520" y2="300" marker-start="url(#at)" marker-end="url(#at)" style="stroke:#0f766e"/>
+  <text class="fl" x="528" y="168">(v − cy)·d/fy</text>
+  <text class="fl" x="528" y="184">= 0.244 m</text>
+  <line class="dim" x1="660" y1="129.2" x2="660" y2="272" marker-start="url(#ad)" marker-end="url(#ad)" style="stroke:#a32e22"/>
+  <text class="bx" x="668" y="168">(v − cy)·d/fy</text>
+  <text class="bx" x="668" y="184">= 0.204 m</text>
+
+  <!-- depth d, straight ahead from the camera -->
+  <line class="ext" x1="170" y1="312" x2="170" y2="374"/>
+  <line class="ext" x1="520" y1="312" x2="520" y2="342"/>
+  <line class="ext" x1="660" y1="312" x2="660" y2="374"/>
+  <line class="dim" x1="170" y1="336" x2="520" y2="336" marker-start="url(#at)" marker-end="url(#at)" style="stroke:#0f766e"/>
+  <text class="fl" x="345" y="330" text-anchor="middle">d = 0.50 m</text>
+  <line class="dim" x1="170" y1="368" x2="660" y2="368" marker-start="url(#ad)" marker-end="url(#ad)" style="stroke:#a32e22"/>
+  <text class="bx" x="415" y="362" text-anchor="middle">d = 0.70 m</text>
+
+  <!-- formula and worked numbers -->
+  <line x1="30" y1="392" x2="870" y2="392" stroke="#cdd6e4" stroke-width="1.5"/>
+  <text class="form" x="30" y="418">height = camera_height − (v − cy) · d / fy</text>
+  <text class="note" x="30" y="442"><tspan style="fill:#0f766e; font-weight:700">Floor pixel:</tspan> d = 0.50 m and the point is 0.244 m below the camera, so its height is 0.244 − 0.244 = 0.00 m: not above min_height.</text>
+  <text class="note" x="30" y="462"><tspan style="fill:#a32e22; font-weight:700">Box pixel:</tspan> d = 0.70 m and the point is 0.204 m below the camera, so its height is 0.244 − 0.204 = 0.04 m: above a min_height of 0.03 m.</text>
+  <text class="note" x="30" y="488">d is the depth reading: the distance straight ahead along the camera axis, not along the ray.</text>
+  <text class="note" x="30" y="508">v is the pixel's row, counted down from the top of the image; cy is the center row and fy the focal length in pixels, both from camera_info.</text>
+</svg>
