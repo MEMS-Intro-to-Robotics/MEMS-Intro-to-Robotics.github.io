@@ -19,6 +19,7 @@ inside the course Docker container.
 | Gazebo or the simulated drone misbehaves | [Gazebo and Crazyflie simulation](#gazebo-and-crazyflie-simulation) |
 | Gazebo shows things from another lab | [Stop leftover containers](#gazebo-shows-a-robot-a-world-or-objects-from-another-lab) |
 | Flight-log plots or metrics look wrong | [Flight log analysis](#flight-log-analysis) |
+| Lab 9: the simulation, the hazard monitor, or `lane_test` fails | [TurtleBot 4 sensors (simulation)](#turtlebot-4-sensors-simulation) |
 | TurtleBot, mapping, or navigation fails | [TurtleBot, SLAM, and Nav2](#turtlebot-slam-and-nav2) |
 
 Use the site's search for an exact error message. If you need a TA, bring the
@@ -750,6 +751,241 @@ line.
 If you matched the two flights by `time_s`, match them by waypoint number
 instead. The flights started at different moments and their legs took
 different times.
+
+## TurtleBot 4 sensors (simulation)
+
+These entries are for Lab 9. Terminal 1 is the container shell running
+`sim.launch.py`, Terminal 2 is the container shell in the repository root where
+you run `lane_test`, `record_noise`, and the tests, and Terminal 3 runs the
+hazard monitor. Some problems in this lab have entries elsewhere on this page:
+
+- Gazebo shows a robot or world from another lab:
+  [Gazebo shows a robot, a world, or objects from another lab](#gazebo-shows-a-robot-a-world-or-objects-from-another-lab)
+- `ros2` is not found in a terminal:
+  [`ros2` says "command not found" in a terminal that worked a minute ago](#ros2-says-command-not-found-in-a-terminal-that-worked-a-minute-ago)
+- `git add` is denied for the files in `runs/`:
+  [Files created in the container cannot be edited on the host](#files-created-in-the-container-cannot-be-edited-on-the-host)
+
+### FastX reports `All 399 X11 display numbers are in use`, or the pull runs out of space
+
+The VM's main disk holds 25 GB, and Docker keeps its images there. About two
+lab images fill it. When it is full, FastX may fail to start a desktop, and
+`docker pull` can stop with `no space left on device`. Pre-lab step 1 moves
+Docker's storage to the VM's larger `/home` disk.
+
+If FastX cannot start a desktop, open a terminal on your own computer and
+connect to the VM with `ssh yourNetID@vcm-xxxxx.vm.duke.edu`. Check the main
+disk:
+
+```bash
+df -h /
+```
+
+If the `Use%` column is above about 90%, run the script from pre-lab step 1:
+
+```bash
+curl -fsSL -o move_docker_to_home.sh https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/move_docker_to_home.sh && bash move_docker_to_home.sh
+```
+
+Type your password when `sudo` asks for it. Near the end of the output, check
+that the lines starting with `/var/lib/docker` and `/var/lib/containerd` both
+show `ubuntuos-home--lv`, and that `df -h /` shows a lower `Use%`. Start a new
+FastX session, then pull the image again. If the script stops with an
+error, ask a TA and show its output.
+
+### `Package 'lab09_sensors' not found`
+
+The workspace may not have been sourced in this terminal. Every new container
+shell needs the prepare line from Part 1:
+
+```bash
+cd ~/workspaces/intro-to-robotics-fall-2026-lab-09-* && source ros2_ws/install/setup.bash
+```
+
+If it prints `No such file or directory`, see the next entry.
+
+### The prepare line prints `No such file or directory`
+
+Either the repository is not in `~/workspaces`, or the package has not been
+built there. In the container:
+
+```bash
+ls ~/workspaces
+```
+
+If no folder starting with `intro-to-robotics-fall-2026-lab-09-` is listed,
+clone the repository into `~/workspaces` on the VM (pre-lab step 3). If it is
+listed, run the build line from pre-lab step 5, then the prepare line again:
+
+```bash
+cd ~/workspaces/intro-to-robotics-fall-2026-lab-09-*/ros2_ws && colcon build --symlink-install && source install/setup.bash && ros2 pkg executables lab09_sensors
+```
+
+### The Gazebo window is black or does not open
+
+If no window opens, see
+[GUI apps do not open from the container](#gui-apps-do-not-open-from-the-container).
+If the window is black or Terminal 1 shows an OpenGL error, see
+[The Gazebo window is black, or the launch stops with an OpenGL error](#the-gazebo-window-is-black-or-the-launch-stops-with-an-opengl-error).
+
+The lab's programs read sensor data over ROS 2 and move the robot through
+Gazebo's services. You can run them without the simulation window by
+starting the simulation with:
+
+```bash
+ros2 launch lab09_sensors sim.launch.py gui:=false
+```
+
+`lane_test`, `record_noise`, and the hazard monitor print their results in the
+terminal.
+
+### `ros2 topic list` shows only `/parameter_events` and `/rosout`
+
+ROS 2 has not yet found the simulation's topics. Wait a few seconds and run the
+command again. If the list is still short, or if `ros2 topic echo` or
+`ros2 topic hz` prints nothing for a topic that is listed:
+
+1. Check that Terminal 1 is still running the simulation, with no error at the
+   end of its output.
+2. Check that this terminal was opened with `docker exec -it lab09 bash`. A
+   shell started with a second `docker run` is a separate container; see
+   [Nodes in different panes cannot see each other](#nodes-in-different-panes-cannot-see-each-other).
+
+### Terminal 1 keeps printing `Velocity command timed out. Braking.`
+
+This is normal and needs no action. So are an `[ERROR]` line at startup saying
+that the desired controller update period is faster than the simulation period,
+and `process has died` lines after you press `Ctrl+C`. Leave Terminal 1
+running.
+
+### `A simulation was already running in this container. It was stopped; this one replaces it.`
+
+`sim.launch.py` was started while another copy was running in the same
+container. The new copy stopped the old one, so the terminal that held the old
+one shows it shutting down. Keep the new one running and carry on.
+
+### `No thresholds.yaml in ...`
+
+The hazard monitor, `lane_test`, and `record_noise` read and write files in the
+folder they are started from. Check that you are in the repository root,
+then start the program again:
+
+```bash
+cd ~/workspaces/intro-to-robotics-fall-2026-lab-09-*
+```
+
+`ls` there lists `thresholds.yaml`.
+
+### The hazard monitor says `is not written yet`
+
+For example: `sensing.lidar_blocked is not written yet; skipping the lidar.`
+The sensor is marked `use: true` in `thresholds.yaml`, but its function in
+`sensing.py` still raises `NotImplementedError`, as it does in the starter. The
+monitor skips that sensor, so it will not stop the robot.
+
+Write the function, save `sensing.py`, and run its test from Terminal 2 (the
+example uses `lidar_blocked`; use your function's name):
+
+```bash
+python3 -m pytest test_lab_9.py -v -k lidar_blocked
+```
+
+Then restart the monitor: press `Ctrl+C` in Terminal 3 and run
+`ros2 run lab09_sensors hazard_monitor` again. The monitor reads `sensing.py`
+only when it starts.
+
+### The hazard monitor says `raised an error; skipping the ...`
+
+For example: `sensing.depth_blocked raised an error; skipping the depth until
+you fix it and restart:` followed by a traceback. Your function stopped with an
+error on live sensor data. The traceback lists the calls leading to the error,
+including the line in `sensing.py`; the last line gives the error type and
+message. The monitor reports each function's error once and then skips that
+sensor.
+
+Use the traceback to find and fix the cause, run the function's test as in the
+previous entry, then restart the monitor.
+
+### A change to `thresholds.yaml` or `sensing.py` has no effect
+
+The hazard monitor reads both files only when it starts. If you change the
+thresholds while it runs, `lane_test` prints `thresholds.yaml has changed since
+the hazard monitor started.`, and the run uses and records the thresholds the
+monitor read at startup. Check the following:
+
+1. The file is saved. VS Code shows a dot on the tab of a file with unsaved
+   changes.
+2. The monitor was restarted after the edit: `Ctrl+C` in Terminal 3, then
+   `ros2 run lab09_sensors hazard_monitor`.
+3. The monitor's first line, `Read .../thresholds.yaml. Sensors in use: ...`,
+   names the `thresholds.yaml` in your repository and lists the sensors you set
+   to `use: true`. `Sensors in use: none.` means no sensor is set to
+   `use: true`.
+
+### The robot drives past the hazard with `stopped by: none`
+
+`lane_test` stops the robot only when the hazard monitor reports a hazard.
+Check the following:
+
+1. `lane_test` did not print `No hazard monitor is running`. If it did, start
+   the monitor in Terminal 3 from the repository root and drive the lane again.
+   A run made without the monitor has an empty `thresholds` column and does not
+   count toward Part 5.
+2. The sensor is listed in the monitor's `Sensors in use` line. If not, see the
+   previous entry.
+3. The monitor's terminal shows no `is not written yet` or `raised an error`
+   message for that sensor. If it does, see the entries above.
+4. While the robot drives, the monitor prints the sensor's name followed by
+   `hazard`, for example `lidar: hazard`. If it never does, your function
+   returned `False` for every message from that sensor on the way to the
+   hazard. Check the function and its threshold, and whether this sensor can
+   detect this hazard: Section 1.2 of the lab gives each sensor's limits, and
+   Step 4.3 tests which sensors detect the low box.
+
+### Lane A or C: `stopped by: cliff`, and the robot touched the hazard
+
+In this simulation, the cliff sensors can report a cliff shortly after the
+bumper pushes into the box or the wall, and that report is what stopped the
+robot. The sensor you meant to stop it did not detect the hazard before the
+robot reached it, so check that sensor as in the previous entry.
+
+### `Could not move the robot to the lane start. Is the simulation running?`
+
+`record_noise` prints `Could not move the robot. Is the simulation running?`
+for the same problem. Both programs move the robot through Gazebo, and Gazebo
+did not answer within 3 s.
+
+1. Check Terminal 1. If the simulation has stopped, start it again with
+   `ros2 launch lab09_sensors sim.launch.py`.
+2. If you just started it, wait until the lanes appear in the Gazebo window,
+   then run the command again.
+3. Check that this terminal is a container shell opened with
+   `docker exec -it lab09 bash`.
+
+### A plotting script fails with `ImportError: numpy.core.multiarray failed to import`
+
+The error starts with `A module that was compiled using NumPy 1.x cannot be run
+in NumPy 2.5.3`. In this image, `python3` runs a separate Python that has NumPy
+2, and the matplotlib installed with the system was built for NumPy 1. Run your
+plotting script with the system Python instead, for example:
+
+```bash
+/usr/bin/python3 plot_noise.py
+```
+
+### `test_lab_9.py` says no row was made with the thresholds now in `thresholds.yaml`
+
+The message starts `No row of runs/lane_results.csv was made with the
+thresholds now in thresholds.yaml`, or names one lane and speed with
+`no run with your submitted thresholds`. Each row of `runs/lane_results.csv`
+records the thresholds the hazard monitor was using, and the test counts only
+rows whose thresholds match `thresholds.yaml` as it is now. This happens when
+`thresholds.yaml` was edited after the Part 5 runs, or when the runs were made
+with a monitor that was not restarted after an edit.
+
+With your final `thresholds.yaml` saved, restart the hazard monitor, drive all
+four lanes at 0.2 and 0.3 m/s, run the tests again, and commit both
+`thresholds.yaml` and `runs/lane_results.csv`. Do not delete the earlier rows.
 
 ## TurtleBot, SLAM, and Nav2
 
