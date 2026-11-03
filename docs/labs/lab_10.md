@@ -1,731 +1,523 @@
 ---
-title: "Lab 10: Real TurtleBot 4 Deployment"
+title: "Lab 10: Autonomous SLAM-Based Exploration"
 ---
 
-# Lab 10: Real TurtleBot 4 Deployment
+# Lab 10: Autonomous SLAM-Based Exploration
 
 <div class="lab-content">
 
 <nav id="toc">
     <h2>Table of Contents</h2>
     <ol>
-        <li><a href="#overview">Overview: From Explorer to Strategist</a></li>
+        <li><a href="#overview">Overview</a></li>
         <li><a href="#objectives">Learning Objectives</a></li>
-        <li><a href="#roles">From Simulation to Reality: Safety &amp; Professional Conduct</a></li>
-        <li><a href="#background">Conceptual Background: Engineering a Smarter Robot</a></li>
-        <li><a href="#setup">Part 1: Real TurtleBot&nbsp;4 Bring-Up (SLAM + Nav2 + RViz)</a></li>
-        <li><a href="#procedure">Part 2: Engineering the Intelligent Explorer (A*)</a></li>
-        <li><a href="#run">Part 2.5: Deployment &amp; Map Saving</a></li>
-        <li><a href="#analysis">Part 3: Analysis &amp; Discussion</a></li>
-        <li><a href="#troubleshooting">Quick Troubleshooting</a></li>
-        <li><a href="#references">References &amp; Further Reading</a></li>
+        <li><a href="#background">Conceptual Background</a></li>
+        <li><a href="#setup">Environment Setup: Docker &amp; Simulation</a></li>
+        <li><a href="#bringup">Part 1: System Bringup</a></li>
+        <li><a href="#procedure">Part 2: Lab Procedure &amp; Node Development</a></li>
+        <li><a href="#analysis">Part 3: Post-Lab Questions &amp; Discussion</a></li>
+        <li><a href="#references">Further Reading</a></li>
+        <li><a href="#troubleshooting">Debugging: An Engineer's Most Valuable Skill</a></li>
+        <li><a href="#schema">Reference: The Language of Mobile Robotics</a></li>
     </ol>
 </nav>
 <section id="overview">
-    <h2>1. Overview: From Explorer to Strategist</h2>
-    <p>In previous labs, you built an autonomous explorer in the clean, predictable world of simulation. Today, you bridge the gap to reality. Simulation is where algorithms are born, but the physical world is where they are truly tested. You will deploy your code on <strong>physical TurtleBot 4 robots</strong>, where perfect odometry is a myth, lighting conditions change, and walls are not always perfectly straight.</p>
-    <p>Your core task is to upgrade your robot's "Brain." You will replace the naive "Nearest Frontier" logic with an <strong>Information Gain Strategist</strong>.</p>
-    <p>You will be provided with a sophisticated navigation node that includes <strong>A* Pathfinding</strong>, <strong>Frontier Clustering</strong>, and <strong>Stuck Detection</strong>. However, the code is currently "silent." Your job is to <strong>instrument the code</strong> with logging to visualize its decision-making process, ensuring it balances the <em>Cost of Travel</em> against the <em>Reward of Discovery</em>.</p>
-    <blockquote style="border-left: 4px solid #005a9c; padding-left: 1em; color: #555;"><strong>The System Stack</strong><br /><strong>Hardware:</strong> Lidar &amp; Encoders &rarr; <strong>SLAM:</strong> The Map &rarr; <strong>Your Node:</strong> The Strategy (Efficiency Score) &rarr; <strong>Nav2:</strong> The Pilot (Motion Planning).</blockquote>
-    <p><a href="#toc">&uarr; Back to top</a></p>
+    <h2>1. Overview</h2>
+    <p>How does a robot make sense of a world it has never seen? In this lab, you will program a simulated TurtleBot 4 to explore an unknown maze, build a map of its environment, and track its own position within that map&mdash;a process known as <strong>Simultaneous Localization and Mapping (SLAM)</strong>.</p>
+    <p>The lab runs in simulation so you can focus on the autonomy logic. You will write Python nodes that command the ROS 2 Navigation Stack (Nav2), starting with simple coordinate goals and ending with a frontier-based exploration algorithm.</p>
+    <figure style="text-align: center; margin: 2em auto; max-width: 500px;"><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:400px;min-height:150px;margin:1em auto;">A side-by-side comparison photo of the TurtleBot 4 and the smaller TurtleBot 4 Lite mobile robots.</div>
+        <figcaption style="margin-top: 0.5em; font-size: 0.9em; color: #555; font-style: italic;">The TurtleBot 4 (left) and Lite (right). In this lab, we use a simulated standard model so you can develop and test navigation software before deploying to physical hardware.</figcaption>
+    </figure>
+    <blockquote style="border-left: 4px solid #005a9c; padding-left: 15px; margin-left: 0; color: #555;">
+        <h4 style="margin-top: 0; color: #005a9c;">🧠 The SLAM Paradox</h4>
+        <p>How can a robot build a reliable map of a place it's never seen, while simultaneously using that same incomplete map to figure out where it is? This is the central "chicken-and-egg" problem of SLAM. You will solve it by programming your robot to make intelligent decisions about where to explore next.</p>
+    </blockquote>
 </section>
 <section id="objectives">
     <h2>2. Learning Objectives</h2>
-    <p>Upon successful completion of this lab, you will have moved beyond simply "running" code to "validating" it. You will demonstrate the ability to:</p>
+    <p>Upon successful completion of this lab, you will be able to:</p>
     <ul>
-        <li><strong>Architect</strong> a complete robotics software stack on physical hardware.</li>
-        <li><strong>Analyze</strong> an A* implementation to understand how grid maps translate to travel costs.</li>
-        <li><strong>Instrument</strong> a robot control node to log real-time decision metrics (Efficiency Scores).</li>
-        <li><strong>Validate</strong> system performance by interpreting logs to explain why the robot chose specific targets.</li>
-        <li><strong>Debug</strong> physical navigation issues using Stuck Detection logic and Blacklisting.</li>
+        <li>Launch and manage a complete, multi-node robotics simulation stack (Gazebo, Nav2, SLAM, RViz).</li>
+        <li>Write a ROS 2 node in Python that interfaces with the Nav2 action client to send asynchronous navigation goals.</li>
+        <li>Command a robot to navigate to precise coordinates within a map that is being generated in real-time.</li>
+        <li>Design and implement logic to generate and dispatch safe, randomly-generated navigation goals.</li>
+        <li>Develop a frontier-based exploration algorithm that autonomously directs a robot to map an unknown environment.</li>
     </ul>
-</section>
-<section id="roles">
-    <h2>3. From Simulation to Reality: Safety &amp; Professional Conduct</h2>
-    <p>Working with physical hardware carries a greater responsibility than simulation. The following rules are the habits of professional engineers.</p>
-    <h3>Rules of Engagement</h3>
-    <ul>
-        <li><strong>Situational Awareness:</strong> Always know where the robot is going. Keep the area clear of backpacks and cables.</li>
-        <li><strong>Hands Off:</strong> Do not push or lift the robot while it is mapping. This corrupts the SLAM estimate (Odometry vs. Map), forcing a full system restart. If a collision is imminent, use the E-Stop or Ctrl+C.</li>
-        <li><strong>Teamwork:</strong> One person drives/codes, one person monitors RViz data, one person watches the physical robot. Rotate roles.</li>
-    </ul>
-    <p><a href="#toc">&uarr; Back to top</a></p>
 </section>
 <section id="background">
-    <h2>4. Conceptual Background: Engineering a Smarter Robot</h2>
-    <p>To understand the code you are working with, we must analyze the failure mode of the "Naive" explorer and the solution provided by "Information Gain."</p>
-    <h3>The Flaw in the "Nearest Frontier" Heuristic</h3>
-    <p>Imagine your robot is in a hallway. It identifies two unexplored frontiers:</p>
+    <h2>3. Conceptual Background</h2>
+    <p>Before writing the exploration logic, build a mental model of the stack. A modern robotics system is not one program; it is several specialized nodes working together.</p>
+    <h3>The System Architecture: A Cast of Characters</h3>
     <ul>
-        <li><strong>Frontier A (The Trap):</strong> Located in the adjacent room, <strong>1 meter away</strong> through a wall.</li>
-        <li><strong>Frontier B (The Goal):</strong> Located down the hall, <strong>3 meters away</strong> in clear space.</li>
+        <li><strong>Gazebo (The Reality Engine):</strong> This is the physics simulator. It creates the virtual world, enforces the laws of physics, and generates the raw sensor data from the robot's virtual LiDAR. For our software, Gazebo <em>is</em> the real world.</li>
+        <li><strong>SLAM Toolbox (The Cartographer):</strong> This node's sole job is to build the map. It listens to the robot's sensor data and wheel movements to solve the SLAM paradox, continuously publishing an updated map for others to use.</li>
+        <li><strong>Nav2 (The Navigator):</strong> This is a sophisticated suite of nodes that handles all aspects of motion. It takes the map from the Cartographer and a goal from you, then calculates a safe, efficient path. Its final output is a stream of velocity commands sent to the robot's wheels.</li>
+        <li><strong>Your Python Node (The Mission Commander):</strong> This is the node you will write. It represents the highest level of intelligence, making the strategic decisions. It decides <em>where</em> the robot should go and sends those goal requests to the Navigator.</li>
+        <li><strong>RViz (The Mission Control Dashboard):</strong> This visualization tool is your window into the robot's state. It overlays the map, sensor readings, and planned path into one view for debugging.</li>
     </ul>
-    <p>A "Nearest Neighbor" algorithm calculates \( 1m &lt; 3m \) and chooses <strong>Frontier A</strong>. The robot then attempts to drive through the wall.</p>
-    <h3>The Solution: Efficiency Scoring</h3>
-    <p>The code provided uses two metrics to make a decision:</p>
-    <ol>
-        <li><strong>The Cost (A*):</strong> The true travel distance, respecting walls. A* will calculate that Frontier A (through the wall) is actually a 20-meter path, while Frontier B is 3 meters.</li>
-        <li><strong>The Reward (Cluster Size):</strong> How much map will we reveal? A tiny gap isn't worth a long drive. A massive open room is.</li>
-    </ol>
-    <p>The robot minimizes an <strong>Efficiency Score</strong>: $$ \text{Score} = \frac{\text{Cost (A* Distance)}}{\text{Reward (Frontier Size)}} $$</p>
-    <p><a href="#toc">&uarr; Back to top</a></p>
+    <blockquote style="border-left: 4px solid #ffc107; padding-left: 15px; margin-left: 0; color: #555;">
+        <p><strong>Why the pieces are separate</strong><br />Notice how the Cartographer (SLAM) and the Navigator (Nav2) are separate. SLAM builds the map; Nav2 plans paths on whatever map it has. As SLAM discovers a new hallway, Nav2 can start planning paths through it immediately.</p>
+    </blockquote>
+    <h3>Occupancy Grids: A Map of Probabilities</h3>
+    <p>The map shared between all these nodes is a data structure called an <strong>occupancy grid</strong>. It's a 2D grid where each cell holds a value representing the system's confidence that the corresponding physical space is occupied, free, or unknown. Your node will read this map to make intelligent decisions.</p>
+    <ul>
+        <li><code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">-1</code> (Gray in RViz): <strong>Unknown Space</strong>. The robot's sensors have not yet seen this area.</li>
+        <li><code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">0</code> (White/Light Gray): <strong>Free Space</strong>. The robot has observed this area to be clear and drivable.</li>
+        <li><code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">1-100</code> (Black): <strong>Occupied Space</strong>. The robot has detected an obstacle with a given confidence level.</li>
+    </ul>
+    <p>The core challenge of autonomous exploration is to direct the robot to move from <em>Free Space</em> towards the boundary of <em>Unknown Space</em>, turning it into more Free or Occupied Space until the map is complete.</p>
+    <figure style="text-align: center; margin: 2em auto; max-width: 500px;"><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:400px;min-height:150px;margin:1em auto;">A real-world example of a SLAM map generated by a Roborock Q Revo robot vacuum, showing the floor plan of a house with different rooms color-coded.</div>
+        <figcaption style="margin-top: 0.5em; font-size: 0.9em; color: #555; font-style: italic;">A real-world occupancy grid generated by a robot vacuum. This is exactly the kind of map your code will enable the TurtleBot 4 to produce in this lab.</figcaption>
+    </figure>
 </section>
 <section id="setup">
-    <h2>Part 1: Establishing the Mind-Body Connection</h2>
-    <p>Before a pilot takes off, they run a pre-flight checklist. Before a roboticist deploys code, they run a "Bring-Up."</p>
-    <div class="alert alert-info" style="background-color: #d9edf7; border-color: #bce8f1; color: #31708f; padding: 10px; border-radius: 4px; margin-bottom: 20px;"><strong>Communal Lab PC Protocol (Read Carefully)</strong>
-        <p>You are working on shared equipment today, not your personal VM.</p>
-        <ul>
-            <li><strong>No SSH Keys:</strong> Do not generate or copy personal SSH keys to these machines. It is a security risk.</li>
-            <li><strong>Submission Strategy:</strong> You will write your code locally. To submit, log into GitLab in the <strong>Web Browser</strong>, navigate to your repository, and use the <strong>"Upload File"</strong> or <strong>"Web IDE"</strong> button to upload your <code>auto_explore.py</code> and maps.</li>
-            <li><strong>Data Safety:</strong> The Docker command below has been updated to mount a local folder. Ensure you save your python file in the mounted directory, or it will vanish when the container closes.</li>
-        </ul>
-    </div>
-    <p>In this lab, we are using a <strong>Distributed Architecture</strong>.</p>
+    <h2>5. Environment Setup: Docker &amp; Simulation</h2>
+    <p>From Lab 05 onward, the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a> covers the repeated container, pane, build, and debugging habits. This section keeps the Lab 09-specific pieces: the TurtleBot image, the permissions fix, and the bringup commands that follow.</p>
+    <h3>5.1 Start the Container (GPU Acceleration)</h3>
+    <p>On your <strong>host VM</strong>, allow GUI forwarding and start the single container for this lab.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>xhost +local:docker</code></pre>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>docker run --rm -it \
+--name lab09_tb4 \
+--net=host \
+-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
+-v ~/workspaces:/root/workspaces \
+--gpus all \
+gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:tb4-humble-latest</code></pre>
+    <p>Note: if the command above does not successfully install all required packages, free up storage by running this command:</p>
+    <p><strong></strong><code>docker system prune -a --volumes -f</code></p>
+    <h3>5.2 Fix File Permissions When Needed</h3>
+    <p>If files created inside the container become read-only on the host, run this from a second host terminal:</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>sudo chown -R $USER:$USER ~/workspaces/[netid]_robotics_fall2025/lab09</code></pre>
+    <h3>5.3 Recommended Pane Layout</h3>
+    <p>If you prefer panes inside the container, open Terminator after launch and use a layout like this:</p>
     <ul>
-        <li><strong>The Body (Server):</strong> The physical TurtleBot 4 handles the drivers (LiDAR, Motors) and publishes raw sensor data.</li>
-        <li><strong>The Brain (Client):</strong> Your Lab PC runs the heavy computation (SLAM, Nav2, Your Efficiency Node).</li>
+        <li><strong>Pane A</strong>: Gazebo world</li>
+        <li><strong>Pane B</strong>: TurtleBot stack with SLAM, Nav2, and RViz</li>
+        <li><strong>Pane C</strong>: Laser bridge</li>
+        <li><strong>Pane D</strong>: Development and debugging</li>
     </ul>
-    <p>Your goal in Part 1 is to establish the "Nervous System" (Wi-Fi Network) that connects them.</p>
-    <h3>Step 1.1: Prepare Your Terminal Workspace</h3>
-    <p>Create a folder on the Lab PC to store your work safely. The shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a> still applies here for pane discipline, build/source habits, and fast debugging; the main difference is that Lab 10 also requires network exports in every pane.</p>
-    <pre><code class="language-bash">mkdir -p ~/lab10_work/src</code></pre>
-    <p>Open a terminal manager such as <code>terminator</code> and reserve the panes below for the rest of the lab.</p>
+    <h3>5.4 Fallback: CPU Rendering</h3>
+    <p>If you encounter graphics errors, use the Docker command from Step 5.1 but <strong>omit the <code>--gpus all</code> line</strong>. You can still use the same <code>chown</code> command from Step 5.2 in a second terminal to manage file permissions.</p>
+</section>
+<section id="bringup">
+    <h2>6. Part 1: System Bringup</h2>
+    <p><strong>Goal:</strong> Launch the complete TurtleBot 4 simulation stack, including the simulator, core robot software, and visualization tools.</p>
+    <p><strong>Strategy:</strong> Launch each major component in its own terminal pane. This makes debugging easier because you can isolate problems in the world (Gazebo), the ROS 2 nodes, or the data bridges that connect them.</p>
+    <blockquote style="border-left: 4px solid #ccc; padding-left: 15px; margin-left: 0; color: #555;">
+        <p><strong>Pane shortcut:</strong> Use <code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">Ctrl+Shift+O</code> to split panes horizontally and <code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">Ctrl+Shift+E</code> to split vertically in Terminator. Click a pane to focus it.</p>
+    </blockquote>
+    <hr style="margin: 2em 0;" />
+    <h3>Step 1 (Pane A): Launch the Simulator</h3>
+    <p>First, run the Gazebo simulator and load the specific world model for this lab.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>ros2 launch turtlebot4_ignition_bringup ignition.launch.py world:=maze</code></pre>
     <ul>
-        <li><strong>Pane A (Mapping):</strong> Runs <code>slam_toolbox</code> to build the world model.</li>
-        <li><strong>Pane B (Navigation):</strong> Runs <code>nav2</code> to plan paths through that model.</li>
-        <li><strong>Pane C (Command):</strong> Runs your custom node and health checks.</li>
+        <li><strong><code>ignition.launch.py</code></strong>: The primary launch file for the Gazebo simulation environment.</li>
+        <li><strong><code>world:=maze</code></strong>: A parameter that specifies which 3D world to load into the simulator.</li>
     </ul>
-    <h3>Step 1.2: Verify the Network (The Nervous System)</h3>
-    <p>First, define your target. Every robot has a unique IP address and a unique frequency channel (ROS Domain ID) labeled on its chassis. The IP address belongs to the TurtleBot 4 Raspberry Pi, not the Create 3 base.</p>
-    <div class="alert alert-warning" style="background-color: #fff3cd; border-color: #ffeeba; padding: 10px;"><strong>CRITICAL:</strong> You must run these <code>export</code> commands in <strong>EVERY</strong> new terminal pane you open. Environment variables do not transfer between tabs.</div>
-    <pre><code class="language-bash"># --- CONFIGURATION (Run in every new terminal) ---
-
-export TB4_IP=192.168.1.XXX    # REPLACE with your robot's Raspberry Pi IP
-export ROS_DOMAIN_ID=XX        # REPLACE with your robot's Domain ID (printed on the chassis)
-
-# Check the physical link
-
-ping -c 4 "$TB4_IP"
-</code></pre>
-    <blockquote style="border-left: 4px solid #d9534f; padding-left: 1em; color: #555;"><strong>Stop: Hard Down Check</strong><br />If <code>ping</code> returns <code>Destination Host Unreachable</code> or <code>100% packet loss</code>, <strong>do not proceed.</strong> You have no nervous system. Check your Wi-Fi connection and IP address.</blockquote>
-    <h3>Step 1.3: Start the Container &amp; Configure Discovery</h3>
-    <p>We use a Docker container to ensure all dependencies are correct. We configure ROS 2 (FastDDS) to use the TurtleBot 4's Discovery Server so the workstation can find the robot cleanly without flooding the university Wi-Fi with discovery traffic.</p>
-    <p><strong>Copy-paste this block into Pane A to launch the environment.</strong><br /><em>Note the <code>-v</code> flag: This maps your local folder to the container so your code is saved to the Lab PC, not lost inside the container.</em></p>
-    <pre><code class="language-bash"># 1. Export Discovery Settings (FastDDS + Discovery Server)
-
-# TurtleBot 4 Jazzy + I.0.0.FastDDS firmware use FastDDS on all sides
-export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-
-# The Raspberry Pi runs the FastDDS Discovery Server on port 11811
-export ROS_DISCOVERY_SERVER=${TB4_IP}:11811
-
-# Optional but recommended: match the namespace configured with turtlebot4-setup
-# Example: if this is robot with Domain ID 2, use /tb4_2
-export TB4_NAMESPACE=/tb4_${ROS_DOMAIN_ID}
-
-# 2. Run the Container (Jazzy TB4 Workstation)
-
-docker run --rm -it --name tb4_nav_jazzy \
-  --net=host \
-  --privileged \
-  -e DISPLAY="$DISPLAY" -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -e ROS_DOMAIN_ID \
-  -e RMW_IMPLEMENTATION \
-  -e ROS_DISCOVERY_SERVER \
-  -e TB4_NAMESPACE \
-  -v ~/workspaces:/root/workspaces \
-  gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:tb4-jazzy-lab10-latest
-</code></pre>
+    <p>The Gazebo GUI will appear. Ensure the simulation is running by clicking the "Play" icon in the lower-left if it is paused.</p>
+    <figure style="text-align: center; margin: 2em auto; max-width: 550px;"><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:400px;min-height:150px;margin:1em auto;">Gazebo Garden showing TurtleBot4 in the maze world.</div>
+        <figcaption style="margin-top: 0.5em; font-size: 0.9em; color: #555; font-style: italic;">Gazebo, simulating the robot's physical environment and sensors.</figcaption>
+    </figure>
+    <hr style="margin: 2em 0;" />
+    <h3>Step 2 (Pane B): Launch the Robot's Software Stack<br /><br /></h3>
+    <p>With the world running, spawn the TurtleBot 4 into it and launch its autonomous navigation and mapping software.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>ros2 launch turtlebot4_ignition_bringup turtlebot4_spawn.launch.py slam:=true nav2:=true rviz:=true</code></pre>
     <ul>
-        <ul>
-            <li><strong><code>--net=host</code>:</strong> Bypasses Docker's network isolation. This allows the container to use the Lab PC's real network card to talk to the robot and the Discovery Server.</li>
-            <li><strong><code>-v ~/workspaces:/root/workspaces</code>:</strong> This acts as a "bridge." Any file you save into <code>/root/workspaces</code> inside the container will appear in <code>~/workspaces</code> on the Lab PC, ensuring your code is safe.</li>
-        </ul>
+        <li><strong><code>turtlebot4_spawn.launch.py</code></strong>: This script loads the robot's model (URDF) into the running Gazebo instance.</li>
+        <li><strong><code>slam:=true</code></strong>: Enables the SLAM Toolbox for map creation.</li>
+        <li><strong><code>nav2:=true</code></strong>: Enables the Navigation2 stack for path planning and obstacle avoidance.</li>
+        <li><strong><code>rviz:=true</code></strong>: Launches RViz with a pre-configured view for monitoring the robot's state.</li>
     </ul>
-    <h3>Step 1.4: Launch SLAM &amp; Nav2 (The Brain)</h3>
-    <p>Inside the container, you will launch the two hemispheres of the robot's brain using the <code>turtlebot4_navigation</code> package. These launch files are configured specifically for TurtleBot&nbsp;4 and handle frames, topics, and parameters for you.</p>
-    <pre><code class="language-bash"># Optional but recommended: namespace for this robot
-# Match this to the value you set with `turtlebot4-setup` on the robot.
-# Example: /tb4_02 or /robot1
-export TB4_NAMESPACE=/tb4_${ROS_DOMAIN_ID}
-
-# --- PANE A: The Cartographer (SLAM) ---
-# Listens to /scan + /odom &rarr; Builds /map
-ros2 launch turtlebot4_navigation slam.launch.py \
-  ${TB4_NAMESPACE:+namespace:=${TB4_NAMESPACE}}
-
-# --- PANE B: The Pilot (Nav2) ---
-# Listens to /map + /goal_pose &rarr; Computes /cmd_vel
-# (Remember to run the Step 1.2 exports first!)
-ros2 launch turtlebot4_navigation nav2.launch.py \
-  ${TB4_NAMESPACE:+namespace:=${TB4_NAMESPACE}}</code></pre>
-    <blockquote style="border-left: 4px solid #005a9c; padding-left: 1em; color: #555;"><strong>Why not use <code>slam_toolbox</code> + <code>nav2_bringup</code> directly?</strong><br />Those generic launch files do not know about TurtleBot&nbsp;4's frames, topics, or namespacing. Using <code>turtlebot4_navigation</code> ensures the correct transforms, topic remaps, and Nav2 configuration are loaded for the real robot (and keeps you out of TF debugging purgatory).</blockquote>
-    <h3>Step 1.5: RViz Pre-Flight Checklist (Go / No-Go)</h3>
-    <p>Launch the visualization tool in Pane C (remember your exports!):</p>
-    <pre><code class="language-bash">ros2 launch turtlebot4_viz view_navigation.launch.py</code></pre>
-    <p><strong>You are ready to fly ONLY if all items below are checked:</strong></p>
+    <figure style="text-align: center; margin: 2em auto; max-width: 450px;"><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:400px;min-height:150px;margin:1em auto;">RViz 2 before launching the bridge.</div>
+        <figcaption style="margin-top: 0.5em; font-size: 0.9em; color: #555; font-style: italic;">RViz will show errors, as well as a white robot model until you launch the bridge in step 3.</figcaption>
+    </figure>
+    <hr style="margin: 2em 0;" />
+    <h3>Step 3 (Pane C): Bridge Sensor Data to ROS 2</h3>
+    <p>Finally, connect the simulated LiDAR in Gazebo to the ROS 2 ecosystem so the SLAM and Nav2 nodes can use its data.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>ros2 run ros_gz_bridge parameter_bridge \
+/world/maze/model/turtlebot4/link/rplidar_link/sensor/rplidar/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan \
+--ros-args -r /world/maze/model/turtlebot4/link/rplidar_link/sensor/rplidar/scan:=/scan</code></pre>
     <ul>
-        <ul>
-            <ul>
-                <li>[ ] <strong>Time Sync:</strong> The "Last Received Message" time in RViz is less than 1 second ago. (If it says "X seconds ago" and X is growing, your PC clock and Robot clock are out of sync. Restart Docker).</li>
-                <li>[ ] <strong>Transforms (TF):</strong> You see a connected tree: <code>map</code> &rarr; <code>odom</code> &rarr; <code>base_link</code>. No red errors.</li>
-                <li>[ ] <strong>LaserScan:</strong> You see red dots in RViz matching the walls of your room.</li>
-                <li>[ ] <strong>Global Costmap:</strong> As you teleop the robot slightly, white/black pixels appear in the <code>map</code> display.</li>
-                <li>[ ] <strong>Local Costmap:</strong> You see a small colored box (the rolling window) around the robot. This indicates Nav2 is active and ready to plan.</li>
-            </ul>
-        </ul>
+        <li><strong><code>ros_gz_bridge parameter_bridge</code></strong>: The node that translates messages between Gazebo (Ignition) and ROS 2.</li>
+        <li><strong><code>...scan@ROS_TYPE@GZ_TYPE</code></strong>: The argument defining the translation rule for the LiDAR's `LaserScan` message.</li>
+        <li><strong><code>--ros-args -r ...:=/scan</code></strong>: Remaps the lengthy Gazebo topic to the standard, conventional ROS 2 topic name, <code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">/scan</code>.</li>
     </ul>
-    <p><a href="#toc">&uarr; Back to top</a></p>
+    <p>Once this is running, you should see the laser scans represented as small pink dots appear and update in RViz.</p>
+    <figure style="text-align: center; margin: 2em auto; max-width: 450px;"><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:400px;min-height:150px;margin:1em auto;">RViz 2 showing laser scan, SLAM map, and Nav2 plan.</div>
+        <figcaption style="margin-top: 0.5em; font-size: 0.9em; color: #555; font-style: italic;">RViz, visualizing the robot's data streams: LiDAR scan, SLAM map, and Nav2's planned path.</figcaption>
+    </figure>
+    <blockquote style="border-left: 4px solid #ffc107; padding-left: 15px; margin-left: 0; color: #555;">
+        <p><strong>Verifying the System</strong><br />If the laser scan points do not appear in RViz, it signifies a communication breakdown. The bridge is the most likely culprit. Double-check that this command was typed correctly and is running without errors before proceeding.</p>
+    </blockquote>
+    <h3>Step 4 (Pane D): Your Development Terminal</h3>
+    <p>This pane is now your workspace. Keep it free for building and running your own nodes in Part 2.</p>
 </section>
 <section id="procedure">
-    <h2>Part 2: Programming the Intelligent Explorer</h2>
-    <p>In previous labs, your robot likely drove blindly or struggled to choose between multiple open paths. Today, we are giving the robot a significant "brain upgrade." We are moving from simple geometry to <strong>Information Gain Navigation</strong>.</p>
-    <p>Instead of just finding the <em>closest</em> unknown area (Frontier), your robot will now calculate an <strong>Efficiency Score</strong> for every potential target.</p>
-    <div style="background: #f4f4f4; padding: 15px; border-left: 5px solid #337ab7; margin: 20px 0;">
-        <p style="font-size: 1.2em; margin-bottom: 5px;"><strong>The Efficiency Equation:</strong></p>
-        <p>$$ \text{Score} = \frac{\text{Cost (A* Distance)}}{\text{Reward (Frontier Size)}} $$</p>
-        <p><em>We want to minimize this score. We prefer short trips (low Cost) that reveal huge amounts of the map (high Reward).</em></p>
-    </div>
-    <h3>Step 2.1: Package Setup</h3>
-    <p>Create your package if you haven't already:</p>
-    <pre><code class="language-bash">cd /root/workspaces/[netid]_robotics_fall2025/lab10/ros2_ws/src
-ros2 pkg create --build-type ament_python turtlebot4_nav --dependencies rclpy geometry_msgs nav_msgs</code></pre>
-    <p>Create a file named <code>turtlebot4_nav/turtlebot4_nav/auto_explore.py</code>.</p>
-    <h3>Step 2.2: The Architecture of Autonomy</h3>
-    <p>We will build this node piece by piece. This helps us understand the "Sense-Plan-Act" loop the robot performs.</p>
-    <p><strong>Important:</strong> As you paste these blocks, you will see comments labeled <code># TODO: LOGGING</code>. The code works functionally, but it is silent. You must add <code>self.get_logger().info(...)</code> or <code>warn(...)</code> statements to visualize the robot's "thought process" in the terminal.</p>
-    <h4>1. Imports and Configuration</h4>
-    <p>First, we set up our inputs. We define constants for the map interpretation&mdash;specifically, what pixel value constitutes a "wall" (50). We also set up our "Tuning Knobs" as ROS parameters. These allow us to tweak behavior (like how long to wait before deciding we are stuck) without recompiling code.</p>
-    <p><em>Copy this into the top of your file:</em></p>
-    <pre><code class="language-python">import rclpy
+    <h2>7. Part 2: Lab Procedure &amp; Node Development</h2>
+    <p>Now we move from being system operators to system creators. In this section, you will write, build, and run your own Python nodes to serve as the "mission commander" for the TurtleBot 4. All commands should be run in your designated <strong>Development Terminal</strong> (Pane D).</p>
+    <hr style="margin: 2em 0;" />
+    <h3>7.1 Project Setup: Laying the Foundation</h3>
+    <p>Create the package in your development pane. If you need the shared explanation of workspaces, <code>colcon build --symlink-install</code>, or when to rebuild versus simply rerun, see the <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>.</p>
+    <blockquote style="border-left: 4px solid #2e7d32; padding-left: 15px; margin-left: 0; color: #555;">
+        <h4 style="margin-top: 0; color: #2e7d32;">🎯 Goal</h4>
+        <p>Create a standard ROS 2 Python package that `colcon` can discover, build, and install.</p>
+    </blockquote>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~/workspaces/[netid]_robotics_fall2025
+mkdir -p lab09/ros2_ws/src
+cd lab09/ros2_ws/src
+ros2 pkg create turtlebot4_nav --build-type ament_python --dependencies rclpy geometry_msgs nav2_msgs
+cd ..
+colcon build --symlink-install
+source install/setup.bash</code></pre>
+    <hr style="margin: 2em 0;" />
+    <h3>7.2 Part A: Command and Control - Navigating to a Point</h3>
+    <p>Our first task is to establish a basic command link with the Nav2 stack. We will write a simple "fire-and-forget" node that issues a single navigation goal and waits for the result.</p>
+    <blockquote style="border-left: 4px solid #2e7d32; padding-left: 15px; margin-left: 0; color: #555;">
+        <h4 style="margin-top: 0; color: #2e7d32;">🎯 Goal</h4>
+        <p>Write a Python node that sends a single, hardcoded goal to Nav2 at map coordinates <code style="background-color: #eee; border-radius: 3px; font-family: monospace; padding: 2px 4px;">(1.0, 1.0)</code>.</p>
+    </blockquote>
+    <h4><strong>Step 1: Create the script file</strong></h4>
+    <p>First, create the Python file inside your package and make it executable.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~/workspaces/[netid]_robotics_fall2025/lab09/ros2_ws/src/turtlebot4_nav/turtlebot4_nav
+touch navigate_to_point.py
+chmod +x navigate_to_point.py</code></pre>
+    <h4><strong>Step 2: Implement the Node Logic</strong></h4>
+    <p>Now, let's build the node. Open `navigate_to_point.py` and add the following code sections. We'll narrate the design process as we go.</p>
+    <h5><strong>The Entrypoint and Core Imports</strong></h5>
+    <p>Every Python script starts with imports. We need `rclpy` to talk to ROS 2, `PoseStamped` to define our goal, and the helpful `TurtleBot4Navigator` class which simplifies communication with Nav2.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>#!/usr/bin/env python3
+import rclpy
+from geometry_msgs.msg import PoseStamped
+from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Navigator
+
+def main():
+    rclpy.init()
+    # ... Node logic will go here ...
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()</code></pre>
+    <h5><strong>Preparing the Robot</strong></h5>
+    <p>Inside `main`, our first action is to create our `TurtleBot4Navigator` object. This object is our primary tool for interacting with Nav2. It's also good practice to ensure the robot is undocked before commanding it to move.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>    nav = TurtleBot4Navigator()
+    if nav.getDockedStatus():
+        nav.undock()</code></pre>
+    <h5><strong>Constructing the Goal: The Model-to-Reality Link</strong></h5>
+    <p>This is where we translate our abstract intent ("go to 1,1") into a concrete data structure that Nav2 understands. A `PoseStamped` message is that structure. Every field has a critical meaning.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>    goal = PoseStamped()
+    goal.header.frame_id = 'map'
+    goal.header.stamp = nav.get_clock().now().to_msg()
+    goal.pose.position.x = 1.0
+    goal.pose.position.y = 1.0
+    goal.pose.orientation.w = 1.0</code></pre>
+    <ul>
+        <li><strong><code>goal.header.frame_id = 'map'</code></strong>: This tells Nav2 that the coordinates `(1.0, 1.0)` are in the fixed, global `map` frame created by SLAM, not relative to the robot's current position.</li>
+        <li><strong><code>goal.pose.orientation.w = 1.0</code></strong>: This sets the orientation using a quaternion for "no rotation" (i.e., face forward along the X-axis of the map frame).</li>
+    </ul>
+    <h5>Sending the Goal and Awaiting the Outcome</h5>
+    <p>Navigation isn't instantaneous. When we send the goal, Nav2 begins a long-running task. Our node must wait until that task is complete. A simple `while` loop achieves this, blocking further execution until Nav2 reports success or failure.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>    nav.startToPose(goal)
+    nav.get_logger().info("Mission Start: Navigating to (1.0, 1.0)")
+    while not nav.isTaskComplete():
+        pass  # Block execution until the task is complete
+    nav.get_logger().info('Mission Complete.')</code></pre>
+    <h4><strong>Step 3: Register and Run the Node</strong></h4>
+    <p>To make our script an executable that `ros2 run` can find, we must register it as an "entry point." Open `setup.py` in your package's root (`.../ros2_ws/src/turtlebot4_nav/`) and add the following to the `entry_points` dictionary.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>'console_scripts': [
+    'navigate_to_point = turtlebot4_nav.navigate_to_point:main',
+],</code></pre>
+    <p>Finally, navigate to your workspace root, build to register the new entry point, source the environment, and run your node.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~/workspaces/[netid]_robotics_fall2025/lab09/ros2_ws
+colcon build --symlink-install
+source install/setup.bash
+ros2 run turtlebot4_nav navigate_to_point</code></pre>
+    <p>Observe RViz. You should see Nav2 generate a path (a pink line) and the robot will begin to follow it.</p>
+    <hr style="margin: 2em 0;" />
+    <h3>7.3 Part B: Adding Dynamic Behavior - Random Goals</h3>
+    <p>A robot that only goes to one hardcoded spot is not very useful. Next, update the node so it sends the robot to several random points.</p>
+    <blockquote style="border-left: 4px solid #2e7d32; padding-left: 15px; margin-left: 0; color: #555;">
+        <h4 style="margin-top: 0; color: #2e7d32;">🎯 Goal</h4>
+        <p>Modify the node to send a sequence of five randomly generated goals.</p>
+    </blockquote>
+    <h4><strong>Step 1: Evolve the Script</strong></h4>
+    <p>Edit `navigate_to_point.py`. We will wrap our previous goal-sending logic in a `for` loop and use Python's `random` library to generate coordinates.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>#!/usr/bin/env python3
+import rclpy
+import random
+from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Navigator, TurtleBot4Directions
+
+def main():
+    rclpy.init()
+    nav = TurtleBot4Navigator()
+    if nav.getDockedStatus():
+        nav.undock()
+
+    # Loop 5 times to send 5 different goals
+    for i in range(5):
+        # Generate a random coordinate within a 3x3 meter box around the origin
+        x = random.uniform(-1.5, 1.5)
+        y = random.uniform(-1.5, 1.5)
+        
+        # Use a helper to create the goal, commanding the robot to face North
+        goal = nav.getPoseStamped([x, y], TurtleBot4Directions.NORTH)
+        
+        nav.get_logger().info(f"Sending goal #{i+1}: ({x:.2f}, {y:.2f})")
+        nav.startToPose(goal)
+        
+        while not nav.isTaskComplete():
+            pass # Wait for completion
+            
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+    <ul>
+        <li><strong><code>for i in range(5):</code></strong>: This loop forms the core of our robot's new patrol behavior.</li>
+        <li><strong><code>random.uniform(-1.5, 1.5)</code></strong>: Selects a floating-point number within the specified range. This effectively defines a "patrol box" for the robot.</li>
+    </ul>
+    <blockquote style="border-left: 4px solid #ffc107; padding-left: 15px; margin-left: 0; color: #555;">
+        <p><strong>Common Pitfall: Unsafe Random Goals</strong><br />This simple approach is fast, but what happens if `random.uniform` picks coordinates inside a wall? Nav2 can report failure, but a better node checks whether the random coordinate is in "Free Space" on the occupancy grid before sending it. This leads into the next section.</p>
+    </blockquote>
+    <h4>Step 2: Run the Node</h4>
+    <p>Thanks to our `--symlink-install` build, we don't need to rebuild. Just run the node again.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>ros2 run turtlebot4_nav navigate_to_point</code></pre>
+    <p>Watch RViz as the robot completes one goal and immediately starts moving toward the next random one.</p>
+    <hr style="margin: 2em 0;" />
+    <h3>7.4 Part C: True Autonomy - Frontier Exploration</h3>
+    <p>Now for the most exciting step: moving from a robot that follows a script to one that makes its own decisions. We will create a node that actively works to complete the map.</p>
+    <blockquote style="border-left: 4px solid #2e7d32; padding-left: 15px; margin-left: 0; color: #555;">
+        <h4 style="margin-top: 0; color: #2e7d32;">🎯 Goal</h4>
+        <p>Create a stateful, class-based node that subscribes to the map, identifies "frontiers" (the boundary between known and unknown space), and navigates to them until the map is complete.</p>
+    </blockquote>
+    <h4>Step 1: Create the new script file</h4>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~/workspaces/[netid]_robotics_fall2025/lab09/ros2_ws/src/turtlebot4_nav/turtlebot4_nav
+touch autonomous_explore.py
+chmod +x autonomous_explore.py</code></pre>
+    <figure style="text-align: center; margin: 2em auto; max-width: 450px;"><div class="image-placeholder" style="background:#e0e0e0;border:2px dashed #999;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-style:italic;text-align:center;padding:1em;max-width:400px;min-height:150px;margin:1em auto;">A partially explored map in RViz.</div>
+        <figcaption style="margin-top: 0.5em; font-size: 0.9em; color: #555; font-style: italic;">A partially explored map in RViz, showing the pink navigation line.</figcaption>
+    </figure>
+    <h4><strong>Step 2: Implement the Explorer Node</strong></h4>
+    <p>This node is more complex because it needs to maintain <strong>state</strong> (the current map) and make decisions periodically. A class is the perfect structure for this. Open `autonomous_explore.py` and we'll build it method by method.</p>
+    <h5>Class Definition and `__init__`</h5>
+    <p>The constructor sets up the node's components. We store the navigator as a member variable. Critically, we create a <strong>subscription</strong> to the `/map` topic to get data and a <strong>timer</strong> that will trigger our decision-making loop at a regular interval.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>#!/usr/bin/env python3
+import rclpy
 from rclpy.node import Node
-from nav_msgs.msg import OccupancyGrid, Odometry
-from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Directions, TurtleBot4Navigator
-
 import numpy as np
-import math
-import heapq
-import time
-from collections import deque
-
-# Constants for map analysis
-OCCUPANCY_THRESHOLD = 50 # Value above which a cell is considered an obstacle
-UNKNOWN_VALUE = -1 # Value representing unexplored space
+import random
+from nav_msgs.msg import OccupancyGrid
+from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Navigator, TurtleBot4Directions
 
 class AutonomousExplorer(Node):
     def __init__(self):
         super().__init__('autonomous_explorer')
-
-        # Configuration Parameters
-        self.declare_parameters(
-            namespace='',
-            parameters=[
-                ('min_frontier_size', 10), # Minimum size of a cluster to count as a target
-                ('tick_rate', 1.0),        # How often to run the control loop (Hz)
-                ('stuck_timeout', 10.0),   # How long to wait before declaring "stuck"
-                ('stuck_min_dist', 0.2),   # Min distance to move to reset the stuck timer
-                ('blacklist_radius', 0.5)  # Radius to ignore around failed targets
-            ]
-        )
-
-        self.min_frontier_size = self.get_parameter('min_frontier_size').value
-        self.tick_rate = self.get_parameter('tick_rate').value
-        self.stuck_timeout = self.get_parameter('stuck_timeout').value
-        self.stuck_min_dist = self.get_parameter('stuck_min_dist').value
-        self.blacklist_radius = self.get_parameter('blacklist_radius').value
-
-        # State Variables
-        self.map_data = None
-        self.odom_data = None
-        self.is_navigating = False
-
-        # Stuck Detection &amp; History
-        self.nav_start_time = 0
-        self.start_pose = (0, 0)
-        self.current_target = None
-        self.blacklist = []
-
-        # Initialize Navigation
-        self.navigator = TurtleBot4Navigator()
-        if self.navigator.getDockedStatus():
-            self.navigator.undock()
-
-        # ROS Communication
+        self.nav = TurtleBot4Navigator()
+        if self.nav.getDockedStatus():
+            self.nav.undock()
+        
+        self.map_data = None # Will hold the processed OccupancyGrid
+        
+        # Create a subscriber to the /map topic
         self.create_subscription(OccupancyGrid, 'map', self.map_callback, 10)
-        self.create_subscription(Odometry, 'odom', self.odom_callback, 10)
-
-        # Main Loop Timer
-        self.timer = self.create_timer(self.tick_rate, self.control_loop)
-
-    # --------------------------------------------------------------------------
-    # CALLBACKS
-    # --------------------------------------------------------------------------
-
-    def map_callback(self, msg):
-        self.map_data = msg
-
-    def odom_callback(self, msg):
-        self.odom_data = msg</code></pre>
-    <h4>2. The Bridge: Grid vs. World</h4>
-    <p>The robot lives in the physical world (meters), but the map lives in computer memory (grid indices). We need helpers to translate between the two and a way to measure distance.</p>
-    <p><em>Add these methods inside your class:</em></p>
-    <pre><code class="language-python">    # --------------------------------------------------------------------------
-    # COORDINATE TRANSFORMS
-    # --------------------------------------------------------------------------
-
-    def world_to_grid(self, x, y):
-        """Converts real-world coordinates (meters) to map grid indices (row, col)."""
-        res = self.map_data.info.resolution
-        origin_x = self.map_data.info.origin.position.x
-        origin_y = self.map_data.info.origin.position.y
-
-        col = int((x - origin_x) / res)
-        row = int((y - origin_y) / res)
-        return row, col
-
-    def grid_to_world(self, row, col):
-        """Converts map grid indices (row, col) to real-world coordinates (meters)."""
-        res = self.map_data.info.resolution
-        origin_x = self.map_data.info.origin.position.x
-        origin_y = self.map_data.info.origin.position.y
-
-        x = (col * res) + origin_x + (res / 2.0)
-        y = (row * res) + origin_y + (res / 2.0)
-        return x, y
-
-    def get_distance(self, p1, p2):
-        """Euclidean distance between two points (x, y)."""
-        return math.hypot(p1[0] - p2[0], p1[1] - p2[1])</code></pre>
-    <h4>3. Pathfinding (The "A*" Algorithm)</h4>
-    <p>To calculate the "Cost" in our efficiency equation, Euclidean distance is not enough because walls exist. We use <strong>A* (A-Star) Search</strong>.</p>
-    <p>We also include a BFS search called <code>find_nearest_valid_point</code>. Often, the math says the center of a frontier is inside a wall (think of a donut shape). This function snaps the target to the nearest <em>reachable</em> pixel.</p>
-    <p><em>Add these navigation algorithms:</em></p>
-    <pre><code class="language-python">    # --------------------------------------------------------------------------
-    # NAVIGATION ALGORITHMS
-    # --------------------------------------------------------------------------
-
-    def heuristic(self, a, b):
-        """Manhattan distance heuristic for A*."""
-        return abs(a[0] - b[0]) + abs(a[1] - b[1])
-
-    def find_nearest_valid_point(self, grid, center, max_radius=5):
-        """
-        Breadth-First Search (BFS) to find the nearest 'Free' cell (0)
-        if the specific target is inside an obstacle or unknown space.
-        """
-        rows, cols = grid.shape
-
-        # Check if center is already valid
-        if 0 &lt;= center[0] &lt; rows and 0 &lt;= center[1] &lt; cols:
-            if grid[center[0], center[1]] == 0:
-                return center
-
-        queue = deque([center])
-        visited = {center}
-        deltas = [(-1, 0), (1, 0), (0, -1), (0, 1)] # Up, Down, Left, Right
-
-        while queue:
-            r, c = queue.popleft()
-
-            # Found a valid point
-            if grid[r, c] == 0:
-                return (r, c)
-
-            # Stop searching if we go too far
-            if abs(r - center[0]) &gt; max_radius or abs(c - center[1]) &gt; max_radius:
-                continue
-
-            for dr, dc in deltas:
-                nr, nc = r + dr, c + dc # Neighbor Row, Neighbor Col
-                if (0 &lt;= nr &lt; rows and 0 &lt;= nc &lt; cols and (nr, nc) not in visited):
-                    visited.add((nr, nc))
-                    queue.append((nr, nc))
-        return None
-
-    def a_star_search(self, grid, start, goal):
-        """
-        Standard A* Pathfinding. Returns the cost (length) of the path.
-        Returns infinity if no path exists.
-        """
-        rows, cols = grid.shape
-
-        # If start is in a wall, we can't plan
-        if grid[start[0], start[1]] &gt; OCCUPANCY_THRESHOLD:
-            return float('inf')
-
-        open_set = []
-        heapq.heappush(open_set, (0, 0, start)) # (Priority, Cost, Node)
-        g_score = {start: 0}
-        movements = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-
-        while open_set:
-            _, current_g, current = heapq.heappop(open_set)
-
-            if current == goal:
-                return current_g
-
-            for dr, dc in movements:
-                neighbor = (current[0] + dr, current[1] + dc)
-
-                if 0 &lt;= neighbor[0] &lt; rows and 0 &lt;= neighbor[1] &lt; cols:
-                    cell_value = grid[neighbor[0], neighbor[1]]
-
-                    # Treat Walls (&gt;50) as impassable
-                    if cell_value &gt; OCCUPANCY_THRESHOLD:
-                        continue
-
-                    tentative_g = current_g + 1
-                    if tentative_g &lt; g_score.get(neighbor, float('inf')):
-                        g_score[neighbor] = tentative_g
-                        f_score = tentative_g + self.heuristic(neighbor, goal)
-                        heapq.heappush(open_set, (f_score, tentative_g, neighbor))
-
-        return float('inf')</code></pre>
-    <h4>4. Safety Mechanisms</h4>
-    <p>A useful robot anticipates failure.</p>
-    <ul>
-        <li><strong>Stuck Condition:</strong> If the robot tries to move but the odometer doesn't change (e.g., wheel slip), we must detect this to avoid burning out motors.</li>
-        <li><strong>Blacklisting:</strong> If a target was unreachable or caused us to get stuck, we add it to a "Blacklist" so we don't obsessively retry the same bad idea.</li>
-    </ul>
-    <p><em>Add these safety checks:</em></p>
-    <pre><code class="language-python">    # --------------------------------------------------------------------------
-    # SAFETY CHECKS
-    # --------------------------------------------------------------------------
-
-    def check_stuck_condition(self, current_x, current_y):
-        """Returns True if the robot hasn't moved significantly in 'stuck_timeout' seconds."""
-        elapsed = time.time() - self.nav_start_time
-        if elapsed &gt; self.stuck_timeout:
-            dist_moved = self.get_distance((current_x, current_y), self.start_pose)
-            if dist_moved &lt; self.stuck_min_dist:
-                # TODO: LOGGING - Warn that the robot is stuck (include distance moved)
-                return True
-        else:
-            # Reset timer if we moved enough
-            self.nav_start_time = time.time()
-            self.start_pose = (current_x, current_y)
-        return False
-
-    def is_blacklisted(self, target_x, target_y):
-        """Checks if a coordinate is too close to a previously failed target."""
-        for bx, by in self.blacklist:
-            if self.get_distance((target_x, target_y), (bx, by)) &lt; self.blacklist_radius:
-                return True
-        return False</code></pre>
-    <h4>5. The Strategy (Frontier Detection &amp; Selection)</h4>
-    <p>This is the core intelligence. <br /><strong>1. Detect:</strong> We look for edges where "Free Space" meets "Unknown Space." We group these pixels into clusters. <br /><strong>2. Decide:</strong> We loop through every cluster and apply the Efficiency Equation (Cost / Reward). We also check the blacklist here.</p>
-    <p><em>Add the strategic logic. <strong>Note the heavy logging requirements here.</strong></em></p>
-    <pre><code class="language-python">    # --------------------------------------------------------------------------
-    # FRONTIER DETECTION
-    # --------------------------------------------------------------------------
-
-    def get_frontier_clusters(self, grid):
-        """
-        Identifies the boundaries between 'Free' space and 'Unknown' space.
-        Returns a list of clusters (groups of frontier points).
-        """
-        free = (grid == 0)
-        unknown = (grid == UNKNOWN_VALUE)
-
-        # Boolean masking to find edges:
-        # A pixel is a frontier if it is Free, but a neighbor is Unknown.
-        mask = np.zeros_like(grid, dtype=bool)
-        mask[:, :-1] |= (free[:, :-1] &amp; unknown[:, 1:])  # Check Right
-        mask[:, 1:]  |= (free[:, 1:]  &amp; unknown[:, :-1])  # Check Left
-        mask[:-1, :] |= (free[:-1, :] &amp; unknown[1:, :])   # Check Down
-        mask[1:, :]  |= (free[1:, :]  &amp; unknown[:-1, :])  # Check Up
-
-        # Clustering (Group adjacent frontier pixels)
-        rows, cols = grid.shape
-        visited = np.zeros((rows, cols), dtype=bool)
-        clusters = []
-
-        for r in range(rows):
-            for c in range(cols):
-                if mask[r, c] and not visited[r, c]:
-                    cluster = []
-                    stack = [(r, c)]
-                    visited[r, c] = True
-
-                    # Flood fill to find all connected frontier points
-                    while stack:
-                        curr_r, curr_c = stack.pop()
-                        cluster.append((curr_r, curr_c))
-
-                        for dr in [-1, 0, 1]:
-                            for dc in [-1, 0, 1]:
-                                if dr==0 and dc==0: continue
-                                nr, nc = curr_r + dr, curr_c + dc
-                                if (0 &lt;= nr &lt; rows and 0 &lt;= nc &lt; cols and 
-                                    mask[nr, nc] and not visited[nr, nc]):
-                                    visited[nr, nc] = True
-                                    stack.append((nr, nc))
-
-                    if len(cluster) &gt;= self.min_frontier_size:
-                        clusters.append(cluster)
-        return clusters
-
-    def select_best_frontier(self, clusters, grid, robot_pos):
-        """
-        Evaluates all frontier clusters and selects the best one based on:
-        Score = Cost (Distance) / Reward (Size of frontier)
-        """
-        best_centroid = None
-        best_score = float('inf') # Lower score is better
-
-        # TODO: LOGGING - Info: "Evaluating X clusters..."
-
-        for i, cluster in enumerate(clusters):
-            # 1. Calculate Centroid (Average position of the cluster)
-            rs = [c[0] for c in cluster]
-            cs = [c[1] for c in cluster]
-            raw_centroid = (int(sum(rs)/len(rs)), int(sum(cs)/len(cs)))
-
-            frontier_size = len(cluster) # This is our "Reward"
-
-            # 2. Snap centroid to a valid (free) cell if it ended up in a wall
-            valid_centroid = self.find_nearest_valid_point(grid, raw_centroid)
-            if valid_centroid is None:
-                # TODO: LOGGING - Info: "Cluster X is invalid (in wall)"
-                continue
-
-            # 3. Check if this spot is Blacklisted
-            cx, cy = self.grid_to_world(valid_centroid[0], valid_centroid[1])
-            if self.is_blacklisted(cx, cy):
-                # TODO: LOGGING - Info: "Cluster X is blacklisted"
-                continue
-
-            # 4. Calculate Path Cost using A*
-            cost = self.a_star_search(grid, robot_pos, valid_centroid)
-
-            if cost == float('inf'):
-                # TODO: LOGGING - Info: "Cluster X is unreachable"
-                continue
-
-            # 5. Calculate Efficiency Score (Cost per unit of Reward)
-            score = cost / frontier_size
-
-            # TODO: LOGGING - Info: Log the details (Size, Cost, Score) for this cluster
-
-            if score &lt; best_score:
-                best_score = score
-                best_centroid = valid_centroid
-
-        return best_centroid</code></pre>
-    <h4>6. The Control Loop</h4>
-    <p>Finally, the heartbeat. This function runs every tick (1.0 Hz). It functions as a State Machine:</p>
-    <ol>
-        <li><strong>If Moving:</strong> Check if we arrived or got stuck.</li>
-        <li><strong>If Idle:</strong> Scan the map, find clusters, pick the best one, and issue a drive command.</li>
-    </ol>
-    <p><em>Add the control loop and the main entry point:</em></p>
-    <pre><code class="language-python">    # --------------------------------------------------------------------------
-    # MAIN CONTROL LOOP
-    # --------------------------------------------------------------------------
-
-    def control_loop(self):
-        # Wait for data
-        if self.map_data is None or self.odom_data is None:
+        # Create a timer to trigger the exploration logic every 5 seconds
+        self.create_timer(5.0, self.explore_loop)</code></pre>
+    <h5><strong>The `map_callback`: Giving the Node Eyes</strong></h5>
+    <p>This function is the node's connection to the outside world. Whenever SLAM Toolbox publishes a new map, this callback fires. We process the raw 1D array from the message into a 2D NumPy array, which is much easier to work with for finding frontiers.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>    def map_callback(self, msg: OccupancyGrid):
+        # Reshape the 1D map data into a 2D numpy array
+        self.map_data = np.array(msg.data, dtype=np.int16).reshape(msg.info.height, msg.info.width)
+        self.map_resolution = msg.info.resolution
+        self.map_origin = msg.info.origin.position
+        self.get_logger().info('Map data updated.', once=True)</code></pre>
+    <h5><strong>The `find_frontiers`: The Core Algorithm</strong></h5>
+    <p>This is the "intelligence" of our node. A frontier cell is an "unknown" cell that is adjacent to a "free" cell. This simple algorithm finds them by sampling unknown cells and checking their neighbors.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>    def find_frontiers(self):
+        if self.map_data is None: return []
+        
+        # Find all unknown cells (-1)
+        rows, cols = np.where(self.map_data == -1)
+        
+        frontiers = []
+        # Check the 8 neighbors of each unknown cell
+        for r, c in zip(rows, cols):
+            is_frontier = False
+            for i in range(max(0, r-1), min(self.map_data.shape[0], r+2)):
+                for j in range(max(0, c-1), min(self.map_data.shape[1], c+2)):
+                    if self.map_data[i, j] == 0: # If a neighbor is free space
+                        is_frontier = True
+                        break
+                if is_frontier:
+                    frontiers.append((r, c))
+                    break
+        return frontiers</code></pre>
+    <h5><strong>The `explore_loop`: The Decision Cycle</strong></h5>
+    <p>Triggered by our timer, this loop executes the main logic. It checks if the robot is idle, finds frontiers, and if any exist, it picks one, converts its cell coordinates to world coordinates, and sends it as the next goal.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>    def explore_loop(self):
+        # Don't do anything if we don't have a map yet or if the robot is busy
+        if self.map_data is None or not self.nav.isTaskComplete():
             return
-
-        # Get Robot Position
-        robot_x = self.odom_data.pose.pose.position.x
-        robot_y = self.odom_data.pose.pose.position.y
-
-        # Case 1: Robot is currently moving
-        if self.is_navigating:
-            if self.navigator.isTaskComplete():
-                result = self.navigator.getResult()
-                if result == 4: # SUCCEEDED
-                    # TODO: LOGGING - Info: Goal reached successfully
-                    pass
-                else:
-                    # TODO: LOGGING - Warn: Navigation failed (Status X). Blacklisting target.
-                    if self.current_target:
-                        self.blacklist.append(self.current_target)
-
-                self.is_navigating = False
-                self.current_target = None
-                return
-
-            if self.check_stuck_condition(robot_x, robot_y):
-                # TODO: LOGGING - Error: Robot is stuck. Cancelling task.
-                self.navigator.cancelTask()
-                if self.current_target:
-                    self.blacklist.append(self.current_target)
-                self.is_navigating = False
-                self.current_target = None
-                return
+            
+        frontiers = self.find_frontiers()
+        if not frontiers:
+            self.get_logger().info('No frontiers found. Exploration complete.')
             return
-
-        # Case 2: Robot is idle, look for new targets
-        w = self.map_data.info.width
-        h = self.map_data.info.height
-        # Convert flat map data to 2D grid
-        grid = np.array(self.map_data.data, dtype=np.int8).reshape(h, w)
-
-        robot_grid_pos = self.world_to_grid(robot_x, robot_y)
-
-        # Find frontiers
-        clusters = self.get_frontier_clusters(grid)
-
-        if not clusters:
-            # TODO: LOGGING - Info: No frontiers left. Exploration complete.
-            self.timer.cancel()
-            return
-
-        # Select best target
-        target_grid = self.select_best_frontier(clusters, grid, robot_grid_pos)
-
-        if target_grid:
-            tx, ty = self.grid_to_world(target_grid[0], target_grid[1])
-
-            # TODO: LOGGING - Info: Navigating to new target at (tx, ty)
-
-            goal_pose = self.navigator.getPoseStamped([tx, ty], TurtleBot4Directions.NORTH)
-            self.navigator.startToPose(goal_pose)
-
-            self.is_navigating = True
-            self.current_target = (tx, ty)
-            self.nav_start_time = time.time()
-            self.start_pose = (robot_x, robot_y)
-        else:
-            # TODO: LOGGING - Warn: Frontiers detected but all are unreachable/blacklisted.
-            pass
-
-def main(args=None):
-    rclpy.init(args=args)
+            
+        # Pick a random frontier
+        r, c = random.choice(frontiers)
+        
+        # Convert cell coordinates (r, c) to world coordinates (x, y)
+        x = self.map_origin.x + (c + 0.5) * self.map_resolution
+        y = self.map_origin.y + (r + 0.5) * self.map_resolution
+        
+        self.get_logger().info(f"Navigating to frontier at ({x:.2f}, {y:.2f})")
+        goal = self.nav.getPoseStamped([x, y], TurtleBot4Directions.NORTH)
+        self.nav.startToPose(goal)</code></pre>
+    <h5><strong>The Main Execution Block</strong></h5>
+    <p>Finally, we add the standard main function to initialize `rclpy`, create an instance of our class, and `spin` it. `rclpy.spin()` is an event loop that keeps the node alive, allowing its subscribers and timers to execute.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>def main():
+    rclpy.init()
     node = AutonomousExplorer()
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        node.destroy_node()
-        rclpy.shutdown()
+    rclpy.spin(node)
+    rclpy.shutdown()
 
 if __name__ == '__main__':
     main()</code></pre>
-</section>
-<h3>Step 2.4: Build and Run</h3>
-<p>Before running, ensure your <code>setup.py</code> is updated. In the <code>console_scripts</code> list, add:</p>
-<pre><code class="language-python">'auto_explore = turtlebot4_nav.auto_explore:main'</code></pre>
-<p>Then build and run:</p>
-<pre><code class="language-bash">colcon build --symlink-install
+    <h4>Step 3: Register and Run the Explorer</h4>
+    <p>Open `setup.py` again and add the new entry point for our explorer node.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>'console_scripts': [
+    'navigate_to_point = turtlebot4_nav.navigate_to_point:main',
+    'auto_explore = turtlebot4_nav.autonomous_explore:main',
+],</code></pre>
+    <p>Build, source, and run your new autonomous node.</p>
+    <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>cd ~/workspaces/[netid]_robotics_fall2025/lab09/ros2_ws
+colcon build --symlink-install
 source install/setup.bash
-ros2 run turtlebot4_nav auto_explore
-</code></pre>
-<p><strong>Verification:</strong> If you implemented your logs correctly, you should see a stream of data in the terminal telling you exactly why the robot picked a specific frontier over another!</p>
+ros2 run turtlebot4_nav auto_explore</code></pre>
+    <p>Watch RViz. The robot should now intelligently move towards the gray "unknown" areas on the map, methodically filling them in. You have now built a truly autonomous system.</p>
+</section>
 <section id="analysis">
-    <h2>Part 3: Analysis &amp; Discussion</h2>
-    <p>Engineering includes validation. You have replaced a "naive" geometric explorer with an information-gain strategy. Now you need to show that the extra computation produces better physical behavior.</p>
-    <h3>3.1 Required Evidence: The Data from the Field</h3>
+    <h2>8. Part 3: Post-Lab Questions &amp; Discussion</h2>
+    <p>Please provide thoughtful and detailed answers to the following questions in your PDF submission. The goal is to connect the core concepts to the code you wrote and the robot behaviors you observed.</p>
     <ol>
-        <li><strong>Decision Log (Instrumentation):</strong>
-            <p>The code provided in Part 2 logs the <em>final</em> decision, but to analyze the system, you need to see the <em>rejected</em> options too. Your <code>select_best_frontier</code> function should be logging the candidates it evaluates.</p>
-            <p>Include a screenshot of a log entry where the robot evaluates at least two distinct clusters. It should look something like this:</p>
-            <div style="background-color: #f8f9fa; border-left: 4px solid #005a9c; padding: 1em; margin-top: 1em; border-radius: 4px;">
-                <pre style="margin: 0; font-family: monospace; font-size: 0.9em;"><code>[INFO] [auto_explore]: Evaluating 3 clusters...
-
-[INFO] [auto_explore]: &gt; Cluster 0: Size 15 | Cost 45 | Score 3.00
-[INFO] [auto_explore]: &gt; Cluster 1: Size 200 | Cost 100 | Score 0.50
-[INFO] [auto_explore]: &gt; Cluster 2: Size 50 | Cost inf | Score inf
-[INFO] [auto_explore]: Navigating to (1.25, 0.50) (Best Score: 0.50)</code></pre>
-            </div>
-            <p><em>Note how in the example above, the robot chose Cluster 1 (Score 0.50) even though Cluster 0 was much closer (Cost 45 vs 100). It correctly decided the long trip was worth the massive discovery.</em></p>
-        </li>
-        <li><strong>The "Intelligent Choice" Moment:</strong>
-            <p>Capture a specific event where the robot's behavior differed from a naive explorer. Find a scenario where the robot ignored a <strong>close</strong> frontier (High Efficiency Score or Unreachable) for a <strong>better</strong> frontier (Low Efficiency Score). Provide an annotated screenshot or sketch of this scenario.</p>
-        </li>
-    </ol>
-    <h3>3.2 Quantitative Analysis</h3>
-    <p><strong>Table 1: Efficiency Analysis.</strong> Analyze 3 distinct decisions from your log. Compare the chosen target against the "Next Best" alternative.</p>
-    <table style="border-collapse: collapse; width: 100%; border: 1px solid #ccc; margin-top: 1em;">
-        <thead>
-            <tr style="background-color: #f2f2f2;">
-                <th style="border: 1px solid #ccc; padding: 8px;">Decision #</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Chosen Target (Score)</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Rejected Target (Score)</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Engineering Rationale</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 8px;">1</td>
-                <td style="border: 1px solid #ccc; padding: 8px;">0.45</td>
-                <td style="border: 1px solid #ccc; padding: 8px;">2.10</td>
-                <td style="border: 1px solid #ccc; padding: 8px;">Chose large frontier further away over tiny frontier nearby.</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 8px;">2</td>
-                <td style="border: 1px solid #ccc; padding: 8px;">1.2</td>
-                <td style="border: 1px solid #ccc; padding: 8px;">inf</td>
-                <td style="border: 1px solid #ccc; padding: 8px;">Rejected closest target because it was behind a wall (Cost=inf).</td>
-            </tr>
-        </tbody>
-    </table>
-    <h3>3.3 Short-Answer Design Review</h3>
-    <p>Answer as if you are in a technical interview. Justify your answers with evidence from your code and run.</p>
-    <ol>
-        <li><strong>The Efficiency Metric:</strong> Your code minimizes the score \( S = \frac{\text{Cost}}{\text{Reward}} \).
+        <li><strong>SLAM and Nav2</strong><br />In this lab, SLAM Toolbox and Nav2 depend on each other while the map is changing.
             <ul>
-                <li>Why is this superior to simply minimizing Cost (A*)? Give a specific example of a "Trap" that pure A* falls into that this metric avoids.</li>
-                <li>Why is this superior to simply maximizing Reward (Frontier Size)? Give a specific example of a behavior this prevents.</li>
+                <li><strong>A)</strong> Describe this relationship: Which system is the "producer" of the map, and which is the "consumer"?</li>
+                <li><strong>B)</strong> Recall your experience in Part 7.2 when you first sent a navigation goal while the map was still largely incomplete. Describe what you observed about Nav2's initial path. How did the path planning change in real-time as the SLAM system mapped more of the maze?</li>
             </ul>
         </li>
-        <li><strong>Heuristics vs. Reality:</strong> Your code uses the Manhattan distance (<code>abs(dx) + abs(dy)</code>) as the heuristic \( h(n) \).
+        <li><strong>Engineering Safer Randomness</strong><br />In Part 7.3, your node sent goals to random coordinates. This is a fast but potentially unsafe approach.
             <ul>
-                <li>Why is Manhattan distance appropriate for a grid-based map?</li>
-                <li>Describe a map shape (e.g., a U-shape or a maze) where this heuristic vastly underestimates the true travel cost. How does this underestimation affect the performance of the A* search?</li>
+                <li><strong>A)</strong> What is the primary risk of sending a goal to a random coordinate within a large bounding box before the map is fully explored?</li>
+                <li><strong>B)</strong> Propose a code-level improvement to this node. In pseudocode or a clear English description, explain how you would use the data from the <code>/map</code> topic (an <code>OccupancyGrid</code> message) to <em>validate</em> a randomly generated point. Specifically, which cell value(s) (`-1`, `0`, `100`) would you check for at the proposed coordinate to ensure the goal is both safe and useful?</li>
             </ul>
         </li>
-        <li><strong>Failure Recovery (The Blacklist):</strong>
+        <li><strong>Critiquing Your Exploration Algorithm</strong><br />Analyze the behavior of your `autonomous_explore` node from Part 7.4, which used a random-frontier selection strategy.
             <ul>
-                <li>The code includes a <code>blacklist</code> and a <code>check_stuck_condition</code>. Why are these necessary in the real world?</li>
-                <li>If you removed the blacklist logic, what exactly would the robot do if it tried to navigate to a phantom frontier (a sensor glitch) that it couldn't physically reach?</li>
+                <li><strong>A)</strong> In the context of an <code>OccupancyGrid</code>, what defines a "frontier" cell? Why is navigating to these cells an effective strategy for exploration?</li>
+                <li><strong>B)</strong> Describe an instance where you observed this simple random strategy being inefficient. For example, did the robot ever travel a long distance to explore a tiny dead-end, when a large, promising, unexplored area was much closer?</li>
+                <li><strong>C)</strong> Propose a more intelligent strategy for <em>selecting</em> which frontier to navigate to. What are the engineering trade-offs between choosing, for example, the <strong>closest</strong> frontier versus the <strong>largest</strong> frontier (one with the most free-space neighbors)?</li>
             </ul>
         </li>
-        <li><strong>Algorithmic Complexity:</strong> A* is computationally expensive.
+        <li><strong>Handling Dynamic Obstacles</strong><br />Our simulation environment was static. Imagine a dynamic obstacle (like a person walking) is introduced.
             <ul>
-                <li>If your map size doubled (e.g., from 400x400 to 800x800), roughly how much slower would your worst-case pathfinding become?</li>
-                <li>Propose one optimization to speed up your Python A* implementation (e.g., Downsampling? Limiting search depth?).</li>
+                <li><strong>A)</strong> Nav2 uses different costmaps for safety. Explain how the <strong><code>local_costmap</code></strong> (responsible for immediate, short-term collision avoidance) and the <strong><code>global_costmap</code></strong> (responsible for long-term path planning) would react differently as the person walks in front of the robot.</li>
+                <li><strong>B)</strong> Would this person eventually become a permanent "wall" in the main map generated by the SLAM Toolbox? Explain why or why not, considering that SLAM algorithms build their maps based on probabilistic observations over time.</li>
             </ul>
         </li>
     </ol>
-    <p><a href="#toc">&uarr; Back to top</a></p>
+</section>
+<section id="references">
+    <h2>9. Further Reading</h2>
+    <p>The concepts you've implemented are foundational in robotics. A key trait of an expert engineer is the drive to understand the principles "under the hood." These resources are your next step in that journey, connecting the code you wrote to the research that made it possible.</p>
+    <h3>Official Documentation</h3>
+    <ul>
+        <li><strong><a href="https://docs.nav2.org/" target="_blank" rel="noopener">Official Nav2 Documentation</a>:</strong> The definitive guide for the navigation stack you commanded in this lab.</li>
+        <li><strong><a href="https://github.com/SteveMacenski/slam_toolbox" target="_blank" rel="noopener">SLAM Toolbox Repository</a>:</strong> The source code and documentation for the mapping system you used.</li>
+        <li><strong><a href="https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Writing-A-Simple-Py-Publisher-And-Subscriber.html" target="_blank" rel="noopener">Writing a Simple ROS 2 Python Node</a>:</strong> The official tutorial for the core skills you applied.</li>
+    </ul>
+    <h3>Key Research Papers</h3>
+    <ul>
+        <li><strong>[1] B. Yamauchi, "A frontier-based approach for autonomous exploration," 1997.</strong>
+            <blockquote><strong>Relevance:</strong> This is the foundational paper that introduced the concept of "frontier-based exploration." The core logic you implemented in your <code>autonomous_explore.py</code> node is a direct application of the strategy proposed here.</blockquote>
+        </li>
+        <li><strong>[2] G. Grisetti, et al., "Improved techniques for grid mapping with Rao-Blackwellized particle filters," 2007.</strong>
+            <blockquote><strong>Relevance:</strong> This paper details one of the most influential algorithms in the history of SLAM. The SLAM Toolbox you used is a modern descendant of the core principles proven in this research.</blockquote>
+        </li>
+        <li><strong>[3] S. Macenski, et al., "The Marathon 2: A Navigation System," 2020.</strong>
+            <blockquote><strong>Relevance:</strong> This paper describes the architecture of Nav2, the system your <code>TurtleBot4Navigator</code> class commands. It explains how complex navigation behaviors are managed using advanced techniques like Behavior Trees.</blockquote>
+        </li>
+    </ul>
 </section>
 <section id="troubleshooting">
-    <h2>4. Troubleshooting: The Engineering Diagnostic Process</h2>
-    <p>Your robot now has a complex "brain." When it misbehaves, you must use your <strong>Mental Model</strong> of the algorithms to diagnose the root cause.</p>
-    <h3>4.1 Common Failure Modes</h3>
+    <h2>10. Debugging: An Engineer's Most Valuable Skill</h2>
+    <p>Debugging is not guesswork; it is a systematic process of deduction based on your mental model of the system. When something goes wrong, ask "Which component is responsible for this behavior?" and check its terminal pane first.</p>
+    <blockquote style="border-left: 4px solid #c62828; padding-left: 15px; margin-left: 0; color: #555;">
+        <p><strong>First ROS 2 debugging check</strong><br />If your node isn't found or can't launch, ask: "Did I <code>source install/setup.bash</code> in this terminal?" This step fixes most "command not found" errors.</p>
+    </blockquote>
     <ul>
-        <li><strong>Symptom:</strong> The robot sits still for 5-10 seconds, then finally moves.
+        <li><strong>Symptom: Blank or extremely slow GUI windows (Gazebo/RViz).</strong>
             <ul>
-                <li><strong>Diagnosis:</strong> <strong>Compute Starvation.</strong> The A* algorithm is computationally heavy in Python. If the target is far away or inside a complex maze, the loop takes seconds to finish.</li>
-                <li><strong>Solution:</strong> This is often acceptable for a lab. If it triggers the "Stuck" timeout, increase <code>stuck_timeout</code> or decrease the <code>tick_rate</code> so the robot plans less often.</li>
+                <li><strong>Diagnosis:</strong> The system is failing at graphics rendering. The bridge between the host GPU and the container is likely misconfigured.</li>
+                <li><strong>Solution:</strong> Restart the container using the CPU-based <strong>No-GPU Fallback</strong> instructions from Section 5.2.</li>
             </ul>
         </li>
-        <li><strong>Symptom:</strong> The robot ignores a frontier that is clearly visible and reachable in RViz.
+        <li><strong>Symptom: Error: <code>Executable '...' not found</code>.</strong>
             <ul>
-                <li><strong>Diagnosis A:</strong> <strong>The Blacklist.</strong> The robot likely tried to go there previously, failed (stuck or nav error), and has now banned that target. Check your logs for "Blacklisted" messages.</li>
-                <li><strong>Diagnosis B:</strong> <strong>Invalid Centroid.</strong> The center of the frontier might be slightly inside a wall. The <code>find_nearest_valid_point</code> function attempts to fix this, but if the map is very noisy, it might fail.</li>
+                <li><strong>Diagnosis:</strong> The ROS 2 environment in your current terminal doesn't know about your node. This can have two causes: (1) You forgot to <code>source</code> the workspace after building, or (2) The executable was never registered correctly during the build.</li>
+                <li><strong>Solution:</strong> First, run <code>source install/setup.bash</code>. If that doesn't work, double-check for typos in your <code>setup.py</code> `entry_points` and run <code>colcon build</code> again.</li>
             </ul>
         </li>
-        <li><strong>Symptom:</strong> The robot spins in place or "wiggles" without making progress.
+        <li><strong>Symptom: Your node crashes with an <code>ImportError</code>.</strong>
             <ul>
-                <li><strong>Diagnosis:</strong> <strong>Oscillation.</strong> Two frontiers have nearly identical Efficiency Scores. The robot picks Target A, moves 1cm, recalculates, picks Target B, moves 1cm, and repeats.</li>
-                <li><strong>Solution:</strong> This is a classic robotics problem. In a real product, we would add "hysteresis" (sticking to a decision). For this lab, you can ignore it unless it prevents exploration.</li>
+                <li><strong>Diagnosis:</strong> The Python interpreter cannot find the script file it's trying to import. This is almost always a file structure problem.</li>
+                <li><strong>Solution:</strong> Ensure your Python scripts are inside the nested package directory (e.g., <code>src/turtlebot4_nav/turtlebot4_nav/</code>), which is where Python's module discovery system expects them to be.</li>
+            </ul>
+        </li>
+        <li><strong>Symptom: Error: <code>No transform from [frame A] to [frame B]</code>.</strong>
+            <ul>
+                <li><strong>Diagnosis:</strong> This is a TF (Transform) error, meaning the system has lost its spatial awareness. TF is the "skeleton" that connects all coordinate frames. This error means a critical bone is missing, usually because a core node like SLAM or the <code>robot_state_publisher</code> has crashed.</li>
+                <li><strong>Solution:</strong> Check all your terminal panes for error messages. The pane that is full of red text is your source of the problem.</li>
+            </ul>
+        </li>
+        <li><strong>Symptom: You run your node, but the robot doesn't move.</strong>
+            <ul>
+                <li><strong>Diagnosis:</strong> The command from your node is not reaching the robot's wheels. The problem lies somewhere in the chain of command: Your Node -&gt; Nav2 -&gt; Gazebo.</li>
+                <li><strong>Solution:</strong> Check Pane B for Nav2 errors. Is the robot's position on the map shown in red? This indicates a localization failure. In RViz, is a path being generated? If not, the goal may be unreachable or in an unknown part of the map.</li>
             </ul>
         </li>
     </ul>
-    <h3>4.2 Pre-Flight Checklist</h3>
+</section>
+<section id="schema">
+    <h2>11. Reference: The Language of Mobile Robotics</h2>
+    <p>Effective engineers share a common vocabulary. These are the core coordinate frames and topics that define our system's architecture.</p>
+    <h3>Coordinate Frames (The System's Sense of Space)</h3>
     <ul>
-        <li>[ ] <strong>Build:</strong> <code>colcon build --symlink-install</code> after package metadata, dependency, or entry-point changes. For ordinary edits to an existing Python file, save and rerun.</li>
-        <li>[ ] <strong>Source:</strong> <code>source install/setup.bash</code> in any pane where you want to run the node.</li>
-        <li>[ ] <strong>Reset:</strong> If the map gets messy, restart SLAM. A bad map makes A* fail because it hallucinates walls that don't exist.</li>
+        <li><code>map</code>: <strong>The Global Frame of Reference.</strong> A static, unchanging frame that is the source of all truth for navigation. It's created by SLAM. Your navigation goals *must* be expressed in this frame.</li>
+        <li><code>odom</code>: <strong>The Continuous Motion Frame.</strong> This frame tracks the robot's movement based on wheel encoders. It's smooth and continuous but will drift over time. SLAM's job is to calculate the correction between <code>odom</code> and <code>map</code>.</li>
+        <li><code>base_link</code>: <strong>The Robot's Egocentric Frame.</strong> This frame is rigidly attached to the center of the robot. Data from sensors, like the LiDAR, is usually published relative to this frame.</li>
     </ul>
-    <p><a href="#toc">&uarr; Back to top</a></p>
+    <h3>Key Topics (The System's Communication Channels)</h3>
+    <ul>
+        <li><code>/map</code> (<code>nav_msgs/msg/OccupancyGrid</code>): The live data feed of the world map.
+            <ul>
+                <li><em>Published By:</em> <code>slam_toolbox</code></li>
+                <li><em>Consumed By:</em> <code>nav2</code>, your <code>autonomous_explore</code> node, <code>rviz</code></li>
+            </ul>
+        </li>
+        <li><code>/scan</code> (<code>sensor_msgs/msg/LaserScan</code>): The raw distance measurements from the LiDAR.
+            <ul>
+                <li><em>Published By:</em> Gazebo (via the <code>ros_gz_bridge</code>)</li>
+                <li><em>Consumed By:</em> <code>slam_toolbox</code>, <code>nav2</code> (for obstacle avoidance)</li>
+            </ul>
+        </li>
+        <li><code>/tf</code> and <code>/tf_static</code>: The broadcast channels for all coordinate frame relationships (transforms).
+            <ul>
+                <li><em>Published By:</em> Many nodes (<code>robot_state_publisher</code>, <code>slam_toolbox</code>, etc.)</li>
+                <li><em>Consumed By:</em> Almost every node in the system, especially <code>rviz</code>.</li>
+            </ul>
+        </li>
+    </ul>
 </section>
 
 </div>

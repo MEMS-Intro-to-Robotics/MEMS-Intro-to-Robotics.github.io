@@ -30,8 +30,8 @@ LAB_TITLES = {
     6: "Pick-and-Place Manipulation",
     7: "Crazyflie PID Tuning",
     8: "Real Hardware Drone Control",
-    9: "Autonomous SLAM-Based Exploration",
-    10: "Real TurtleBot 4 Deployment",
+    9: "TurtleBot 4 Sensors",
+    10: "Autonomous SLAM-Based Exploration",
 }
 
 # Section IDs to remove entirely (opening <section id="..."> to </section>)
@@ -39,11 +39,11 @@ REMOVE_SECTION_IDS = {
     "deliverables", "deliverables-glance", "checklist",
 }
 
-LAB9_SETUP_SHARED_WORKFLOW = dedent(
+SLAM_LAB_SETUP_SHARED_WORKFLOW = dedent(
     """
     <section id="setup">
         <h2>5. Environment Setup: Docker &amp; Simulation</h2>
-        <p>From Lab 05 onward, the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a> covers the repeated container, pane, build, and debugging habits. This section keeps the Lab 09-specific pieces: the TurtleBot image, the permissions fix, and the bringup commands that follow.</p>
+        <p>From Lab 05 onward, the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a> covers the repeated container, pane, build, and debugging habits. This section keeps the pieces specific to this lab: the TurtleBot image, the permissions fix, and the bringup commands that follow.</p>
         <h3>5.1 Start the Container (GPU Acceleration)</h3>
         <p>On your <strong>host VM</strong>, allow GUI forwarding and start the single container for this lab.</p>
         <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>xhost +local:docker</code></pre>
@@ -155,12 +155,12 @@ def require_replace(html: str, old: str, new: str, label: str) -> str:
 
 
 
-def apply_lab9_shared_workflow(html: str) -> str:
-    """Replace Lab 9's repeated setup prose with the shared workflow pointer."""
+def apply_slam_lab_shared_workflow(html: str) -> str:
+    """Replace the SLAM lab's repeated setup prose with the shared workflow pointer."""
     html = require_sub(
         html,
         r'<section id="setup">\s*<h2>5\. Environment Setup: Docker &amp; Simulation</h2>.*?</section>',
-        LAB9_SETUP_SHARED_WORKFLOW,
+        SLAM_LAB_SETUP_SHARED_WORKFLOW,
         "lab09 setup section",
     )
     html = require_sub(
@@ -180,41 +180,11 @@ def apply_lab9_shared_workflow(html: str) -> str:
     return html
 
 
-def apply_lab10_shared_workflow(html: str) -> str:
-    """Link Lab 10 back to the shared workflow guide and fix the build note."""
-    html = require_replace(
-        html,
-        '<p>Create a folder on the Lab PC to store your work safely. Open a terminal and run:</p>',
-        '<p>Create a folder on the Lab PC to store your work safely. The shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a> still applies here for pane discipline, build/source habits, and fast debugging; the main difference is that Lab 10 also requires network exports in every pane.</p>',
-        "lab10 workspace intro",
-    )
-    html = require_replace(
-        html,
-        '<p>Now, open a terminal manager (like <code>terminator</code>). A multi-pane layout is standard operational procedure for monitoring distributed systems.</p>',
-        '<p>Open a terminal manager such as <code>terminator</code> and reserve the panes below for the rest of the lab.</p>',
-        "lab10 pane intro",
-    )
-    html = require_replace(
-        html,
-        '<li>[ ] <strong>Build:</strong> <code>colcon build --symlink-install</code> (Do this after <em>every</em> change to the Python file).</li>',
-        '<li>[ ] <strong>Build:</strong> <code>colcon build --symlink-install</code> after package metadata, dependency, or entry-point changes. For ordinary edits to an existing Python file, save and rerun.</li>',
-        "lab10 build checklist",
-    )
-    html = require_replace(
-        html,
-        '<li>[ ] <strong>Source:</strong> <code>source install/setup.bash</code>.</li>',
-        '<li>[ ] <strong>Source:</strong> <code>source install/setup.bash</code> in any pane where you want to run the node.</li>',
-        "lab10 source checklist",
-    )
-    return html
-
-
 def apply_public_site_dedup(html: str, lab_num: int) -> str:
     """Apply shared-reference rewrites that should survive regeneration."""
-    if lab_num == 9:
-        html = apply_lab9_shared_workflow(html)
-    elif lab_num == 10:
-        html = apply_lab10_shared_workflow(html)
+    # The SLAM lab was Lab 9 until 2026-10-29; the hardware lab it followed is archived and not published.
+    if lab_num == 10:
+        html = apply_slam_lab_shared_workflow(html)
     return html
 
 

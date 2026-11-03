@@ -403,8 +403,10 @@ container:
 env | grep ROS_AUTOMATIC
 ```
 
-If it prints nothing, exit and restart the container with the course
-`docker run` command, which sets it with `-e`.
+If it prints nothing, or prints `SUBNET`, exit and restart the container with
+the `docker run` command from your lab manual. In the TurtleBot 4 image, the
+addition at the end of that command sets `LOCALHOST` in every shell, overriding
+the image's `SUBNET` setting.
 
 ### `No transform from [frame A] to [frame B]`
 
@@ -787,7 +789,7 @@ If the `Use%` column is above about 90%, run the script from pre-lab step 1:
 curl -fsSL -o move_docker_to_home.sh https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/move_docker_to_home.sh && bash move_docker_to_home.sh
 ```
 
-Type your password when `sudo` asks for it. Near the end of the output, check
+Type your NetID password when `sudo` asks for it. Near the end of the output, check
 that the lines starting with `/var/lib/docker` and `/var/lib/containerd` both
 show `ubuntuos-home--lv`, and that `df -h /` shows a lower `Use%`. Start a new
 FastX session, then pull the image again. If the script stops with an

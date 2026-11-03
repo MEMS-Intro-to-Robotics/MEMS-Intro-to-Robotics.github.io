@@ -20,8 +20,8 @@ Portability ratings are practical adoption guidance, not a judgment of lab quali
 | **Lab 06** | Implement pick-and-place logic and planning-scene workflows | Kinova sim, MoveIt 2, lab starter script, block spawner | Medium | Reusable, but current public packaging still points to externally hosted starter files |
 | **Lab 07** | Tune a 3D PID controller in simulation | Crazyflie sim, ROS 2 Python nodes, plotting workflow | Medium | Strong controls lab, but current public repo documents the files more than it bundles them |
 | **Lab 08** | Analyze real hardware controller performance from logged flight data | Staff-run hardware flight, CSV analysis, notebook or script tooling | Low | Useful as a validation lab, but depends on local operations and baseline data packaging |
-| **Lab 09** | Build frontier-based exploration in simulation | TurtleBot 4 sim, SLAM, Nav2, Gazebo, RViz | Medium | Strong autonomy capstone with good transfer potential if you already support the TurtleBot 4 sim stack |
-| **Lab 10** | Deploy exploration logic on real TurtleBot 4 hardware | Shared lab PCs, robot networking, SLAM, Nav2, RViz | Low | High instructional value, but tightly coupled to local hardware operations and supervision |
+| **Lab 09** | Measure sensor noise and write hazard detectors for a simulated TurtleBot 4 | TurtleBot 4 sim, Gazebo, lidar, depth camera, Create 3 hazards, NumPy | Medium | Self-contained: one launch file and a provided package; needs the TurtleBot 4 sim image and a GPU for the camera and lidar |
+| **Lab 10** | Build frontier-based exploration in simulation | TurtleBot 4 sim, SLAM, Nav2, Gazebo, RViz | Medium | Strong autonomy capstone with good transfer potential if you already support the TurtleBot 4 sim stack |
 
 ## Suggested prerequisite ladder
 
@@ -51,8 +51,7 @@ Lab 01 is best treated as an environment template rather than a mandatory public
 
 ### Mobile autonomy sequence
 
-- Lab 09 in simulation
-- Lab 10 only when you have real TurtleBot 4 support
+- Lab 09, then Lab 10, both in simulation
 
 ## Public packaging notes
 

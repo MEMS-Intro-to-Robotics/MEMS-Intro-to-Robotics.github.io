@@ -88,19 +88,19 @@ PID control and hardware validation with the Crazyflie 2.1 nano-drone.
 
 ## Mobile Robot (Labs 09-10)
 
-Autonomous navigation and SLAM with the TurtleBot 4.
+Sensing, SLAM, and autonomous navigation with the TurtleBot 4.
 
 <div class="grid cards" markdown>
 
-- **Lab 09 — SLAM Exploration**
+- **Lab 09 — TurtleBot 4 Sensors**
 
-    Build maps using simultaneous localization and mapping in simulation.
+    Survey the TurtleBot 4's sensors in simulation, measure their noise, and write hazard detectors.
 
     [:octicons-arrow-right-24: Lab 09](lab_09.md)
 
-- **Lab 10 — Real TurtleBot 4**
+- **Lab 10 — SLAM Exploration**
 
-    Run SLAM and autonomous navigation on a physical TurtleBot 4.
+    Build maps using simultaneous localization and mapping in simulation.
 
     [:octicons-arrow-right-24: Lab 10](lab_10.md)
 
