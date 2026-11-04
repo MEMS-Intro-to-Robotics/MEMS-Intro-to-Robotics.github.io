@@ -178,7 +178,7 @@ docker run --rm -it --name lab09 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
         <pre><code class="language-bash">ros2 topic hz /scan</code></pre>
         <p>The frame, from one message&rsquo;s header:</p>
         <pre><code class="language-bash">ros2 topic echo --once --field header.frame_id /scan</code></pre>
-        <p>For some topics this command first prints a line such as <code>A message was lost!!!</code> or <code>total count change:1</code>. The frame is the line after it.</p>
+        <p>For some topics this command first prints lines that start with <code>A message was lost!!!</code> or <code>total count</code>. Skip them: the frame is the last line before the closing <code>---</code>.</p>
         <p><strong>Checkpoint:</strong> <code>Type: sensor_msgs/msg/LaserScan</code>, a rate a little under 10 Hz, and <code>rplidar_link</code>. In VS Code, fill in the <code>lidar</code> entry of <code>sensor_survey.yaml</code>:</p>
         <div style="background-color: #f8f9fa; border-left: 4px solid #005a9c; padding: 1em; margin-top: 1em; border-radius: 4px;">
             <pre style="margin: 0; font-family: monospace; font-size: 0.9em;"><code>lidar:
