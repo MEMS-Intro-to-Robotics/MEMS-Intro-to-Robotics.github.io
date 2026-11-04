@@ -11,6 +11,7 @@ inside the course Docker container.
 | VS Code cannot save, `git add` is denied, or files belong to `root` | [Fix container-created file ownership](#files-created-in-the-container-cannot-be-edited-on-the-host) |
 | A `.sh` script says `Permission denied` | [Check executable permission and ownership](#a-script-fails-with-permission-denied) |
 | No GUI window, a blank FastX desktop, or Docker will not start | [Environment and access](#environment-and-access) |
+| FastX says `All 399 X11 display numbers are in use`, or `no space left on device` | [Move Docker's storage to /home](#fastx-says-all-399-x11-display-numbers-are-in-use-or-docker-reports-no-space-left-on-device) |
 | Push, pull, or rebase fails | [Git and repository workflow](#git-and-repository-workflow) |
 | Assignment acceptance fails | [Classroom 50 and submissions](#classroom-50-and-submissions) |
 | ROS commands, packages, topics, or nodes are missing | [ROS 2 basics](#ros-2-basics) |
@@ -167,15 +168,45 @@ container. Close the stray pane and re-enter the original container with
 `docker exec -it <container-name> bash`. Confirm with `ros2 topic list`; you
 should see the topics published by the first pane.
 
-### The image pull or container start fails with "no space left on device"
+### FastX says `All 399 X11 display numbers are in use`, or Docker reports `no space left on device`
 
-Old images and volumes have filled the VM disk.
+The VM's main disk holds 25 GB, and Docker keeps its images there. About two
+lab images can fill it. When it is full, FastX can fail to start a desktop and
+`docker pull` can stop with `no space left on device`. A script moves Docker's
+storage to the VM's larger `/home` disk (68 GB) and keeps the images you
+already have. After a successful move, you do not need to run it again.
+
+If FastX cannot start a desktop, open a terminal on your own computer and
+connect to the VM with `ssh yourNetID@vcm-xxxxx.vm.duke.edu`, using the VM name
+from the VCM page. Check the main disk:
 
 ```bash
-docker system prune -a --volumes -f
+df -h /
 ```
 
-This removes all unused images, so you will re-pull for other labs.
+If the `Use%` column is above about 90%, run the script:
+
+```bash
+curl -fsSL -o move_docker_to_home.sh https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/move_docker_to_home.sh && bash move_docker_to_home.sh
+```
+
+Type your NetID password when `sudo` asks for it. After a successful move,
+the lines near the end of the output that start with `/var/lib/docker` and
+`/var/lib/containerd` should both
+show `ubuntuos-home--lv`, and `df -h /` should show a lower `Use%`. Start a new FastX
+session. If both storage locations are already mounted, the script prints
+`already a mount; skipping` twice and skips those moves.
+
+If Docker will not start afterwards, or its error mentions
+`containerd.services.leases`, ask a TA to check the cause. A full disk may have
+damaged Docker's records,
+and recovery may require removing the images you downloaded.
+
+If you can discard stopped containers and unused volumes, you can free space
+without moving the storage by running
+`docker system prune -a --volumes -f`. It deletes stopped containers, unused images,
+unused networks and build cache, and unused anonymous volumes without asking
+for confirmation. You will need to download deleted lab images again.
 
 ### Gazebo shows a robot, a world, or objects from another lab
 
@@ -770,30 +801,8 @@ hazard monitor. Some problems in this lab have entries elsewhere on this page:
 
 ### FastX reports `All 399 X11 display numbers are in use`, or the pull runs out of space
 
-The VM's main disk holds 25 GB, and Docker keeps its images there. About two
-lab images fill it. When it is full, FastX may fail to start a desktop, and
-`docker pull` can stop with `no space left on device`. Pre-lab step 1 moves
-Docker's storage to the VM's larger `/home` disk.
-
-If FastX cannot start a desktop, open a terminal on your own computer and
-connect to the VM with `ssh yourNetID@vcm-xxxxx.vm.duke.edu`. Check the main
-disk:
-
-```bash
-df -h /
-```
-
-If the `Use%` column is above about 90%, run the script from pre-lab step 1:
-
-```bash
-curl -fsSL -o move_docker_to_home.sh https://raw.githubusercontent.com/MEMS-Intro-to-Robotics/mems-robotics-toolkit/main/move_docker_to_home.sh && bash move_docker_to_home.sh
-```
-
-Type your NetID password when `sudo` asks for it. Near the end of the output, check
-that the lines starting with `/var/lib/docker` and `/var/lib/containerd` both
-show `ubuntuos-home--lv`, and that `df -h /` shows a lower `Use%`. Start a new
-FastX session, then pull the image again. If the script stops with an
-error, ask a TA and show its output.
+See [FastX says `All 399 X11 display numbers are in use`, or Docker reports `no space left on device`](#fastx-says-all-399-x11-display-numbers-are-in-use-or-docker-reports-no-space-left-on-device).
+Lab 9's pre-lab step 1 runs the same script.
 
 ### `Package 'lab09_sensors' not found`
 
