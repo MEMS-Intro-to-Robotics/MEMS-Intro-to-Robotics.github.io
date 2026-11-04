@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-labelledby="t d">
   <title id="t">Where the TurtleBot 4 sensors are, side view</title>
-  <desc id="d">Side view of the simulated TurtleBot 4 facing right, drawn to scale. The lidar scans a horizontal plane 0.19 metres above the floor and measures 0.164 to 12 metres. The camera, color and depth, sits 0.24 metres above the floor and looks straight ahead; the depth image has no readings closer than 0.3 metres to the camera. The IR sensors on the front of the bumper see objects within about 0.2 metres of it, and the cliff sensors under the front of the bumper look down at the floor. The bumper front is 0.17 metres ahead of the robot center. An 8 centimetre box from lane A is drawn ahead of the robot for scale; its top is below the lidar plane.</desc>
+  <desc id="d">Side view of the simulated TurtleBot 4 facing right, drawn to scale. The lidar scans a horizontal plane 0.19 metres above the floor and measures 0.164 to 12 metres. The OAK-D depth camera is mounted 0.24 metres above the floor and looks straight ahead; it gives no depth readings closer than 0.3 metres. The color webcam added for this lab is mounted at the front of the top plate, 0.37 metres above the floor and tilted 26 degrees down; on level ground its view reaches the floor about 0.2 metres ahead of the bumper. The IR sensors on the front of the bumper see objects within about 0.2 metres of it, and the cliff sensors under the front of the bumper look down at the floor. The bumper front is 0.17 metres ahead of the robot center. An 8 centimetre box from lane A is drawn ahead of the robot for scale; its top is below the lidar plane.</desc>
 
   <style>
     .hd     { font-family: "Segoe UI", Arial, sans-serif; font-size: 13.5px; font-weight: 700; fill: #012169; }
@@ -9,6 +9,9 @@
     .note   { font-family: "Segoe UI", Arial, sans-serif; font-size: 12.5px; fill: #5a6675; }
     .lid    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #0f766e; }
     .cam    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #012169; }
+    .web    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #6b21a8; }
+    .wax    { stroke: #6b21a8; stroke-width: 1.6; stroke-dasharray: 7 4; }
+    .wedge  { stroke: #6b21a8; stroke-width: 1.2; }
     .irl    { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #a32e22; }
     .plane  { stroke: #0f766e; stroke-width: 1.8; stroke-dasharray: 7 4; }
     .axis   { stroke: #012169; stroke-width: 1.6; stroke-dasharray: 7 4; }
@@ -63,6 +66,11 @@
   <circle cx="250" cy="338.4" r="6" fill="#9aa4b2"/>
   <rect class="plate" x="152" y="297" width="196" height="6"/>
 
+  <!-- tower: standoffs and top plate (z = 0.347 m) -->
+  <rect x="202.9" y="151.9" width="3" height="145.1" fill="#c3cad4"/>
+  <rect x="266.9" y="151.9" width="3" height="145.1" fill="#c3cad4"/>
+  <rect class="plate" x="154" y="147.9" width="192" height="4"/>
+
   <!-- lidar on its mount, x = -0.04 m -->
   <rect class="plate" x="220" y="270" width="12" height="27"/>
   <rect class="dark" x="205" y="237" width="42" height="33" rx="4"/>
@@ -73,7 +81,7 @@
   <rect class="plate" x="186" y="222" width="8" height="75"/>
   <rect x="190" y="204" width="24" height="19" rx="3" fill="#012169"/>
   <circle cx="214" cy="213.6" r="3.2" fill="#ffffff" stroke="#012169" stroke-width="1.2"/>
-  <text class="cam" x="182" y="200" text-anchor="end">camera</text>
+  <text class="cam" x="182" y="200" text-anchor="end">OAK-D</text>
 
   <!-- camera axis and view edges -->
   <line class="axis" x1="217" y1="213.6" x2="880" y2="213.6"/>
@@ -85,9 +93,23 @@
   <line class="ext" x1="394" y1="112" x2="394" y2="94"/>
   <line class="dim" x1="214" y1="100" x2="394" y2="100" marker-start="url(#ar)" marker-end="url(#ar)"/>
   <text class="num" x="304" y="93" text-anchor="middle">0.3 m</text>
-  <text class="cam" x="402" y="126">depth: no readings closer than 0.3 m to the camera</text>
+  <text class="cam" x="402" y="112">depth: no readings closer than 0.3 m to the camera</text>
 
-  <text class="cam" x="500" y="206">camera (color and depth) looks straight ahead</text>
+  <text class="cam" x="500" y="206">OAK-D (depth) looks straight ahead</text>
+  <!-- webcam on a clip at the front of the top plate, optical center x = 0.10 m, z = 0.373 m, 25.8 deg down -->
+  <rect class="dark" x="301.0" y="140.9" width="18" height="7"/>
+  <g transform="rotate(25.8 310.0 136.2)">
+    <rect x="294.4" y="127.8" width="15.6" height="16.8" rx="4" fill="#6b21a8"/>
+    <rect x="310.0" y="131.2" width="2.5" height="10" fill="#26313f"/>
+  </g>
+  <line class="guide" x1="30" y1="136.2" x2="292.0" y2="136.2"/>
+  <text class="num" x="30" y="130.2" style="fill:#6b21a8">0.37 m</text>
+  <text class="web" x="288.0" y="122.2" text-anchor="end">webcam</text>
+  <line class="wax" x1="310.0" y1="136.2" x2="773.0" y2="360"/>
+  <line class="wedge" x1="310.0" y1="136.2" x2="479.3" y2="360"/>
+  <line class="wedge" x1="310.0" y1="136.2" x2="880" y2="122.3"/>
+  <text class="web" x="560" y="168">webcam (color) tilted 26&#176; down;</text>
+  <text class="web" x="560" y="184">nearest floor it sees: about 0.2 m ahead of the bumper</text>
   <text class="lid" x="500" y="237">lidar scan plane, measures 0.164 to 12 m</text>
 
   <!-- IR: emitters on the bumper front, about 0.2 m reach -->
