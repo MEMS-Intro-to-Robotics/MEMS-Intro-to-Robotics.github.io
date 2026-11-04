@@ -40,4 +40,10 @@ hide:
 
     [:octicons-arrow-right-24: pymoveit2 API](../guides/pymoveit2_api_guide.md)
 
+- **USB Webcam in ROS 2**
+
+    Publishing, viewing, and recording images from a USB webcam, on a lab computer or on Windows through WSL2. Draft.
+
+    [:octicons-arrow-right-24: USB Webcam](../guides/usb_webcam_ros2.md)
+
 </div>
