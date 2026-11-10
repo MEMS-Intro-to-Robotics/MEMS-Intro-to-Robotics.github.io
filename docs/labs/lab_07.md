@@ -175,7 +175,7 @@ step_01       y           1      0      0      0     3.50          0.0      4.25
         <h3>Part 3: Milestone 2, The Proportional Gain</h3>
         <p><strong>Goal:</strong> measure how raising <code>kp</code> changes the response and find where rise time stops improving.</p>
         <p>To change a gain, edit <code>gains.yaml</code>, save it, and fly the step test again. Keep the x and y gains equal and keep <code>ki</code> and <code>kd</code> at <code>0.0</code> in this milestone; milestone 5 lifts both restrictions.</p>
-        <p><strong>Contract:</strong> choose different values of <code>kp</code> and fly at least five step tests that together show:</p>
+        <p><strong>Task:</strong> choose different values of <code>kp</code> and fly at least five step tests that together show:</p>
         <ul>
             <li>(a) the smallest <code>kp</code>, to one significant figure, above which doubling it changes the rise time by less than 0.1 s;</li>
             <li>(b) a <code>kp</code> whose overshoot is more than 3%;</li>
@@ -201,7 +201,7 @@ step_01       y           1      0      0      0     3.50          0.0      4.25
     <section id="part4">
         <h3>Part 4: Milestone 3, The Derivative Gain</h3>
         <p><strong>Goal:</strong> test how <code>kd</code> changes overshoot and identify a value that worsens the response.</p>
-        <p><strong>Contract:</strong> start from your <code>kp</code> from (b). Fly step tests that show:</p>
+        <p><strong>Task:</strong> start from your <code>kp</code> from (b). Fly step tests that show:</p>
         <ul>
             <li>the smallest <code>kd</code> you can find for which the table shows an overshoot of 2.0% or less;</li>
             <li>a larger <code>kd</code> that makes the response worse than that one, and what &ldquo;worse&rdquo; looks like in the table and the plot.</li>
@@ -219,7 +219,7 @@ step_01       y           1      0      0      0     3.50          0.0      4.25
         <p>Adding <code>draft:=0.15</code> to a flight adds a steady world-frame velocity command of 0.15 m/s along both +x and +y. For this milestone set <code>kp</code> to <code>3.0</code> and <code>kd</code> to <code>0.0</code> on both axes.</p>
         <p><strong>Predict first.</strong> With <code>ki = 0</code>, a steady position requires the controller&rsquo;s command to cancel the draft. Predict the distance from the goal at that position.</p>
         <pre><code class="language-bash">ros2 launch lab07_crazyflie fly.launch.py course:=step draft:=0.15</code></pre>
-        <p><strong>Contract:</strong> in the draft, fly one step test with <code>ki = 0.0</code> and at least two with different non-zero values of <code>ki</code>. For each, record the steady-state error and the overshoot. The table measures each axis only after that axis&rsquo;s own step; with <code>ki</code>, those numbers describe the response to a changed goal. Then open the plot of one run with <code>ki</code> (its <code>runs/step_NN.png</code>) and compare two parts of the x trace: while y steps and the x goal stays where it is, and just after x steps.</p>
+        <p><strong>Task:</strong> in the draft, fly one step test with <code>ki = 0.0</code> and at least two with different non-zero values of <code>ki</code>. For each, record the steady-state error and the overshoot. The table measures each axis only after that axis&rsquo;s own step; with <code>ki</code>, those numbers describe the response to a changed goal. Then open the plot of one run with <code>ki</code> (its <code>runs/step_NN.png</code>) and compare two parts of the x trace: while y steps and the x goal stays where it is, and just after x steps.</p>
         <details>
             <summary>Hint 1: Choosing values</summary>
             <p>Start with a <code>ki</code> near half of <code>kp</code>, then try a value several times smaller or larger. You may test both if needed.</p>
@@ -239,7 +239,7 @@ step_01       y           1      0      0      0     3.50          0.0      4.25
         <pre><code class="language-bash">ros2 launch lab07_crazyflie fly.launch.py course:=course</code></pre>
         <pre><code class="language-bash">ros2 run lab07_crazyflie analyze</code></pre>
         <p>The course table gives each run&rsquo;s gains, its time, <code>off path</code> (the largest horizontal distance between the drone and the straight line joining the waypoints it was flying between), and <code>not reached</code> (the number of waypoints skipped).</p>
-        <p><strong>Contract:</strong></p>
+        <p><strong>Task:</strong></p>
         <ul>
             <li>Fly the course with at least three different sets of gains, including one that does not reach every waypoint. The x and y gains may differ, and any of the three terms may be used.</li>
             <li>Put your chosen gains in <code>gains.yaml</code> and fly the course with them once more, adding <code>run:=final</code> to the launch command. That run must reach every waypoint and take 45 s or less.</li>

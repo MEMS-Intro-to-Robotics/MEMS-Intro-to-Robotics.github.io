@@ -21,6 +21,7 @@ inside the course Docker container.
 | Gazebo shows things from another lab | [Stop leftover containers](#gazebo-shows-a-robot-a-world-or-objects-from-another-lab) |
 | Flight-log plots or metrics look wrong | [Flight log analysis](#flight-log-analysis) |
 | Lab 9: the simulation, the hazard monitor, or `lane_test` fails | [TurtleBot 4 sensors (simulation)](#turtlebot-4-sensors-simulation) |
+| Lab 10: the simulation, Nav2, `point_goal`, `random_goals`, `explore`, or the map save fails | [SLAM and frontier exploration (simulation)](#slam-and-frontier-exploration-simulation) |
 | TurtleBot, mapping, or navigation fails | [TurtleBot, SLAM, and Nav2](#turtlebot-slam-and-nav2) |
 
 Use the site's search for an exact error message. If you need a TA, bring the
@@ -997,6 +998,221 @@ with a monitor that was not restarted after an edit.
 With your final `thresholds.yaml` saved, restart the hazard monitor, drive all
 four lanes at 0.2 and 0.3 m/s, run the tests again, and commit both
 `thresholds.yaml` and `runs/lane_results.csv`. Do not delete the earlier rows.
+
+## SLAM and frontier exploration (simulation)
+
+These entries are for Lab 10. Terminal 1 is the container shell running
+`sim.launch.py`, Terminal 2 runs `nav2.launch.py`, and Terminal 3 is the
+container shell in the repository root where you run `point_goal`,
+`random_goals`, `explore`, `overlay_map`, and the tests. Some problems in this
+lab have entries elsewhere on this page:
+
+- Gazebo shows a robot or world from another lab:
+  [Gazebo shows a robot, a world, or objects from another lab](#gazebo-shows-a-robot-a-world-or-objects-from-another-lab)
+- The Gazebo window is black or does not open:
+  [The Gazebo window is black or does not open](#the-gazebo-window-is-black-or-does-not-open)
+- `ros2 topic list` shows only `/parameter_events` and `/rosout`:
+  [`ros2 topic list` shows only `/parameter_events` and `/rosout`](#ros2-topic-list-shows-only-parameter_events-and-rosout)
+- `git add` is denied for the files in `runs/` or `maps/`:
+  [Files created in the container cannot be edited on the host](#files-created-in-the-container-cannot-be-edited-on-the-host)
+
+### `Package 'lab10_explore' not found`
+
+The workspace may not have been sourced in this terminal. Every new container
+shell needs the prepare line from Part 1:
+
+```bash
+cd ~/workspaces/intro-to-robotics-fall-2026-lab-10-* && source ros2_ws/install/setup.bash
+```
+
+If it prints `No such file or directory`, the repository is not in
+`~/workspaces` or the package has not been built there. Run `ls ~/workspaces`
+in the container. If no folder starting with
+`intro-to-robotics-fall-2026-lab-10-` is listed, clone the repository into
+`~/workspaces` on the VM (pre-lab step 3). If it is listed, run the build line
+from pre-lab step 5, then the prepare line again:
+
+```bash
+cd ~/workspaces/intro-to-robotics-fall-2026-lab-10-*/ros2_ws && colcon build --symlink-install && source install/setup.bash && ros2 pkg executables lab10_explore
+```
+
+### Terminal 1 prints `[lab10] PROBLEM:`
+
+`sim.launch.py` prints a checklist, `[lab10] 1/4` to `4/4`, as each part of the
+simulation starts. When a part does not start, it prints `[lab10] PROBLEM:`
+with the part's name, the folder of log files, and what to do: press `Ctrl+C`
+in Terminal 1 (and in Terminal 2 if Nav2 is running) and start the simulation
+again. If the same line appears a second time, ask a TA and show it, together
+with the log folder it names.
+
+### Terminal 2 prints `[lab10] PROBLEM: Nav2 did not finish starting within 30 seconds.`
+
+Press `Ctrl+C` in Terminal 2 and start Nav2 again. If it happens a second time,
+restart the simulation first (`Ctrl+C` in Terminal 2, then in Terminal 1), wait
+for Terminal 1 to print `[lab10] Ready`, and start Nav2 again:
+
+```bash
+ros2 launch lab10_explore nav2.launch.py
+```
+
+It is ready when it prints `[lab10] Nav2 active. Send goals from the third
+terminal or from RViz.`
+
+### `Nav2 is not active after 60 s`
+
+`point_goal`, `random_goals`, and `explore` wait up to 60 s for Nav2, then stop
+with this message. Look at Terminal 2: if Nav2 is not running, start it; if it
+printed `[lab10] PROBLEM:`, see the previous entry. When it prints `[lab10] Nav2
+active`, run the program again.
+
+### Nav2 stops working after you restarted the simulation
+
+If you restart the simulation in Terminal 1 and leave Nav2 running in Terminal 2,
+Nav2 may stop working. Errors such as
+`Could not find a connection between 'map' and 'odom'` may appear in Terminal 2.
+You may also see `process has died` for `component_container_isolated`, and the programs may stop with
+`Nav2 is not active after 60 s`. Restart both, in this order: `Ctrl+C` in
+Terminal 2, then in Terminal 1; start the simulation, wait for Terminal 1 to print
+`[lab10] Ready`, then start Nav2:
+
+```bash
+ros2 launch lab10_explore nav2.launch.py
+```
+
+### `No map, or no robot position on it, after 30 s`
+
+Nav2 is active but the map or the robot's position on it is missing.
+To check whether the simulation and SLAM started, look in Terminal 1 for
+`[lab10] Ready`; if it did not, restart the simulation and Nav2.
+
+### `Another program that drives the robot is already running`
+
+`point_goal`, `random_goals`, and `explore` refuse to start while another of
+them is running, because two programs sending goals cancel each other's goals.
+The message names the one that is running. Stop it with `Ctrl+C` in its
+terminal, then run the command again. If you closed that terminal, open a
+container shell and stop it there, for example `pkill -INT -f "lab10_explore explore"`.
+
+### `Run this from the root of your repository`
+
+The program writes its logs to `runs/` in the repository, so it has to run
+from the folder that holds `test_lab_10.py`. In Terminal 3:
+
+```bash
+cd ~/workspaces/intro-to-robotics-fall-2026-lab-10-*
+```
+
+### `exploration.... is not written yet`
+
+For example: `exploration.goal_is_safe is not written yet (it still raises
+NotImplementedError).` The function still raises
+`NotImplementedError`, as it does in the starter. Write it in
+`ros2_ws/src/lab10_explore/lab10_explore/exploration.py`, run its test from
+Terminal 3 (the example uses `goal_is_safe`; use your function's name), and run
+the program again:
+
+```bash
+python3 -m pytest test_lab_10.py -v -k goal_is_safe
+```
+
+### A goal fails with `was outside bounds`
+
+Terminal 2 prints a line ending in `was outside bounds` when the goal is
+outside the map SLAM has built so far. Nav2 can plan only to points on the map.
+In Part 2, the east door is not on the map until the robot has seen it: do
+Step 2.2 first. If the robot has already been south of the tool room, check the
+signs in your conversion: a sign error puts the goal outside the room.
+
+### The robot stops under a bench, or a goal ends `TIMED OUT`
+
+The lidar scans at the height of the bench legs, below the top, so gaps between
+the legs can appear free on the map. A goal there can trap the robot among the legs and stools,
+and the goal ends `TIMED OUT` or `FAILED`. In Part 3 that result goes into your
+table as it is. If it happens often with the check on, compare your
+`CLEARANCE_M` with the gaps between bench legs.
+
+### `The robot has not moved for 3 goals in a row`
+
+`random_goals` and `explore` stop with this message when three goals in a row
+end without the robot moving. In this room that usually means the robot is
+wedged among bench legs or stools: every move Nav2 tries collides, and Terminal 2
+shows `Collision Ahead` warnings. Restart the
+simulation and Nav2 (the end of Part 1), then run the program again. A new run
+replaces that run's log file.
+
+### `Set CLEARANCE_M in exploration.py`
+
+`random_goals` without `--no-check` needs your clearance. Set `CLEARANCE_M` at
+the top of `exploration.py` to a number in meters, save the file, and run the
+command again.
+
+### `goal_is_safe rejected 2000 points in a row`
+
+No point passed your check. Check whether `goal_is_safe` returns `False` for every
+cell or whether the clearance excludes the available free areas on the map. Run
+`python3 -m pytest test_lab_10.py -v -k goal_is_safe`; if it passes, compare
+the clearance in cells that the message prints with the widths of the white
+areas in RViz.
+
+### `prediction.yaml` stops the first score run
+
+Before the first `explore --strategy score` run, `prediction.yaml` has to be
+filled in, committed, and pushed. The message says which step is missing:
+
+- `prediction.yaml: fill in ...`: open the file and give that entry a number
+  greater than 0 (a plain number, without units).
+- `prediction.yaml is not committed yet` or `has changes that are not
+  committed`: in a Host VM Terminal, in your repository, run
+
+  ```bash
+  git add prediction.yaml && git commit -m "Prediction" && git push origin main
+  ```
+
+- `prediction.yaml is committed but not pushed to GitHub yet`: in a Host VM
+  Terminal, in your repository, run `git push origin main`.
+
+Then start the run again. Run the commit and push commands in a Host VM
+Terminal.
+
+### The explorer prints `No reachable frontier` several times, then stops
+
+At the end of a run this is normal: the explorer tries several more times,
+then stops with `no reachable frontier left`. At the start of a run, check whether
+your `find_frontier_cells` found usable cells: run its test, and check that
+RViz shows white space around the robot. Frontiers may also be excluded by
+the size, clearance, or path checks.
+
+### The map does not grow, or RViz shows no map
+
+Check whether SLAM is running and receiving scans. Look in Terminal 1 for
+`[lab10] 4/4 SLAM active; map on /map`; if it printed `[lab10] PROBLEM:`
+instead, restart the simulation and Nav2: `Ctrl+C` in Terminal 2, then in
+Terminal 1; start the simulation, wait for `[lab10] Ready`, then start Nav2.
+
+### `map_saver_cli` prints `Failed to spin map subscription`
+
+The map did not reach the save command within its wait (20 s with the command in
+Step 5.1). Check that Terminal 1 is still running the simulation from your last
+score run, then run the command again, from the repository root:
+
+```bash
+mkdir -p maps && ros2 run nav2_map_server map_saver_cli -f maps/wilkinson129 --ros-args -p map_subscribe_transient_local:=true -p save_map_timeout:=20.0
+```
+
+If you closed Terminal 1 after the run, the map is gone: make another score run,
+then save.
+
+### RViz's Measure tool shows no distance
+
+RViz shows the distance in the status bar at the bottom left of its window, as
+`[Length: ...m]`, not on the map. If the bottom of the RViz window is below the
+edge of the screen, maximize the window, then click the two points again.
+Right-click in the map to clear the measurement.
+
+### `No map file maps/wilkinson129.yaml`
+
+`overlay_map` did not find the saved map. Run it from the repository root, after
+Step 5.1 has written `maps/wilkinson129.pgm` and `maps/wilkinson129.yaml`.
 
 ## TurtleBot, SLAM, and Nav2
 

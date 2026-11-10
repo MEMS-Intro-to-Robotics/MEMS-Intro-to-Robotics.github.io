@@ -15,7 +15,6 @@ import argparse
 import re
 import sys
 from pathlib import Path
-from textwrap import dedent
 
 REPO_ROOT = Path(__file__).resolve().parent
 DEFAULT_LABS_SRC = REPO_ROOT.parent / "intro-to-robotics-labs" / "2026_fall_labs"
@@ -31,48 +30,13 @@ LAB_TITLES = {
     7: "Crazyflie PID Tuning",
     8: "Real Hardware Drone Control",
     9: "TurtleBot 4 Sensors",
-    10: "Autonomous SLAM-Based Exploration",
+    10: "SLAM and Frontier Exploration in the Garage Labs",
 }
 
 # Section IDs to remove entirely (opening <section id="..."> to </section>)
 REMOVE_SECTION_IDS = {
     "deliverables", "deliverables-glance", "checklist",
 }
-
-SLAM_LAB_SETUP_SHARED_WORKFLOW = dedent(
-    """
-    <section id="setup">
-        <h2>5. Environment Setup: Docker &amp; Simulation</h2>
-        <p>From Lab 05 onward, the shared <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a> covers the repeated container, pane, build, and debugging habits. This section keeps the pieces specific to this lab: the TurtleBot image, the permissions fix, and the bringup commands that follow.</p>
-        <h3>5.1 Start the Container (GPU Acceleration)</h3>
-        <p>On your <strong>host VM</strong>, allow GUI forwarding and start the single container for this lab.</p>
-        <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>xhost +local:docker</code></pre>
-        <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>docker run --rm -it \\
-    --name lab09_tb4 \\
-    --net=host \\
-    -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \\
-    -v ~/workspaces:/root/workspaces \\
-    --gpus all \\
-    gitlab-registry.oit.duke.edu/introtorobotics/mems-robotics-toolkit:tb4-humble-latest</code></pre>
-        <p>Note: if the command above does not successfully install all required packages, free up storage by running this command:</p>
-        <p><strong></strong><code>docker system prune -a --volumes -f</code></p>
-        <h3>5.2 Fix File Permissions When Needed</h3>
-        <p>If files created inside the container become read-only on the host, run this from a second host terminal:</p>
-        <pre style="background-color: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 15px; font-family: monospace; white-space: pre-wrap;"><code>sudo chown -R $USER:$USER ~/workspaces/[netid]_robotics_fall2025/lab09</code></pre>
-        <h3>5.3 Recommended Pane Layout</h3>
-        <p>If you prefer panes inside the container, open Terminator after launch and use a layout like this:</p>
-        <ul>
-            <li><strong>Pane A</strong>: Gazebo world</li>
-            <li><strong>Pane B</strong>: TurtleBot stack with SLAM, Nav2, and RViz</li>
-            <li><strong>Pane C</strong>: Laser bridge</li>
-            <li><strong>Pane D</strong>: Development and debugging</li>
-        </ul>
-        <h3>5.4 Fallback: CPU Rendering</h3>
-        <p>If you encounter graphics errors, use the Docker command from Step 5.1 but <strong>omit the <code>--gpus all</code> line</strong>. You can still use the same <code>chown</code> command from Step 5.2 in a second terminal to manage file permissions.</p>
-    </section>
-    """
-).strip()
-
 
 def remove_header_block(html: str) -> str:
     """Remove <header>...</header> blocks."""
@@ -139,14 +103,6 @@ def remove_submission_grading_section(html: str) -> str:
     return html
 
 
-def require_sub(html: str, pattern: str, replacement: str, label: str, *, flags: int = re.DOTALL) -> str:
-    """Replace a pattern exactly once, or fail loudly if the source drifted."""
-    updated, count = re.subn(pattern, replacement, html, count=1, flags=flags)
-    if count != 1:
-        raise ValueError(f"{label}: expected 1 replacement, found {count}")
-    return updated
-
-
 def require_replace(html: str, old: str, new: str, label: str) -> str:
     """Replace an exact snippet once, or fail loudly if the source drifted."""
     if old not in html:
@@ -155,36 +111,12 @@ def require_replace(html: str, old: str, new: str, label: str) -> str:
 
 
 
-def apply_slam_lab_shared_workflow(html: str) -> str:
-    """Replace the SLAM lab's repeated setup prose with the shared workflow pointer."""
-    html = require_sub(
-        html,
-        r'<section id="setup">\s*<h2>5\. Environment Setup: Docker &amp; Simulation</h2>.*?</section>',
-        SLAM_LAB_SETUP_SHARED_WORKFLOW,
-        "lab09 setup section",
-    )
-    html = require_sub(
-        html,
-        r'<p>\*\*\*Don.*?change the owner of the directories.*?</p>\s*'
-        r'<p>\*\*\*Don.*?source your ROS environment\*\*\*</p>\s*'
-        r'<p>Before writing a single line of Python.*?</p>',
-        '<p>Create the package in your development pane. If you need the shared explanation of workspaces, <code>colcon build --symlink-install</code>, or when to rebuild versus simply rerun, see the <a href="../guides/robot_platform_lab_workflow/">Robot Platform Lab Workflow</a>.</p>',
-        "lab09 project setup intro",
-    )
-    html = require_sub(
-        html,
-        r'<ul>\s*<li><strong><code>mkdir -p \.\.\./src</code></strong>:.*?</ul>\s*(?=<hr style="margin: 2em 0;" />)',
-        '',
-        "lab09 project setup explainer list",
-    )
-    return html
-
-
 def apply_public_site_dedup(html: str, lab_num: int) -> str:
-    """Apply shared-reference rewrites that should survive regeneration."""
-    # The SLAM lab was Lab 9 until 2026-10-29; the hardware lab it followed is archived and not published.
-    if lab_num == 10:
-        html = apply_slam_lab_shared_workflow(html)
+    """Apply shared-reference rewrites that should survive regeneration.
+
+    None are needed now: Lab 10's block for the Humble maze manual was retired on 2026-11-09,
+    when the lab was rebuilt to the conventions (no repeated setup prose to rewrite).
+    """
     return html
 
 

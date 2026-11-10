@@ -189,7 +189,7 @@ docker run --rm -it --name lab09 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
         </div>
         <p>Your rate may differ: rates depend on how fast the VM runs the simulation. Record the rate you measured.</p>
         <h4>Step 2.2: The other sensors</h4>
-        <p><strong>Contract:</strong> fill in the remaining six entries of <code>sensor_survey.yaml</code> the same way. Some messages are lists of readings with a header of their own; record the frame in the message&rsquo;s top-level header.</p>
+        <p><strong>Task:</strong> fill in the remaining six entries of <code>sensor_survey.yaml</code> the same way. Some messages are lists of readings with a header of their own; record the frame in the message&rsquo;s top-level header.</p>
         <details>
             <summary>Hint 1: Seeing what a message contains</summary>
             <p><code>ros2 interface show</code> followed by the type from <code>ros2 topic info</code> lists every field of that message.</p>
@@ -200,7 +200,7 @@ docker run --rm -it --name lab09 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
         <p>The transform between two frames gives one frame&rsquo;s position and rotation in the other:</p>
         <pre><code class="language-bash">ros2 run tf2_ros tf2_echo base_link rplidar_link</code></pre>
         <p>It may first print <code>Waiting for transform</code> with <code>frame does not exist</code> once or twice; wait for the next lines. Press <code>Ctrl+C</code> after it has printed the transform once. <strong>Checkpoint:</strong> a <code>Translation</code> line and a <code>Rotation: in RPY (degree)</code> line. The third RPY number is the lidar&rsquo;s yaw, its rotation about the vertical axis. A scan&rsquo;s angle 0 points along the lidar frame&rsquo;s x axis, so angle 0 points in the direction given by that yaw in the robot frame.</p>
-        <p><strong>Contract:</strong> in <code>sensing.py</code>, set <code>LIDAR_YAW</code> to the yaw in radians and write <code>range_at_bearing</code>, which returns the range in a given robot-frame bearing. Its docstring describes the inputs. Then run its test:</p>
+        <p><strong>Task:</strong> in <code>sensing.py</code>, set <code>LIDAR_YAW</code> to the yaw in radians and write <code>range_at_bearing</code>, which returns the range in a given robot-frame bearing. Its docstring describes the inputs. Then run its test:</p>
         <p><strong>Location:</strong> Container Terminal (Terminal 2)</p>
         <pre><code class="language-bash">python3 -m pytest test_lab_9.py -v -k range_at_bearing</code></pre>
         <details>
@@ -227,7 +227,7 @@ docker run --rm -it --name lab09 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
   lidar_range_m          n=  200  mean=    1.0403  std=  0.0098</code></pre>
         </div>
         <p>An IR reading of 15 is the value it reports with nothing in range.</p>
-        <p><strong>Contract:</strong> record at distances of 0.25, 0.5, 1.0, and 2.0 m. Make a table with the mean and standard deviation of each sensor at each distance, and a plot of the lidar and depth standard deviations against distance, saved as <code>docs/noise_vs_distance.png</code>. Any plotting tool is fine; the numbers are in the printed lines and in the files in <code>runs/</code>. To plot with Python and matplotlib in the container, run your script with <code>/usr/bin/python3</code>: in this image, <code>python3</code> alone cannot import matplotlib.</p>
+        <p><strong>Task:</strong> record at distances of 0.25, 0.5, 1.0, and 2.0 m. Make a table with the mean and standard deviation of each sensor at each distance, and a plot of the lidar and depth standard deviations against distance, saved as <code>docs/noise_vs_distance.png</code>. Any plotting tool is fine; the numbers are in the printed lines and in the files in <code>runs/</code>. To plot with Python and matplotlib in the container, run your script with <code>/usr/bin/python3</code>: in this image, <code>python3</code> alone cannot import matplotlib.</p>
         <details>
             <summary>Hint 1: Reading the trend</summary>
             <p>Compare how each standard deviation changes when the distance doubles. If it stays the same, the noise does not depend on distance; if it doubles, it grows in proportion; if it roughly quadruples, it grows with the square of the distance.</p>
@@ -258,7 +258,7 @@ docker run --rm -it --name lab09 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
             <p>Both use the simulation clock, so the robot drives at the commanded speed in simulation time even when the VM runs the simulation slower than real time. In staff runs on different machines and on different days, the same lane and speed gave margins within about 0.02 m of each other.</p>
         </details>
         <h4>Step 4.2: The other detectors</h4>
-        <p><strong>Contract:</strong> write <code>ir_blocked</code>, <code>depth_blocked</code>, <code>marker_seen</code>, <code>cliff_seen</code>, and <code>bump_seen</code>, and pass each one&rsquo;s test. Then show each detector stopping the robot: with only that sensor in use, drive a lane it should detect.</p>
+        <p><strong>Task:</strong> write <code>ir_blocked</code>, <code>depth_blocked</code>, <code>marker_seen</code>, <code>cliff_seen</code>, and <code>bump_seen</code>, and pass each one&rsquo;s test. Then show each detector stopping the robot: with only that sensor in use, drive a lane it should detect.</p>
         <table style="border-collapse: collapse; width: 100%; border: 1px solid #ccc; margin-top: 0.5em;">
             <thead>
                 <tr style="background-color: #f2f2f2;">
@@ -315,7 +315,7 @@ docker run --rm -it --name lab09 --net=host --gpus all -e DISPLAY=$DISPLAY -e RO
                 <tr><td style="border: 1px solid #ccc; padding: 6px;">D, red marker</td><td style="border: 1px solid #ccc; padding: 6px;">Margin from 0 to 0.30 m: stops before the line, but not far before it</td></tr>
             </tbody>
         </table>
-                <p><strong>Contract:</strong></p>
+                <p><strong>Task:</strong></p>
         <ul>
             <li>Choose which sensors to use and set their thresholds in <code>thresholds.yaml</code>. Restart the hazard monitor and drive all four lanes at 0.2 m/s and at 0.3 m/s. All eight runs must meet the targets with the same file, and that file is the one you submit.</li>
             <li>Keep at least one earlier setting that failed a target, with its <code>lane_results.csv</code> rows. Do not delete rows from the file; the grader looks for the eight passing runs made with your submitted thresholds.</li>
