@@ -65,6 +65,7 @@ nav:
       - Kinova Lab Operating Guide: guides/kinova_lab_operating_guide.md
       - pymoveit2 API Guide: guides/pymoveit2_api_guide.md
       - USB Webcam in ROS 2: guides/usb_webcam_ros2.md
+      - RealSense D435i and D421 in ROS 2: guides/realsense_ros2.md
   - For Educators:
       - educators/index.md
       - Overview: for-educators.md

@@ -46,4 +46,10 @@ hide:
 
     [:octicons-arrow-right-24: USB Webcam](../guides/usb_webcam_ros2.md)
 
+- **RealSense D435i and D421 in ROS 2**
+
+    Running a RealSense depth camera: color, depth, and infrared images, the point cloud, and recording, on a lab computer or on Windows through WSL2. Draft.
+
+    [:octicons-arrow-right-24: RealSense](../guides/realsense_ros2.md)
+
 </div>

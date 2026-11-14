@@ -269,7 +269,13 @@ On the test laptop, the camera's `YUYV` images arrived through WSL2 incomplete: 
 
     The backtick at the end of each line continues the command in PowerShell. `${HOME}/workspaces` is the `workspaces` folder in your Windows user folder. For Section 8, replace the image with `turtlebot4-jazzy-latest` and add the `bash -c ...` line from that section.
 
-7. Check the camera with the commands in Section 3. The webcam's first entry, `/dev/video0`, should list its formats. The test laptop's WSL2 kernel loaded the webcam driver automatically when the camera was attached.
+7. Check the camera with the commands in Section 3. The webcam's first entry, `/dev/video0`, should list its formats. If the container has no `/dev/video0`, or `docker run` fails with `error gathering device information`, one possible cause is that the WSL2 kernel has not loaded its USB video driver (`uvcvideo`). On the test laptop it loaded on its own when the camera was attached with WSL kernel 6.18.33 (2026-11-03), but not with kernel 6.18.58 (2026-11-12, with a RealSense camera). If it has not loaded, load it in PowerShell, then start the container again:
+
+    ```powershell
+    docker run --rm --privileged -v /lib/modules:/lib/modules alpine sh -c "apk add -q kmod && modprobe uvcvideo"
+    ```
+
+    You may need to load the driver again after Windows or Docker Desktop restarts.
 8. Install and run `usb_cam`:
 
     ```bash
@@ -324,7 +330,7 @@ When you are done, run `usbipd detach --busid 3-1` in PowerShell or unplug the c
     - [x] Raw bag playback (`/camera_info` 29.7 Hz); compressed bag playback, the `republish` command, and `hazard_monitor` on the result (`camera: hazard`), all in one `turtlebot4-jazzy-latest` container on the laptop, not on a VM.
     - [x] `hazard_monitor` on a live webcam (`usb_cam`) in `turtlebot4-jazzy-latest`: stub prints `not written yet; skipping the camera`; with `marker_seen` written it publishes `camera` on `/hazard_stop`. A monitor in a second container (`--net=host`, no `--ipc=host`) received nothing, not even `/camera_info`.
     - [x] `docker run --device /dev/video0` with the camera detached fails with `error gathering device information ...`. Detach and attach while the container runs: the device came back as 81:0 and `usb_cam` ran again at 29.8 Hz without restarting the container.
-    - [x] WSL2: `usbipd list` and `usbipd attach` work without administrator rights; `bind` needs it. `attach` used the `docker-desktop` distribution, no Ubuntu terminal needed. `uvcvideo` loaded automatically on attach. Docker Desktop started from PowerShell passes `/dev/video0` with `--device`. WSLg socket at `/run/desktop/mnt/host/wslg/.X11-unix` mounts and RViz starts (`OpenGl version: 4.5`).
+    - [x] WSL2: `usbipd list` and `usbipd attach` work without administrator rights; `bind` needs it. `attach` used the `docker-desktop` distribution, no Ubuntu terminal needed. `uvcvideo` loaded automatically on attach (kernel 6.18.33; on 2026-11-12 with kernel 6.18.58 it did not, for a RealSense, and `modprobe` from a privileged container fixed it; the webcam was not retested on that kernel). Docker Desktop started from PowerShell passes `/dev/video0` with `--device`. WSLg socket at `/run/desktop/mnt/host/wslg/.X11-unix` mounts and RViz starts (`OpenGl version: 4.5`).
     - [x] WSL2 streaming: with the plain `bind` (CrowdStrike `CsDeviceControl` warning), YUYV gave 0 frames from `v4l2-ctl` and MJPG about 18 frames, then stopped; the kernel log showed `usb usb1: Not yet implemented` (from `vhci_get_frame_number`) and `vhci_hcd: urb->status -104`. With `bind --force`, MJPG ran 300 frames at 29.7 fps, but every YUYV frame from `v4l2_camera` had only 24 of 480 rows (286 of 286 frames). The same camera captures 30 fps YUYV 640 x 480 in Windows with ffmpeg.
 
     Still to confirm:
