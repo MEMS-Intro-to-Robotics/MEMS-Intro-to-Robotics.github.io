@@ -5,7 +5,7 @@ Use the `realsense2_camera` driver to run an Intel RealSense D435, D435i, or D42
 !!! warning "Draft: tested on Windows only"
     On 2026-11-12 these steps were run with a D435i and a D421 on a Windows 11 laptop through WSL2 and `usbipd-win`, in the course's `kinova-jazzy` image. Over that connection the depth image had to be reduced to 480 x 270 (see [Running on Windows](#running-on-windows-with-wsl2-and-usbipd-win)). The steps have not yet been run on a lab computer or a Raspberry Pi. If a step does not behave as described, post the command and its full output on Ed Discussions.
 
-The D435 has a color camera and a stereo depth camera. The D435i adds an IMU (accelerometer and gyroscope). The D421 is a bare depth module: it has the stereo depth camera and infrared images, but no color camera and no IMU. The steps apply to all three models, except that steps using the color image or aligning depth to it need a color camera and the IMU section is for the D435i only. [The D421](#the-d421) lists the D421's launch options and topics.
+The D435 has a color camera and a stereo depth camera. The D435i adds an IMU (accelerometer and gyroscope). The D421 is a bare depth module: it has the stereo depth camera and infrared images, but no color camera and no IMU. Steps that use the color image or align depth to it need a color camera, and the IMU section is for the D435i only. [The D421](#the-d421) lists the D421's launch options and topics.
 
 ## Where the camera plugs in
 
@@ -284,7 +284,7 @@ Three differences from a lab computer:
 
 3. **Start the container from PowerShell.** Use the command from Section 3 with these changes: replace each `\` at the end of a line with a backtick, replace the two display lines with `-e DISPLAY=:0` and `-v /run/desktop/mnt/host/wslg/.X11-unix:/tmp/.X11-unix:ro`, write the workspace mount as `-v "${HOME}/workspaces:/root/workspaces"`, and leave out `xhost`. The `-v /dev:/dev` line and both `--device-cgroup-rule` lines stay as they are.
 
-In testing, `usbipd attach` failed with `There is no WSL 2 distribution running` after Docker Desktop's WSL2 system had stopped. Start any container (for example `docker run --rm alpine true`) and attach again. Starting the container restarts the WSL2 system, so load `uvcvideo` again (step 1).
+In testing, `usbipd attach` failed with `There is no WSL 2 distribution running` after Docker Desktop's WSL2 system had stopped. Start any container (for example `docker run --rm alpine true`) and attach again. Starting the container starts the WSL2 system again, so load `uvcvideo` again (step 1).
 
 ## Common problems
 
